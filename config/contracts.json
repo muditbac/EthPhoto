@@ -2,6 +2,16 @@
   "default": {
     "gas": "auto",
     "contracts": {
+    	"ImageList":{
+    		"args": [],
+    		"gas": 4000000
+    	}, 
+    	"owned": {
+    		"gas": 100000
+    	},
+    	"mortal": {
+    		"gas": 100000
+    	}
     }
   }
 }

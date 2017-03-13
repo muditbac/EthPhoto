@@ -11,5 +11,8 @@
   "devDependencies": {
     "embark": "^2.4.0",
     "mocha": "^2.2.5"
+  },
+  "dependencies": {
+    "ethereumjs-testrpc": "^3.0.3"
   }
 }
