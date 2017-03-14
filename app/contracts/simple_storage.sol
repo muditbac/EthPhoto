@@ -24,11 +24,11 @@ contract SimpleStorage {
   }
 
 
-  function change(){
+  function change() returns (uint256){
     delete a[0];
     a[1].s = "gola";
+    return a.length;
   }
-
 
   function set(uint x) {
     storedData = x;
@@ -36,6 +36,10 @@ contract SimpleStorage {
 
   function get() constant returns (uint retVal) {
     return storedData;
+  }
+
+  function getSize() constant returns (uint) {
+    return a.length;
   }
 
 }

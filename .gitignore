@@ -38,3 +38,5 @@ jspm_packages
 doc/
 dist/
 .embark/
+
+chains.json

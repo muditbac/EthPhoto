@@ -31,10 +31,19 @@ describe("SimpleStorage", function() {
 
     it("accessing value from a", function(done) {
         SimpleStorage.a(1,function(err, result) {
-            // console.log(result)
             assert.equal(result[0], 'Hola');
             assert.equal(result[1].toNumber(), 100);
             done();
+        });
+    });
+    it("delete should reduce list size", function(done) {
+        SimpleStorage.change(function() {
+            SimpleStorage.getSize(function(e, r){
+                done();
+            });
+            // assert.equal(result[0], 'Hola');
+            // assert.equal(result[1].toNumber(), 100);
+
         });
     });
 
