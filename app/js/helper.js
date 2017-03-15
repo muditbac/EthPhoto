@@ -9,7 +9,14 @@ function add(){
 }
 
 function getLatLong(){
-	ImageList.getWithLatLong(2,4565,546564).then(function(data){console.log(data[1].toNumber());});
+	ImageList.getWithLatLong(2,4565,546564,0).then(function(data){
+		console.log(allToNumber(data[0]));
+		console.log(data[1].toNumber());
+		ImageList.getWithLatLong(2,4565,546564,data[1].toNumber()).then(function(data){
+			console.log(allToNumber(data[0]));
+			console.log(data[1].toNumber());
+		});
+	});
 }
 
 function getAll(){
