@@ -4,36 +4,10 @@ module.exports = function(grunt) {
 // Load Grunt tasks declared in the package.json file
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-    //require('load-grunt-tasks')(grunt);
 
 // Configure Grunt
     grunt.initConfig({
 
-
-        deploy: {
-          contracts: ["app/contracts/**/*.sol"],
-          dest: "embark_client.js"
-        },
-        // connect: {
-        //     livereload: {
-        //         options: {
-        //             port: 9000,
-        //             hostname: 'localhost',
-        //             middleware: function (connect) {
-        //                 return [
-        //                     function(req, res, next) {
-        //                         res.setHeader('Access-Control-Allow-Origin', '*');
-        //                         res.setHeader('Access-Control-Allow-Methods', '*');
-        //                         next();
-        //                     },
-        //                 ];
-        //             }
-        //         }
-        //     }
-        // },
-
-// Grunt express - our webserver
-// https://github.com/blai/grunt-express
         express: {
             all: {
                 options: {
@@ -47,8 +21,6 @@ module.exports = function(grunt) {
         },
 
 
-// grunt-watch will monitor the projects files
-// https://github.com/gruntjs/grunt-contrib-watch
         watch: {
             scripts: {
                 options: { livereload: true },
@@ -68,19 +40,9 @@ module.exports = function(grunt) {
                 options: {
                     livereload: true
                 }
-            },
+            }
 
         },
-
-
-// grunt-open will open your browser at the project's URL
-// https://www.npmjs.org/package/grunt-open
-        // open: {
-        //     all: {
-        //         path: 'http://localhost:8080/',
-        //         app: 'google-chrome'
-        //     }
-        // },
 
         filerev: {
             options: {
@@ -98,21 +60,8 @@ module.exports = function(grunt) {
             }
         },
 
-        copy: {
-            generated: {
-                src: 'app/index.html',
-                dest: 'dist/index.html'
-            }
-            // templates: {
-            //     cwd:'app/app/',
-            //     src: '**/*.html',
-            //     dest: 'dist/app/',
-            //     expand: true
-            // }
-        },
-
         useminPrepare: {
-            html: 'app/index.html',
+            html: 'dist/index.html',
             options: {
                 dest: 'dist'
             }
@@ -136,59 +85,28 @@ module.exports = function(grunt) {
 
         jshint: {
             options: {
-                ignores: ['app/js/app.js']
+                ignores: ['dist/js/app.js']
             },
-            all: ['gruntfile.js', 'app/**/*.js']
+            all: ['gruntfile.js', 'app/js/*.js']
         },
 
         cssmin:{
             production:{
                 files: {
-                    'dist/css/app.css': 'app/css/**/*.css'
-                }
-            }
-        },
-
-        concat: {
-            production: {
-                files:{
-                    'dist/js/app.js': ['app/js/app.js', 'app/js/*.js']
+                    'dist/css/app.css': 'dist/css/**/*.css'
                 }
             }
         }
 
-
     });
 
-    // grunt.event.on('watch', function(action, filepath, target) {
-
-    //     var sassConfig = grunt.config( "sass" );        
-    //     sassConfig.runtime.files[0].src = path.relative("app/css/scss/",filepath);
-    //     grunt.config("sass", sassConfig);
-
-    //     // http://stackoverflow.com/questions/18900772/grunt-watch-compile-only-one-file-not-all Refer this for more details
-    //     console.log(action+":"+target);
-    // });
-
-// Creates the `server` task
     grunt.registerTask('production',[
         'jshint',
-        'copy:generated',
         'useminPrepare',
-        'concat',
         'uglify',
         'cssmin',
         'filerev',
-        'usemin',
+        'usemin'
     ]);
-
-    grunt.registerTask('default', [
-        'express',  
-        'deploy_contracts',
-        'watch'
-
-    ]);
-
-
 
 };

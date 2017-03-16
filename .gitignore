@@ -40,3 +40,4 @@ dist/
 .embark/
 .idea/
 chains.json
+/app/js/app.js
