@@ -5,7 +5,7 @@ function count(){
 }
 
 function add(){
-	x = ImageList.addImage("fdgdfgdgfdfg", 4564,546564,54, {gas:200000}).then(function(data){console.log(data);});
+	x = ImageList.addImage("lexicographical", 4564,546564,54, {gas:200000}).then(function(data){console.log(data);});
 }
 
 function getLatLong(){
@@ -22,16 +22,16 @@ function getLatLong(){
 function getAll(){
 	ImageList.getUserImages().then(function(data){
 		console.log(allToNumber(data));
-	})
+	});
 }
 
 function getImage(i){
-	ImageList.getImage(i).then(function(data) {console.log(data)})
+	ImageList.getImage(i).then(function(data) {console.log(data);});
 }
 
 function allToNumber(list){
 	x = [];
-	for (i in list){
+	for (var i in list){
 		x.push(list[i].toNumber());
 	}
 

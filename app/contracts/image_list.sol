@@ -16,9 +16,13 @@ contract ImageList is owned {
 
 	// TODO Make Events
 	// TODO change msg.sender to tx.origin if origin in required
-	
+
 	mapping (address => uint[]) public userToImages;
+	mapping (bytes32 => bool) public userImageUpvote;
+	mapping (address => uint) balances;
+
 	Image[] public imageList;
+
 	uint deleted=0;
 
 	modifier onlyImageOwner (uint index){
@@ -37,7 +41,7 @@ contract ImageList is owned {
 		userToImages[msg.sender].push(k);
 	}
 
-	function getWithLatLong(int rad, int64 x, int64 y, uint _count) constant returns(uint[], uint){
+	function getImagesWithLatLong(int rad, int64 x, int64 y, uint _count) constant returns(uint[], uint){
 
 		uint[] memory ids = new uint[](_count);
 		uint count=0;
@@ -52,26 +56,38 @@ contract ImageList is owned {
 		return (ids, count);
 	}
 
-	function getImage(uint index) ifImageExists(index) constant returns (string, uint256, uint32, int64, int64){
+	function getImageAtIndex(uint index) ifImageExists(index) constant returns (string, uint256, uint32, int64, int64){
 		// TODO Exclude deleted images
 		return (imageList[index].image_hash, imageList[index].tags, imageList[index].rating, imageList[index].lat, imageList[index].long);
 	}
 
 	// TODO: Test all delete corner cases
-	function deleteImage(uint index) onlyImageOwner(index) {
+	function deleteImageAtIndex(uint index) onlyImageOwner(index) {
 		// When deleted entry is tried to be deleted again onlyImageOwner blocks the execution
 		deleted++;
 		delete imageList[index];
 	}
 
-	function getUserImages(address user) constant returns(uint256[]){
+	function getUserImages() constant returns(uint256[]){
 		// TODO Exclude deleted images
 		return userToImages[msg.sender];
 	}
 
-	function getCount() constant returns (uint){
+	function getImageCount() constant returns (uint){
 		return imageList.length-deleted;
 	}
 
+	function getImageOwner(uint image_index) constant returns(address){
+		return imageList[image_index].owner;
+	}
+
+	function upvoteImage(uint image_index){
+
+		if (msg.sender != getImageOwner(image_index)){
+			userImageUpvote[sha3(msg.sender, image_index)] = true;
+			// userImageUpvote[sha3(msg.sender, imageList[index].image_hash)] = true;
+			
+		}
+	}
 
 }
