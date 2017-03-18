@@ -2,10 +2,13 @@
   "contracts": ["app/contracts/**"],
   "app": {
     "css/app.css": ["app/css/**"],
-    "js/app.js": ["embark.js", "app/js/**"],
-    "index.html": "app/index.html"
+    "images/": ["app/images/**"],
+    "js/app.js": ["embark.js", "app/js/_vendor/jquery.min.js", "app/js/_vendor/bootstrap.min.js", "app/js/**"],
+    "index.html": "app/index.html",
+    "home.html": "app/home.html"
   },
   "buildDir": "dist/",
   "config": "config/",
-  "plugins": {}
+  "plugins": {
+  }
 }
