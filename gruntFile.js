@@ -11,32 +11,30 @@ module.exports = function(grunt) {
         express: {
             all: {
                 options: {
-                    bases: ['app/'],
+                    bases: ['dist/'],
                     port: 8080,
                     hostname: "0.0.0.0",
                     livereload: true
                 }
             }
-
         },
-
 
         watch: {
             scripts: {
                 options: { livereload: true },
                 files: [
-                    'app/js/*.js'
+                    'dist/js/*.js'
                 ]
                 //tasks: ['']
             },
             htmls: {
-                files: ['app/**/*.{html,js}'],
+                files: ['dist/**/*.{html,js}'],
                 options: {
                     livereload: true
                 }
             },
             css: {
-                files: ['app/**/*.css'],
+                files: ['dist/**/*.css'],
                 options: {
                     livereload: true
                 }
@@ -74,7 +72,7 @@ module.exports = function(grunt) {
         uglify: {
             options: {
                 report: 'min',
-                mangle: false
+                // mangle: false
             },
             production:{
                 files: {
@@ -107,6 +105,11 @@ module.exports = function(grunt) {
         'cssmin',
         'filerev',
         'usemin'
+    ]);
+
+    grunt.registerTask('serve',[
+        'express',
+        'watch'
     ]);
 
 };

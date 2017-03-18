@@ -5,7 +5,7 @@ function count(){
 }
 
 function add(){
-	x = ImageList.addImage("lexicographical", 4564,546564,54, {gas:200000}).then(function(data){console.log(data);});
+	x = Controller.addImage("lexicographical", "caption", 4564,546564,54, {gas:1000000}).then(function(data){console.log(data);});
 }
 
 function getLatLong(){
@@ -20,7 +20,7 @@ function getLatLong(){
 }
 
 function getAll(){
-	ImageList.getUserImages().then(function(data){
+	UserList.getImages().then(function(data){
 		console.log(allToNumber(data));
 	});
 }
@@ -32,8 +32,9 @@ function getImage(i){
 function allToNumber(list){
 	x = [];
 	for (var i in list){
-		x.push(list[i].toNumber());
+		if (list.hasOwnProperty(i)) {
+			x.push(list[i].toNumber());
+		}
 	}
-
 	return x;
 }

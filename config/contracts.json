@@ -4,8 +4,22 @@
     "contracts": {
     	"ImageList":{
     		"args": [],
-    		"gas": 4000000
+    		"gas": 4000000,
+            "onDeploy": [
+            ]
     	}, 
+        "VotingList": {
+        },
+        "UserList" :{
+        },
+        "Controller": {
+            "args": ["$ImageList", "$UserList", "$VotingList"],
+            "onDeploy": [
+                "ImageList.transferOwnership(Controller.address)",
+                "UserList.transferOwnership(Controller.address)",
+                "VotingList.transferOwnership(Controller.address)"
+            ]
+        },
     	"owned": {
     		"gas": 900000
     	},

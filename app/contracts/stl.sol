@@ -5,7 +5,7 @@ pragma solidity ^0.4.0;
 contract owned {
     address public owner;
 
-    modifier onlyowner() {
+    modifier onlyOwner() {
         if (msg.sender == owner) {
             _;
         }
@@ -13,6 +13,10 @@ contract owned {
 
     function owned() {
         owner = msg.sender;
+    }
+
+    function transferOwnership(address _owner) onlyOwner{
+        owner = _owner;
     }
 }
 
