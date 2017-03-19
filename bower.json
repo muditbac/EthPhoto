@@ -1,0 +1,14 @@
+{
+  "name": "eth-photo",
+  "description": "Location based photo sharing decentralized app using Ethereum and IPFS Edit",
+  "authors": [
+    "Mudit Bachhawat <mudit5bachhawat@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/muditbac/EthPhoto",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "darkroom": "^2.0.1"
+  }
+}

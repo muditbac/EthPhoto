@@ -2,7 +2,6 @@ pragma solidity ^0.4.0;
 
 import './stl.sol';
 
-
 contract UserList is owned {
 	mapping (address => uint[]) public userToImages;
 	mapping (address => uint) reward;
@@ -11,12 +10,16 @@ contract UserList is owned {
 		reward[_user] += _reward;
 	}
 
-	function getImages() constant returns (uint[]){
-		return userToImages[msg.sender];
-	}
-
 	function addImageToUser(address _user, uint _image) onlyOwner{
 		userToImages[_user].push(_image);
+	}
+
+	function getReward() constant returns (uint){
+		return reward[msg.sender];
+	}
+
+	function getImages() constant returns (uint[]){
+		return userToImages[msg.sender];
 	}
 }
 
@@ -46,7 +49,7 @@ contract ImageList is owned {
 		string image_hash;
 		string caption;
 		uint topic;
-		int rating;
+		int upvotes;
 		int64 lat;
 		int64 long;
 	}
@@ -64,8 +67,9 @@ contract ImageList is owned {
 		if (index<imageList.length && (imageList[index].owner == sender)) _;
 	}
 	
-	modifier ifImageExists(uint index){
-		if (index<imageList.length && imageList[index].init) _;
+	function ifImageExists(uint index) returns (bool){
+		if (index<imageList.length && imageList[index].init) return true;
+		return false;
 	}
 
 	function addImage(address sender, string _hash, string _caption, int64 _lat, int64 _long, uint256 _topic) onlyOwner returns (uint){
@@ -76,10 +80,7 @@ contract ImageList is owned {
 		return k;
 	}
 
-	function exists(uint index) constant returns (bool){
-		if (index<imageList.length && imageList[index].init) return true;
-		return false;	
-	}
+
 
 	function getImagesWithLatLong(int rad, int64 x, int64 y, uint _count) constant returns(uint[], uint){
 
@@ -95,9 +96,18 @@ contract ImageList is owned {
 		return (ids, count);
 	}
 
-	function getImage(uint index) ifImageExists(index) constant returns (string, string, int64, int64, uint, int){
+	function upvoteImage(uint index) onlyOwner {
+		imageList[index].upvotes ++;
+	}
+
+	function getUpvotes(uint index) constant returns (int){
+		return imageList[index].upvotes;
+	}
+
+	function getImage(uint index)  constant returns (string, string, int64, int64, uint, int){
 		// TODO Exclude deleted images
-		return (imageList[index].image_hash, imageList[index].caption, imageList[index].lat, imageList[index].long, imageList[index].topic, imageList[index].rating);
+		if (ifImageExists(index))
+			return (imageList[index].image_hash, imageList[index].caption, imageList[index].lat, imageList[index].long, imageList[index].topic, imageList[index].upvotes);
 	}
 
 	// TODO: Test all delete corner cases
@@ -139,6 +149,9 @@ contract Controller is owned {
 	}
 
 	function upvoteImage(uint index){
-		votingList.upvoteImage(msg.sender, index);
+		if (imageList.ifImageExists(index) && !(imageList.getImageOwner(index)==msg.sender))
+			if (votingList.upvoteImage(msg.sender, index)){
+				imageList.upvoteImage(index);
+			}
 	}
 }

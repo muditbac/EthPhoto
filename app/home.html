@@ -1,42 +1,62 @@
 <html>
   <head>
-    <title>Embark - SimpleStorage Demo</title>
-    <link rel="stylesheet" href="css/app.css">
+	<title>Embark - SimpleStorage Demo</title>
+
+      <!-- build:css css/main.css -->
+	<link rel="stylesheet" href="css/darkroom.css">
+	<link rel="stylesheet" href="css/main.css">
+      <!-- endbuild -->
   </head>
   <body class="container main-container">
-    Choose image: <input type="file" id="image-upload" />
-    <br>
-    <div id="image-wrapper"></div>
-    <!-- <img alt="Your image" id="target"> -->
+	Choose image: <input type="file" id="image-upload" />
+	<br>
+	<div id="image-wrapper"></div>
+	<!-- <img alt="Your image" id="target"> -->
   </body>
-    <script src="js/app.js"></script>
-    <script>
-    /*var dkrm = new Darkroom('#target', {
-      // Size options
-      minWidth: 100,
-      minHeight: 100,
-      maxWidth: 600,
-      maxHeight: 500,
-      ratio: 4/3,
-      backgroundColor: '#000',
 
-      // Plugins options
-      plugins: {
-        //save: false,
-        crop: {
-          quickCropKey: 67, //key "c"
-          //minHeight: 50,
-          //minWidth: 50,
-          //ratio: 4/3
-        }
-      },
+  <!-- build:js js/embark.js -->
+  <script src="js/app.js"></script>
+  <!-- endbuild -->
 
-      // Post initialize script
-      initialize: function() {
-        var cropPlugin = this.plugins['crop'];
-        // cropPlugin.selectZone(170, 25, 300, 300);
-        cropPlugin.requireFocus();
-      }
-    });*/
-  </script>
+  <!-- build:js js/home.js -->
+  <script src="components/jquery/dist/jquery.min.js"></script>
+  <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="components/fabric/dist/fabric.min.js"></script>
+  <script src="components/darkroom/lib/js/core/darkroom.js"></script>
+  <script src="components/darkroom/lib/js/core/utils.js"></script>
+  <script src="components/darkroom/lib/js/core/ui.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/index.js"></script>
+  <!-- endbuild -->
+
+
+	<script>
+	/*var dkrm = new Darkroom('#target', {
+	  // Size options
+	  minWidth: 100,
+	  minHeight: 100,
+	  maxWidth: 600,
+	  maxHeight: 500,
+	  ratio: 4/3,
+	  backgroundColor: '#000',
+
+	  // Plugins options
+	  plugins: {
+		//save: false,
+		crop: {
+		  quickCropKey: 67, //key "c"
+		  //minHeight: 50,
+		  //minWidth: 50,
+		  //ratio: 4/3
+		}
+	  },
+
+	  // Post initialize script
+	  initialize: function() {
+		var cropPlugin = this.plugins['crop'];
+		// cropPlugin.selectZone(170, 25, 300, 300);
+		cropPlugin.requireFocus();
+	  }
+	});*/
+	</script>
 </html>

@@ -42,3 +42,5 @@ dist/
 chains.json
 /app/js/app.js
 /chains.json
+/app/components/
+/.tmp/

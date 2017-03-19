@@ -9,12 +9,20 @@ module.exports = function(grunt) {
     grunt.initConfig({
 
         express: {
-            all: {
+            app: {
+                options: {
+                    bases: ['app/'],
+                    port: 8080,
+                    hostname: "0.0.0.0",
+                    livereload: true
+                }
+            },
+            dist: {
                 options: {
                     bases: ['dist/'],
                     port: 8080,
                     hostname: "0.0.0.0",
-                    livereload: true
+                    livereload: false
                 }
             }
         },
@@ -23,23 +31,22 @@ module.exports = function(grunt) {
             scripts: {
                 options: { livereload: true },
                 files: [
-                    'dist/js/*.js'
+                    'app/js/*.js'
                 ]
                 //tasks: ['']
             },
             htmls: {
-                files: ['dist/**/*.{html,js}'],
+                files: ['app/*.html'],
                 options: {
                     livereload: true
                 }
             },
             css: {
-                files: ['dist/**/*.css'],
+                files: ['app/css/*.css'],
                 options: {
                     livereload: true
                 }
             }
-
         },
 
         filerev: {
@@ -58,57 +65,44 @@ module.exports = function(grunt) {
             }
         },
 
+        copy: {
+            generated: {
+                expand: true,
+                cwd: 'app/',
+                src: '*.html',
+                dest: 'dist/'
+            }
+        },
+
         useminPrepare: {
-            html: 'dist/index.html',
+            html: ['app/index.html', 'app/home.html'],
             options: {
                 dest: 'dist'
             }
         },
 
         usemin: {
-            html: ['dist/index.html']
-        },
-
-        uglify: {
-            options: {
-                report: 'min',
-                // mangle: false
-            },
-            production:{
-                files: {
-                    'dist/js/app.js': 'dist/js/app.js'
-                }
-            }
-        },
-
-        jshint: {
-            options: {
-                ignores: ['dist/js/app.js']
-            },
-            all: ['gruntfile.js', 'app/js/*.js']
-        },
-
-        cssmin:{
-            production:{
-                files: {
-                    'dist/css/app.css': 'dist/css/**/*.css'
-                }
-            }
+            html: ['dist/index.html', 'dist/home.html']
         }
-
     });
 
     grunt.registerTask('production',[
-        'jshint',
+        'copy:generated',
         'useminPrepare',
+        'concat',
         'uglify',
         'cssmin',
         'filerev',
         'usemin'
     ]);
 
+    grunt.registerTask('default',[
+        'express:app',
+        'watch'
+    ]);
+
     grunt.registerTask('serve',[
-        'express',
+        'express:dist',
         'watch'
     ]);
 
