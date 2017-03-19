@@ -3,37 +3,98 @@ pragma solidity ^0.4.0;
 import './stl.sol';
 
 contract UserList is owned {
-	mapping (address => uint[]) public userToImages;
-	mapping (address => uint) reward;
 
+	/**
+			Event thrown indicating the success/failure of the setUserName function
+			Event is passed as true for success and false for failure.
+	**/
+	event setUserNameEvent(bool success);
+
+	/**
+			Struct to store all the user related properties, will be suitable for
+			adding new peoperties and scalability.
+	**/
+	struct User {
+			 uint[] userImages;
+			 uint reward;
+			 bytes32 username;
+	}
+
+	/**
+			A mapping from user address to userdata(User struct) and
+			another mapping from username to user address.
+			username is stored as a bytes32 type.
+	**/
+	mapping (address => User) public addressToUserData;
+	mapping (bytes32 => address) public usernameToUser;
+
+	/**
+			To be decided how to add reward?
+	**/
 	function addReward(address _user, uint _reward) onlyOwner{
-		reward[_user] += _reward;
+		addressToUserData[_user].reward += _reward;
 	}
 
 	function addImageToUser(address _user, uint _image) onlyOwner{
-		userToImages[_user].push(_image);
+		addressToUserData[_user].userImages.push(_image);
 	}
 
+	function setUserName(bytes32 _uname){
+		address empty;
+		if(usernameToUser[_uname] == empty){
+			usernameToUser[_uname] = msg.sender;
+			addressToUserData[msg.sender].username = _uname;
+			setUserNameEvent(true);
+		}
+		else{
+			setUserNameEvent(false);
+		}
+	}
+
+	function isUsernameSet() constant returns (bool){
+		bytes32 empty;
+		if(empty == addressToUserData[msg.sender].username){
+			return false;
+		}
+		return true;
+	}
+
+
+	function getReward(address _user) constant returns (uint){
+		return addressToUserData[_user].reward;
+	}
 	function getReward() constant returns (uint){
-		return reward[msg.sender];
+		return addressToUserData[msg.sender].reward;
 	}
 
-	function getImages() constant returns (uint[]){
-		return userToImages[msg.sender];
+	function getImages(address _user) constant returns (uint[]){
+		return addressToUserData[_user].userImages;
 	}
+	function getImages() constant returns (uint[]){
+		return addressToUserData[msg.sender].userImages;
+	}
+
+	function getUserName(address _user) constant returns (bytes32){
+		return addressToUserData[_user].username;
+	}
+	function getUserName() constant returns (bytes32){
+		return addressToUserData[msg.sender].username;
+	}
+	
 }
 
 contract VotingList is owned {
 	mapping (bytes32 => bool) public userImageUpvote;
-	
+
 	function upvoteImage(address _user, uint index) onlyOwner returns(bool) {
 		var hash = sha3(_user, index);
-		if (userImageUpvote[hash]==false){
+		if (userImageUpvote[hash] == false){
 			userImageUpvote[hash] = true;
-			return true;	
+			return true;
 		}
-		else 
+		else{
 			return false;
+		}
 	}
 
 	function isUpvoted(uint index) constant returns(bool) {
@@ -61,12 +122,12 @@ contract ImageList is owned {
 
 	// TODO Make Events
 	// TODO change msg.sender to tx.origin if origin in required
-	// TODO appopriately change to private or public settings 
+	// TODO appopriately change to private or public settings
 
 	modifier onlyImageOwner (address sender, uint index){
 		if (index<imageList.length && (imageList[index].owner == sender)) _;
 	}
-	
+
 	function ifImageExists(uint index) returns (bool){
 		if (index<imageList.length && imageList[index].init) return true;
 		return false;
