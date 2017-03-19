@@ -54,7 +54,7 @@ $(document).ready(function(){
       initialize: function() {
         var cropPlugin = this.plugins['crop'];
         // cropPlugin.selectZone(170, 25, 300, 300);
-        cropPlugin.requireFocus();
+        // cropPlugin.requireFocus();
       },
       save: {
         callback: function() {

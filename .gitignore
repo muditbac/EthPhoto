@@ -44,3 +44,6 @@ chains.json
 /chains.json
 /app/components/
 /.tmp/
+/app/int/
+/app/img/
+/app/images/
