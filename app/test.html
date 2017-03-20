@@ -1,0 +1,339 @@
+<html>
+<head>
+<title>Testing UI</title>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'>
+<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI"></script>
+
+    
+
+<!-- build:css css/app.css -->
+<link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="components/darkroom/build/darkroom.css">
+<link href="components/fotorama/fotorama.css" rel="stylesheet">
+<!-- endbuild -->
+
+
+</head>
+<body>
+
+<!-- Navigation bar -->
+<div class="ui fixed inverted menu">
+    <div class="ui container">
+      <a href="#" class="header item">
+        <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto </a> 
+      <a href="#" class="item">Home</a>
+      
+    </div>
+    <div class="ui container margin-container-box">
+        <div class="ui icon input wide-search" id="location-input">
+            <input type="text" placeholder="Search by Location" name="search-location" id="search-location">
+            <i class="search icon"></i>
+        </div>
+        <div class="ui fluid input" id="tags-input" style="display: none;">
+            <select class="ui search dropdown wide-search" id="tags-selector" multiple="">
+              <option value="">Search Tags</option>
+              <option value="AL">Alabama</option>
+              <option value="AK">Alaska</option>
+              <option value="AZ">Arizona</option>
+              <option value="AR">Arkansas</option>
+              <option value="CA">California</option>
+              <option value="CO">Colorado</option>
+              <option value="CT">Connecticut</option>
+              <option value="DE">Delaware</option>
+              <option value="DC">District Of Columbia</option>
+              <option value="FL">Florida</option>
+              <option value="GA">Georgia</option>
+              <option value="HI">Hawaii</option>
+              <option value="ID">Idaho</option>
+              <option value="IL">Illinois</option>
+              <option value="IN">Indiana</option>
+              <option value="IA">Iowa</option>
+              <option value="KS">Kansas</option>
+              <option value="KY">Kentucky</option>
+              <option value="LA">Louisiana</option>
+              <option value="ME">Maine</option>
+              <option value="MD">Maryland</option>
+              <option value="MA">Massachusetts</option>
+              <option value="MI">Michigan</option>
+              <option value="MN">Minnesota</option>
+              <option value="MS">Mississippi</option>
+              <option value="MO">Missouri</option>
+              <option value="MT">Montana</option>
+              <option value="NE">Nebraska</option>
+              <option value="NV">Nevada</option>
+              <option value="NH">New Hampshire</option>
+              <option value="NJ">New Jersey</option>
+              <option value="NM">New Mexico</option>
+              <option value="NY">New York</option>
+              <option value="NC">North Carolina</option>
+              <option value="ND">North Dakota</option>
+              <option value="OH">Ohio</option>
+              <option value="OK">Oklahoma</option>
+              <option value="OR">Oregon</option>
+              <option value="PA">Pennsylvania</option>
+              <option value="RI">Rhode Island</option>
+              <option value="SC">South Carolina</option>
+              <option value="SD">South Dakota</option>
+              <option value="TN">Tennessee</option>
+              <option value="TX">Texas</option>
+              <option value="UT">Utah</option>
+              <option value="VT">Vermont</option>
+              <option value="VA">Virginia</option>
+              <option value="WA">Washington</option>
+              <option value="WV">West Virginia</option>
+              <option value="WI">Wisconsin</option>
+              <option value="WY">Wyoming</option>
+            </select>
+        </div>
+        &nbsp;
+        <div class="ui input">
+            <button class="ui blue button">Search</button>
+        </div>
+    </div>
+    <div class="ui container margin-container-box" id="search-query-wrapper">
+        <div class="ui large buttons">
+          <button class="ui button toggle s-query active" search-data="location">Location</button>
+          <div class="or"></div>
+          <button class="ui button toggle s-query" search-data="tags">Tags</button>
+        </div>
+        <!-- <div class="ui buttons">
+          <button class="ui button search-toggle" search-data="location">Location</button>
+          <button class="ui button search-toggle" search-data="tags">Tags</button>
+        </div> -->
+    </div>
+    <div class="ui container margin-container-box">
+        <button class="ui red button" id="my-photos-btn">My Photos</button>
+        <button class="ui orange button" id="upload-btn">Upload Photo</button>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div id="content" class="ui main container">  
+    <div class="ui grid">
+        <div class="ten wide column pad-top-bottom-zero" id="left-main-wrapper">
+            <div id="map-first"></div>
+        </div>
+        <div class="six wide column" id="right-main-wrapper">
+            <div class="ui container">
+                
+            <h2><i class="image icon"></i> Photos</h2>
+            <div class="ui three stackable cards" id="image-cards">
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?1">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?2">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?3">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?4">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?5">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?6">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?7">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?8">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?9">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?10">
+                </div>
+              </div>
+              <div class="card">
+                <div class="image">
+                  <img src="http://lorempixel.com/180/200?11">
+                </div>
+              </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+
+<!-- My Photos Modal -->
+<div class="ui basic modal" id="my-photos-modal">
+  <div class="content">
+    <div class="fotorama" data-width="100%" data-height="75%" data-max-width="100%" data-nav="thumbs" data-allowfullscreen="true" data-fit="cover" data-transition="crossfade" data-loop="true" data-keyboard="true">
+        <img src="http://s.fotorama.io/okonechnikov/1-lo.jpg" data-caption="Caption here!">
+        <img src="http://s.fotorama.io/okonechnikov/2-lo.jpg" data-caption="Caption here!">
+        <img src="http://s.fotorama.io/okonechnikov/9-lo.jpg" data-caption="Caption here!">
+        <img src="http://s.fotorama.io/okonechnikov/6-lo.jpg" data-caption="Caption here!">
+        <img src="http://s.fotorama.io/okonechnikov/5-lo.jpg" data-caption="Caption here!">
+    </div>
+  </div>
+</div>
+
+
+<!-- Upload Modal -->
+<div class="ui modal" id="upload-photo-modal">
+  <i class="close icon"></i>
+  <div class="header">Upload Photo</div>
+    <!-- <div class="ui medium image">
+      <img src="http://lorempixel.com/180/200?11">
+    </div> -->
+  <div class="description">
+    <!-- Header -->
+    <div class="ui header">
+      <div class="ui three top attached steps" id="tab-menu-upload">
+        <div class="active step item upload-tab-btn" data-tab="first">
+          <i class="photo icon"></i>
+          <div class="content">
+            <div class="title">Choose/ Edit Photo</div>
+            <div class="description">Choose and Edit your photo</div>
+          </div>
+        </div>
+        <div class="step item upload-tab-btn" data-tab="second">
+          <i class="write icon"></i>
+          <div class="content">
+            <div class="title">Fill-in Details</div>
+            <div class="description">Fill details for the photo</div>
+          </div>
+        </div>
+        <div class="step item upload-tab-btn" data-tab="third">
+          <i class="upload icon"></i>
+          <div class="content">
+            <div class="title">Confirm Upload</div>
+            <div class="description">Verify and upload photo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Content box -->
+    <div class="ui text container very relaxed stackable grid" id="upload-container">
+      <div class="ui bottom attached tab segment upload-tab-content active" data-tab="first">
+        <div align="center" class="center aligned column">
+          <button class="huge ui purple button" style="margin: 60px;">
+            <i class="camera retro icon"></i> Choose Photo
+          </button>
+        </div>
+        <div></div>
+      </div>
+      <div class="ui bottom attached tab segment upload-tab-content" data-tab="second">
+        Second
+      </div>
+      <div class="ui bottom attached tab segment upload-tab-content" data-tab="third">
+        Third
+      </div>
+
+      <div class="row">
+        <div class="ui container">
+          <button class="big ui teal button"><i class="long arrow left icon"></i> &nbsp; Previous</button>
+          <button class="big ui teal button right floated">Next &nbsp; <i class="long arrow right icon"></i></button>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+
+<!-- build:js js/embark.js -->
+<script src="js/app.js"></script>
+<!-- endbuild -->
+
+<!-- build:js js/vendor.js -->
+<script src="components/jquery/dist/jquery.min.js"></script>
+<script src="components/semantic/dist/semantic.js"></script>
+<script src="components/gmaps/gmaps.js"></script>
+<script src="components/fotorama/fotorama.js"></script>
+<!-- endbuild -->
+
+<!-- build:js js/base.js -->
+<script src="js/helper.js"></script>
+<script src="js/index.js"></script>
+<script src="js/script.js"></script>
+<script type="text/javascript">
+var center_map;
+$(document).ready(function () {
+    center_map = new GMaps({
+        el: '#map-first',
+        lat: 22.3139,
+        lng: 87.31
+    });
+
+    center_map.setContextMenu({
+        control: 'center_map',
+        options: [{
+            title: 'Add marker',
+            name: 'add_marker',
+            action: function (e) {
+                this.addMarker({
+                    lat: e.latLng.lat(),
+                    lng: e.latLng.lng(),
+                    title: 'New Marker',
+                    infoWindow: {
+                        content: '<p>Add Picture</p>'
+                    }
+                });
+            }
+        }]
+    });
+    function get_suggestion() {
+        var input = (document).getElementById('search-location');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+    }
+    google.maps.event.addDomListener(window, 'load', get_suggestion);
+    $('#search-location').on('blur', function (e) {
+        e.preventDefault();
+        GMaps.geocode({
+            address: $('#search-location').val().trim(),
+            callback: function (results, status) {
+                if (status == 'OK') {
+                    var latlng = results[0].geometry.location;
+                    center_map.setCenter(latlng.lat(), latlng.lng());
+                    center_map.addMarker({
+                        lat: latlng.lat(),
+                        lng: latlng.lng()
+                    });
+                }
+            }
+        });
+    });
+
+});
+</script>
+<!-- endbuild -->
+
+</body>
+</html>

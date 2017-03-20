@@ -75,3 +75,56 @@ $(document).ready(function(){
     setTimeout(function(){ setImageEditor() }, 300);
   });
 });
+
+// Completely new scripts
+$('#tags-selector').dropdown({
+  maxSelections: 2
+});
+
+semantic = {};
+// ready event
+semantic.ready = function() {
+
+  // selector cache
+  var $buttons = $('.ui.buttons .button'),
+    $toggle  = $('.main .ui.toggle.s-query'),
+    $button  = $('.ui.button').not($buttons).not($toggle),
+    handler = {
+      activate: function() {
+        $(this).addClass('active').siblings().removeClass('active');
+        var a = $(this).attr('search-data');
+        console.log(a);
+        if (a == "location") { 
+          $("#tags-input").css({'display':'none'});
+          $("#location-input").css({'display':'inherit'});
+        } else {
+          $("#location-input").css({'display':'none'});
+          $("#tags-input").css({'display':'inherit'});
+        }
+      }
+
+    }
+  ;
+
+  $buttons.on('click', handler.activate);
+};
+
+
+// attach ready event
+$(document).ready(semantic.ready);
+
+// Initiate Tabs
+$('.upload-tab-btn').tab();
+
+$("#my-photos-btn").on('click', function(){
+  $('#my-photos-modal').modal('show');
+});
+
+$("#upload-btn").on('click', function(){
+  $('#upload-photo-modal').modal('show');
+});
+
+$(".upload-tab-btn").on('click', function(){
+  var tname = $(this).attr('data-tab');
+  $.tab('change tab', 'tab-name');
+});
