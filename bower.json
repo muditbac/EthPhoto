@@ -12,7 +12,8 @@
     "darkroom": "^2.0.1",
     "twitter-bootstrap-wizard": "^1.4.2",
     "gmaps": "^0.4.25",
-    "Bootstrap-Wizard": "https://github.com/gilluminate/Bootstrap-Wizard.git"
+    "Bootstrap-Wizard": "https://github.com/gilluminate/Bootstrap-Wizard.git",
+    "semantic": "semantic-ui#^2.2.9"
   },
   "devDependencies": {
     "fotorama": "^4.6.4"

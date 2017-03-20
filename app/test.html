@@ -201,7 +201,7 @@
 
 
 <!-- Upload Modal -->
-<div class="ui modal" id="upload-photo-modal">
+<div class="ui large modal" id="upload-photo-modal">
   <i class="close icon"></i>
   <div class="header">Upload Photo</div>
     <!-- <div class="ui medium image">
@@ -211,21 +211,21 @@
     <!-- Header -->
     <div class="ui header">
       <div class="ui three top attached steps" id="tab-menu-upload">
-        <div class="active step item upload-tab-btn" data-tab="first">
+        <div class="active step item upload-tab-btn" id="upload-first-tb" data-tab="first">
           <i class="photo icon"></i>
           <div class="content">
             <div class="title">Choose/ Edit Photo</div>
             <div class="description">Choose and Edit your photo</div>
           </div>
         </div>
-        <div class="step item upload-tab-btn" data-tab="second">
+        <div class="step item upload-tab-btn" id="upload-second-tb" data-tab="second">
           <i class="write icon"></i>
           <div class="content">
             <div class="title">Fill-in Details</div>
             <div class="description">Fill details for the photo</div>
           </div>
         </div>
-        <div class="step item upload-tab-btn" data-tab="third">
+        <div class="step item upload-tab-btn" id="upload-third-tb" data-tab="third">
           <i class="upload icon"></i>
           <div class="content">
             <div class="title">Confirm Upload</div>
@@ -238,23 +238,71 @@
     <div class="ui text container very relaxed stackable grid" id="upload-container">
       <div class="ui bottom attached tab segment upload-tab-content active" data-tab="first">
         <div align="center" class="center aligned column">
-          <button class="huge ui purple button" style="margin: 60px;">
-            <i class="camera retro icon"></i> Choose Photo
-          </button>
+          <input type="file" class="huge ui blue button" style="margin: 60px;" value="Choose Photo" 
+            id="image-upload" required />
+            <!-- <i class="camera retro icon"></i>  -->
+          <!-- </input> -->
+          <div id="image-wrapper"></div>
         </div>
         <div></div>
       </div>
+
+
       <div class="ui bottom attached tab segment upload-tab-content" data-tab="second">
-        Second
+          
+        <form class="ui form">
+          <div class="field">
+            <label>Caption</label>
+            <input name="caption" type="text">
+          </div>
+          <!-- <div class="field">
+            <label>Dropdown</label>
+            <select class="ui dropdown" name="dropdown">
+              <option value="">Select</option>
+              <option value="male">Choice 1</option>
+              <option value="female">Choice 2</option>
+            </select>
+          </div> -->
+
+          <div class="field">
+            <label>Tags</label>
+            <select name="skills" multiple="" id="tags-selector-upload" class="ui fluid dropdown">
+              <option value="">Skills</option>
+              <option value="angular">Angular</option>
+              <option value="css">CSS</option>
+              <option value="design">Graphic Design</option>
+              <option value="ember">Ember</option>
+              <option value="html">HTML</option>
+              <option value="ia">Information Architecture</option>
+              <option value="javascript">Javascript</option>
+              <option value="mech">Mechanical Engineering</option>
+              <option value="meteor">Meteor</option>
+              <option value="node">NodeJS</option>
+              <option value="plumbing">Plumbing</option>
+              <option value="python">Python</option>
+              <option value="rails">Rails</option>
+              <option value="react">React</option>
+              <option value="repair">Kitchen Repair</option>
+              <option value="ruby">Ruby</option>
+              <option value="ui">UI Design</option>
+              <option value="ux">User Experience</option>
+            </select>
+          </div>
+          <div class="ui error message"></div>
+        </form>
+
       </div>
+
+
       <div class="ui bottom attached tab segment upload-tab-content" data-tab="third">
         Third
       </div>
 
       <div class="row">
         <div class="ui container">
-          <button class="big ui teal button"><i class="long arrow left icon"></i> &nbsp; Previous</button>
-          <button class="big ui teal button right floated">Next &nbsp; <i class="long arrow right icon"></i></button>
+          <!-- <button class="big ui teal button"><i class="long arrow left icon"></i> &nbsp; Previous</button> -->
+          <div class="ui red message" style="display: none;" id="upload-box-err"></div>
+          <button class="big ui teal button right floated" id="upload-next-btn">Next &nbsp; <i class="long arrow right icon"></i></button>
         </div>
       </div>
 
@@ -262,7 +310,6 @@
 
 
   </div>
-
 </div>
 
 
@@ -275,6 +322,8 @@
 <!-- build:js js/vendor.js -->
 <script src="components/jquery/dist/jquery.min.js"></script>
 <script src="components/semantic/dist/semantic.js"></script>
+<script src="components/fabric/dist/fabric.min.js"></script>
+<script src="components/darkroom/build/darkroom.js"></script>
 <script src="components/gmaps/gmaps.js"></script>
 <script src="components/fotorama/fotorama.js"></script>
 <!-- endbuild -->

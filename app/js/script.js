@@ -1,5 +1,5 @@
-var board = null;
-$(document).ready(function(){
+// var board = null;
+// $(document).ready(function(){
   function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
 
@@ -30,7 +30,7 @@ $(document).ready(function(){
   }
 
   function setImageEditor(){
-    board = new Darkroom('#target', {
+    /*board = new Darkroom('#target', {
       // Size options
       minWidth: 100,
       minHeight: 100,
@@ -54,31 +54,36 @@ $(document).ready(function(){
       initialize: function() {
         var cropPlugin = this.plugins['crop'];
         // cropPlugin.selectZone(170, 25, 300, 300);
-        // cropPlugin.requireFocus();
+        cropPlugin.requireFocus();
       },
       save: {
         callback: function() {
             this.darkroom.selfDestroy(); // Cleanup
             var newImage = board.canvas.toDataURL();
             // fileStorageLocation = newImage;
-            imageObj = newImage;
             console.log(imageObj);
           }
       }
-    });
+    });*/
   }
 
   $("#image-upload").on('change', function(evt){
     board = null;
     $("#image-wrapper span").remove();
+    $(this).css({ 'display': 'none' });
     handleFileSelect(evt);
-    setTimeout(function(){ setImageEditor() }, 300);
+    setTimeout(function(){ setImageEditor(); }, 300);
   });
-});
+// });
 
 // Completely new scripts
 $('#tags-selector').dropdown({
   maxSelections: 2
+});
+
+// Completely new scripts
+$('#tags-selector-upload').dropdown({
+  maxSelections: 5
 });
 
 semantic = {};
@@ -124,7 +129,38 @@ $("#upload-btn").on('click', function(){
   $('#upload-photo-modal').modal('show');
 });
 
-$(".upload-tab-btn").on('click', function(){
-  var tname = $(this).attr('data-tab');
+// Upload Box
+var upload_state = "first";
+// Upload Box Step buttons click listener
+/*$(".upload-tab-btn").on('click', function(){
   $.tab('change tab', 'tab-name');
+});*/
+
+
+// Next button Click listener
+$("#upload-next-btn").on('click', function(){
+  if( $("#image-upload").get(0).files.length === 0 ) {
+    gotoTab("first");
+    showUploadBoxError("Please select an image"); 
+  } else if (upload_state == "first") { 
+    gotoTab("second");
+  } else if (upload_state == "second") { 
+    gotoTab("third");
+  } else showUploadBoxError("Please try again!");
 });
+
+function gotoTab(name) {
+  $.tab('change tab', name);
+  $("#tab-menu-upload .upload-tab-btn.active").removeClass('active');
+  $("#upload-"+name+"-tb").addClass('active');
+  upload_state = name;
+}
+
+function showUploadBoxError(error_msg) {
+  var elem = $("#upload-box-err");
+  elem.html(error_msg);
+  elem.fadeIn('fast');
+  setTimeout(function(){
+  elem.fadeOut('fast');
+  }, 3000);
+}

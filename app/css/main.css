@@ -48,7 +48,8 @@
 }
 
 #image-wrapper, #image-wrapper>span {
-  width: 500px;
+  width: 380px;
+  /*max-height: 400px;*/
 }
 #image-wrapper img {
   width: 100%;
@@ -97,4 +98,9 @@
 }
 .upload-tab-btn {
   cursor: pointer;
+}
+html, body {
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
 }
