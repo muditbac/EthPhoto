@@ -80,8 +80,9 @@ contract UserList is owned {
 	function getUserName() constant returns (bytes32){
 		return addressToUserData[msg.sender].username;
 	}
-	
+
 }
+
 
 contract VotingList is owned {
 	mapping (bytes32 => bool) public userImageUpvote;
@@ -102,6 +103,7 @@ contract VotingList is owned {
 	}
 }
 
+
 contract ImageList is owned {
 
 	struct Image{
@@ -109,7 +111,9 @@ contract ImageList is owned {
 		address owner;
 		string image_hash;
 		string caption;
-		uint topic;
+		uint8 topicCount;
+		uint8 reportCount;
+		uint16[5] topic;
 		int upvotes;
 		int64 lat;
 		int64 long;
@@ -133,10 +137,10 @@ contract ImageList is owned {
 		return false;
 	}
 
-	function addImage(address sender, string _hash, string _caption, int64 _lat, int64 _long, uint256 _topic) onlyOwner returns (uint){
+	function addImage(address sender, string _hash, string _caption, int64 _lat, int64 _long, uint16[5] _topic, uint8 _topicCount) onlyOwner returns (uint){
 		var k = imageList.length;
 
-		Image memory temp = Image(true, sender, _hash, _caption, _topic, 0, _lat, _long);
+		Image memory temp = Image(true, sender, _hash, _caption, 0, 0, _topic, 0, _lat, _long);
 		imageList.push(temp);
 		return k;
 	}
@@ -165,7 +169,7 @@ contract ImageList is owned {
 		return imageList[index].upvotes;
 	}
 
-	function getImage(uint index)  constant returns (string, string, int64, int64, uint, int){
+	function getImage(uint index)  constant returns (string, string, int64, int64, uint16[5], int){
 		// TODO Exclude deleted images
 		if (ifImageExists(index))
 			return (imageList[index].image_hash, imageList[index].caption, imageList[index].lat, imageList[index].long, imageList[index].topic, imageList[index].upvotes);
@@ -200,8 +204,8 @@ contract Controller is owned {
 		votingList = _votingList;
 	}
 
-	function addImage(string _hash, string _caption, int64 _lat, int64 _long, uint256 _topic){
-		var k = imageList.addImage(msg.sender, _hash, _caption, _lat, _long, _topic);
+	function addImage(string _hash, string _caption, int64 _lat, int64 _long, uint16[5] _topic, uint8 _topicCount){
+		var k = imageList.addImage(msg.sender, _hash, _caption, _lat, _long, _topic, _topicCount);
 		userList.addImageToUser(msg.sender, k);
 	}
 
