@@ -57,6 +57,10 @@
 }
 
 /*Completely new styles*/
+#main-nav-bar {
+  /*cornflowerblue*/
+  background: #6495ed;
+}
 .margin-container-box {
   margin: 10px;
 }
