@@ -204,9 +204,6 @@
 <div class="ui large modal" id="upload-photo-modal">
   <i class="close icon"></i>
   <div class="header">Upload Photo</div>
-    <!-- <div class="ui medium image">
-      <img src="http://lorempixel.com/180/200?11">
-    </div> -->
   <div class="description">
     <!-- Header -->
     <div class="ui header">
@@ -235,20 +232,20 @@
       </div>
     </div>
     <!-- Content box -->
-    <div class="ui container very relaxed stackable grid" id="upload-container">
-      <div class="ui bottom attached tab segment upload-tab-content active" data-tab="first">
+    <div class="ui container stackable grid" id="upload-container">
+      <div class="ui bottom attached tab upload-tab-content active" data-tab="first">
         <div class="center aligned column">
-          <input type="file" class="huge ui teal button" style="margin: 60px;" value="Choose Photo" 
-            id="image-upload" required />
-            <!-- <i class="camera retro icon"></i>  -->
-          <!-- </input> -->
+          <button type="button" class="huge ui teal button" style="margin: 60px;" id="image-upload-btn" />
+          <i class="camera retro icon"></i>  Choose Photo
+          </button>
+          <input type="file" id="image-upload" value="Choose Photo" style="display: none;" />
           <div id="image-wrapper"></div>
         </div>
         <div></div>
       </div>
 
 
-      <div class="ui bottom attached tab segment upload-tab-content" data-tab="second">
+      <div class="ui container tab upload-tab-content" data-tab="second">
         <div class="ui grid">
           <div class="one wide column"></div>
           <div class="seven wide column">
@@ -265,7 +262,7 @@
 
                 <div class="field">
                   <label>Location</label>
-                  <input name="image-location-upload" id="image-location-upload" type="text">
+                  <input type="text" name="location" id="image-location-upload" />
                 </div>
 
                 <div class="field">
@@ -303,7 +300,7 @@
       </div>
 
 
-      <div class="ui bottom attached tab segment upload-tab-content" data-tab="third">
+      <div class="ui bottom attached tab upload-tab-content" data-tab="third">
         Third
       </div>
 

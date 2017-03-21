@@ -48,11 +48,12 @@
 }
 
 #image-wrapper, #image-wrapper>span {
-  width: 380px;
-  /*max-height: 400px;*/
+  /*width: 380px;*/
+  max-height: 380px !important;
 }
+
 #image-wrapper img {
-  width: 100%;
+  max-height: 380px;
 }
 
 /*Completely new styles*/
@@ -73,8 +74,9 @@
   /*margin-top: 70px;*/
 }
 #map-second {
-  position: static !important;
+  /*position: static !important;*/
   /*margin-top: 70px;*/
+  position: initial !important;
 }
 .pad-top-bottom-zero {
   padding-top: 0px !important;
