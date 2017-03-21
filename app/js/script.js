@@ -30,7 +30,7 @@
   }
 
   function setImageEditor(){
-    /*board = new Darkroom('#target', {
+    board = new Darkroom('#target', {
       // Size options
       minWidth: 100,
       minHeight: 100,
@@ -64,7 +64,7 @@
             console.log(imageObj);
           }
       }
-    });*/
+    });
   }
 
   $("#image-upload").on('change', function(evt){
@@ -96,7 +96,7 @@ semantic.ready = function() {
     $button  = $('.ui.button').not($buttons).not($toggle),
     handler = {
       activate: function() {
-        $(this).addClass('active').siblings().removeClass('active');
+        $(this).addClass('active-selected').siblings().removeClass('active-selected');
         var a = $(this).attr('search-data');
         console.log(a);
         if (a == "location") { 

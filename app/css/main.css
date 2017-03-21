@@ -104,3 +104,7 @@ html, body {
   padding: 0px;
   overflow: hidden;
 }
+.active-selected {
+  background-color: #54ffff !important;
+  color: rgba(0,0,0,.6) !important;
+}
