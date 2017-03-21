@@ -119,7 +119,7 @@ semantic.ready = function() {
 $(document).ready(semantic.ready);
 
 // Initiate Tabs
-$('.upload-tab-btn').tab();
+// $('.upload-tab-btn').tab();
 
 $("#my-photos-btn").on('click', function(){
   $('#my-photos-modal').modal('show');

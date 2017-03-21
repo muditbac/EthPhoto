@@ -121,7 +121,7 @@
         <div class="six wide column" id="right-main-wrapper">
             <div class="ui container">
                 
-            <h2><i class="image icon"></i> Photos</h2>
+            <h2>Photos</h2>
             <div class="ui three stackable cards" id="image-cards">
               <div class="card">
                 <div class="image">
@@ -235,9 +235,9 @@
       </div>
     </div>
     <!-- Content box -->
-    <div class="ui text container very relaxed stackable grid" id="upload-container">
+    <div class="ui container very relaxed stackable grid" id="upload-container">
       <div class="ui bottom attached tab segment upload-tab-content active" data-tab="first">
-        <div align="center" class="center aligned column">
+        <div class="center aligned column">
           <input type="file" class="huge ui teal button" style="margin: 60px;" value="Choose Photo" 
             id="image-upload" required />
             <!-- <i class="camera retro icon"></i>  -->
@@ -249,48 +249,57 @@
 
 
       <div class="ui bottom attached tab segment upload-tab-content" data-tab="second">
-          
-        <form class="ui form">
-          <div class="field">
-            <label>Caption</label>
-            <input name="caption" type="text">
+        <div class="ui grid">
+          <div class="one wide column"></div>
+          <div class="seven wide column">
+            <!-- <img src="images/12.gif"> -->
+            <div id="map-second"></div>
           </div>
-          <!-- <div class="field">
-            <label>Dropdown</label>
-            <select class="ui dropdown" name="dropdown">
-              <option value="">Select</option>
-              <option value="male">Choice 1</option>
-              <option value="female">Choice 2</option>
-            </select>
-          </div> -->
+          <div class="seven wide column">
+            <div class="extra">
+               <form class="ui form">
+                <div class="field">
+                  <label>Caption</label>
+                  <input name="caption" id="image-caption-upload" type="text">
+                </div>
 
-          <div class="field">
-            <label>Tags</label>
-            <select name="skills" multiple="" id="tags-selector-upload" class="ui fluid dropdown">
-              <option value="">Skills</option>
-              <option value="angular">Angular</option>
-              <option value="css">CSS</option>
-              <option value="design">Graphic Design</option>
-              <option value="ember">Ember</option>
-              <option value="html">HTML</option>
-              <option value="ia">Information Architecture</option>
-              <option value="javascript">Javascript</option>
-              <option value="mech">Mechanical Engineering</option>
-              <option value="meteor">Meteor</option>
-              <option value="node">NodeJS</option>
-              <option value="plumbing">Plumbing</option>
-              <option value="python">Python</option>
-              <option value="rails">Rails</option>
-              <option value="react">React</option>
-              <option value="repair">Kitchen Repair</option>
-              <option value="ruby">Ruby</option>
-              <option value="ui">UI Design</option>
-              <option value="ux">User Experience</option>
-            </select>
+                <div class="field">
+                  <label>Location</label>
+                  <input name="image-location-upload" id="image-location-upload" type="text">
+                </div>
+
+                <div class="field">
+                  <label>Tags (atmost 5)</label>
+                  <select name="skills" multiple="" id="tags-selector-upload" class="ui fluid dropdown">
+                    <option value="">Skills</option>
+                    <option value="angular">Angular</option>
+                    <option value="css">CSS</option>
+                    <option value="design">Graphic Design</option>
+                    <option value="ember">Ember</option>
+                    <option value="html">HTML</option>
+                    <option value="ia">Information Architecture</option>
+                    <option value="javascript">Javascript</option>
+                    <option value="mech">Mechanical Engineering</option>
+                    <option value="meteor">Meteor</option>
+                    <option value="node">NodeJS</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="python">Python</option>
+                    <option value="rails">Rails</option>
+                    <option value="react">React</option>
+                    <option value="repair">Kitchen Repair</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="ui">UI Design</option>
+                    <option value="ux">User Experience</option>
+                  </select>
+                </div>
+                <div class="ui error message"></div>
+              </form>
+
+            </div>
           </div>
-          <div class="ui error message"></div>
-        </form>
-
+            
+        </div>          
+       
       </div>
 
 
@@ -298,8 +307,9 @@
         Third
       </div>
 
-      <div class="row">
-        <div class="ui container">
+      <div class="ui row">
+        <div class="ui ten column wide">
+          
           <!-- <button class="big ui teal button"><i class="long arrow left icon"></i> &nbsp; Previous</button> -->
           <div class="ui red message" style="display: none;" id="upload-box-err"></div>
           <button class="big ui teal button right floated" id="upload-next-btn">Next &nbsp; <i class="long arrow right icon"></i></button>
@@ -334,9 +344,15 @@
 <script src="js/script.js"></script>
 <script type="text/javascript">
 var center_map;
+var upload_map;
 $(document).ready(function () {
     center_map = new GMaps({
         el: '#map-first',
+        lat: 22.3139,
+        lng: 87.31
+    });
+    upload_map = new GMaps({
+        el: '#map-second',
         lat: 22.3139,
         lng: 87.31
     });
@@ -358,8 +374,29 @@ $(document).ready(function () {
             }
         }]
     });
+    upload_map.setContextMenu({
+        control: 'upload_map',
+        options: [{
+            title: 'Add marker',
+            name: 'add_marker',
+            action: function (e) {
+                this.addMarker({
+                    lat: e.latLng.lat(),
+                    lng: e.latLng.lng(),
+                    title: 'New Marker',
+                    infoWindow: {
+                        content: '<p>Add Picture</p>'
+                    }
+                });
+            }
+        }]
+    });
     function get_suggestion() {
         var input = (document).getElementById('search-location');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+    }
+    function get_suggestion_upload() {
+        var input = (document).getElementById('image-location-upload');
         var autocomplete = new google.maps.places.Autocomplete(input);
     }
     google.maps.event.addDomListener(window, 'load', get_suggestion);
@@ -372,6 +409,23 @@ $(document).ready(function () {
                     var latlng = results[0].geometry.location;
                     center_map.setCenter(latlng.lat(), latlng.lng());
                     center_map.addMarker({
+                        lat: latlng.lat(),
+                        lng: latlng.lng()
+                    });
+                }
+            }
+        });
+    });
+    google.maps.event.addDomListener(window, 'load', get_suggestion_upload);
+    $('#image-location-upload').on('blur', function (e) {
+        e.preventDefault();
+        GMaps.geocode({
+            address: $('#image-location-upload').val().trim(),
+            callback: function (results, status) {
+                if (status == 'OK') {
+                    var latlng = results[0].geometry.location;
+                    upload_map.setCenter(latlng.lat(), latlng.lng());
+                    upload_map.addMarker({
                         lat: latlng.lat(),
                         lng: latlng.lng()
                     });
