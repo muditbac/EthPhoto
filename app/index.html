@@ -22,6 +22,16 @@
       <img id="uploadedImage">
     </div>
 
+
+    <div>
+      <input type="text" id="hashUrl">
+      <button onclick="loadImage(getElementById('uploadedImage'), getElementById('hashUrl').value);">Load Image</button>
+    </div>
+
+
+    <div id="log">
+      This is log
+    </div>
     <!-- build:js js/embark.js -->
     <script src="js/app.js"></script>
     <!-- endbuild -->
@@ -36,6 +46,34 @@
     <script src="js/index.js"></script>
     <script src="js/script.js"></script>
     <!-- endbuild -->
+
+
+    <script>
+        function loadFile(element){
+            files = element.files;
+            // FileReader support
+            if (FileReader && files && files.length) {
+                var fr = new FileReader();
+                fr.onload = function () {
+                    document.getElementById('uploadedImage').src = fr.result;
+
+                    addImage(document.getElementById('uploadedImage'), 'This is caption', 100,100,100).then(function(data){
+                        console.log(data);
+                        $('#log').append('<br>' + data.hash);
+                    }, function(err){
+                        $('#log').append('<br>' + err);
+                    });
+                };
+                fr.readAsDataURL(files[0]);
+            }
+
+            // Not supported
+            else {
+                // fallback -- perhaps submit the input to an iframe and temporarily store
+                // them on the server until the user's session ends.
+            }
+        }
+    </script>
 
   </body>
 </html>

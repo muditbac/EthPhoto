@@ -26,6 +26,7 @@ function addImage(image_el, caption, lat, long, tags){
         var arr = _base64ToArrayBuffer(image_el.src.split(',')[1]);
         var buffer = EmbarkJS.Storage.ipfsConnection.Buffer.from(arr);
         EmbarkJS.Storage.ipfsConnection.add(buffer, function (err, result) {
+            console.log(result);
             if (err) {
                 reject(err);
             } else {
@@ -40,6 +41,8 @@ function addImage(image_el, caption, lat, long, tags){
 
     });
 }
+
+
 
 function getImagesWithLatLong(lat, long, rad){
     lat = Math.round(lat*1e5);
@@ -62,47 +65,37 @@ function getImagesWithLatLong(lat, long, rad){
     return p;
 }
 
-// function getImage
-
-
-function loadFile(element){
-	console.log(element);
-	files = element.files;
-    // FileReader support
-    if (FileReader && files && files.length) {
-        var fr = new FileReader();
-        fr.onload = function () {
-            document.getElementById('uploadedImage').src = fr.result;
-        };
-        fr.readAsDataURL(files[0]);
-    }
-
-    // Not supported
-    else {
-        // fallback -- perhaps submit the input to an iframe and temporarily store
-        // them on the server until the user's session ends.
-    }
+function loadImage(img_div, hash){
+    img_div.src = getUrl(hash);
 }
 
-function getLatLong(){
-	ImageList.getImagesWithLatLong(2,4565,546564,0).then(function(data){
-		console.log(allToNumber(data[0]));
-		console.log(data[1].toNumber());
-		ImageList.getImagesWithLatLong(2,4565,546564,data[1].toNumber()).then(function(data){
-			console.log(allToNumber(data[0]));
-			console.log(data[1].toNumber());
-		});
-	});
+
+getUrl = function(hash) {
+    return 'http://localhost:8080/ipfs/' + hash;
+};
+
+
+
+
+function getMyImages(){
+    return new Promise(function(resolve, reject){
+        UserList.getImages().then(function(data){
+            resolve(allToNumber(data));
+        }, function(err){
+            reject(err);
+        });
+    });
 }
 
-function getAll(){
-	UserList.getImages().then(function(data){
-		console.log(allToNumber(data));
-	});
-}
-
-function getImage(i){
-	ImageList.getImageAtIndex(i).then(function(data) {console.log(data);});
+function getImage(index){
+	return new Promise(function(resolve, reject){
+        ImageList.getImage(index).then(function(data) {
+            data[0] = getUrl(data[0]);
+            resolve(data);
+        }, function(err){
+            reject(err);
+        });
+    });
 }
 
 function allToNumber(list){

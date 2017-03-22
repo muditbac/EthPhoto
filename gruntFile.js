@@ -12,7 +12,7 @@ module.exports = function(grunt) {
             app: {
                 options: {
                     bases: ['app/'],
-                    port: 9000,
+                    port: 8000,
                     hostname: "0.0.0.0",
                     livereload: true
                 }
@@ -20,7 +20,7 @@ module.exports = function(grunt) {
             dist: {
                 options: {
                     bases: ['dist/'],
-                    port: 8080,
+                    port: 8000,
                     hostname: "0.0.0.0",
                     livereload: false
                 }
