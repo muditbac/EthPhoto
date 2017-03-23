@@ -232,7 +232,7 @@
       </div>
     </div>
     <!-- Content box -->
-    <div class="ui container stackable grid" id="upload-container">
+    <div class="ui container stackable center aligned grid" id="upload-container">
       <div class="ui bottom attached tab upload-tab-content active" data-tab="first">
         <div class="center aligned column">
           <button type="button" class="huge ui teal button" style="margin: 60px;" id="image-upload-btn" />
@@ -245,7 +245,7 @@
       </div>
 
 
-      <div class="ui container tab upload-tab-content" data-tab="second">
+      <div class="ui container tab upload-tab-content" data-tab="second" id="second-tab-content">
         <div class="ui grid">
           <div class="one wide column"></div>
           <div class="seven wide column">
@@ -254,21 +254,21 @@
           </div>
           <div class="seven wide column">
             <div class="extra">
-               <form class="ui form">
+               <form class="ui form container left aligned">
                 <div class="field">
                   <label>Caption</label>
-                  <input name="caption" id="image-caption-upload" type="text">
+                  <input name="caption" id="image-caption-upload" type="text" required>
                 </div>
 
                 <div class="field">
                   <label>Location</label>
-                  <input type="text" name="location" id="image-location-upload" />
+                  <input type="text" name="location" id="image-location-upload" required />
                 </div>
 
                 <div class="field">
                   <label>Tags (atmost 5)</label>
-                  <select name="skills" multiple="" id="tags-selector-upload" class="ui fluid dropdown">
-                    <option value="">Skills</option>
+                  <select name="skills" multiple="" id="tags-selector-upload" class="ui fluid dropdown" required>
+                    <option value="" selected disabled>Skills</option>
                     <option value="angular">Angular</option>
                     <option value="css">CSS</option>
                     <option value="design">Graphic Design</option>
@@ -294,14 +294,26 @@
 
             </div>
           </div>
-            
         </div>          
        
       </div>
 
-
-      <div class="ui bottom attached tab upload-tab-content" data-tab="third">
-        Third
+      <div class="ui container tab upload-tab-content" data-tab="third" id="third-tab-content">
+        <div class="ui grid">
+          <div class="one wide column"></div>
+          <div class="seven wide column">
+            <img src="#" id="final-image">
+          </div>
+          <div class="seven wide column container left aligned" id="final-details">
+            <h3>Details: </h3>
+            <p id="final-caption"></p>
+            <p id="final-location"></p>
+            <div id="final-tags">
+            </div>
+          </div>
+        </div>  
+               
+       
       </div>
 
       <div class="ui row">
@@ -310,6 +322,7 @@
           <!-- <button class="big ui teal button"><i class="long arrow left icon"></i> &nbsp; Previous</button> -->
           <div class="ui red message" style="display: none;" id="upload-box-err"></div>
           <button class="big ui teal button right floated" id="upload-next-btn">Next &nbsp; <i class="long arrow right icon"></i></button>
+          <button class="big ui red button right floated" id="upload-cancel-btn">Cancel</button>
         </div>
       </div>
 
@@ -342,95 +355,12 @@
 <script type="text/javascript">
 var center_map;
 var upload_map;
+var image_caption;
+var image_location;
+var image_tags;
+
 $(document).ready(function () {
-    center_map = new GMaps({
-        el: '#map-first',
-        lat: 22.3139,
-        lng: 87.31
-    });
-    upload_map = new GMaps({
-        el: '#map-second',
-        lat: 22.3139,
-        lng: 87.31
-    });
-
-    center_map.setContextMenu({
-        control: 'center_map',
-        options: [{
-            title: 'Add marker',
-            name: 'add_marker',
-            action: function (e) {
-                this.addMarker({
-                    lat: e.latLng.lat(),
-                    lng: e.latLng.lng(),
-                    title: 'New Marker',
-                    infoWindow: {
-                        content: '<p>Add Picture</p>'
-                    }
-                });
-            }
-        }]
-    });
-    upload_map.setContextMenu({
-        control: 'upload_map',
-        options: [{
-            title: 'Add marker',
-            name: 'add_marker',
-            action: function (e) {
-                this.addMarker({
-                    lat: e.latLng.lat(),
-                    lng: e.latLng.lng(),
-                    title: 'New Marker',
-                    infoWindow: {
-                        content: '<p>Add Picture</p>'
-                    }
-                });
-            }
-        }]
-    });
-    function get_suggestion() {
-        var input = (document).getElementById('search-location');
-        var autocomplete = new google.maps.places.Autocomplete(input);
-    }
-    function get_suggestion_upload() {
-        var input = (document).getElementById('image-location-upload');
-        var autocomplete = new google.maps.places.Autocomplete(input);
-    }
-    google.maps.event.addDomListener(window, 'load', get_suggestion);
-    $('#search-location').on('blur', function (e) {
-        e.preventDefault();
-        GMaps.geocode({
-            address: $('#search-location').val().trim(),
-            callback: function (results, status) {
-                if (status == 'OK') {
-                    var latlng = results[0].geometry.location;
-                    center_map.setCenter(latlng.lat(), latlng.lng());
-                    center_map.addMarker({
-                        lat: latlng.lat(),
-                        lng: latlng.lng()
-                    });
-                }
-            }
-        });
-    });
-    google.maps.event.addDomListener(window, 'load', get_suggestion_upload);
-    $('#image-location-upload').on('blur', function (e) {
-        e.preventDefault();
-        GMaps.geocode({
-            address: $('#image-location-upload').val().trim(),
-            callback: function (results, status) {
-                if (status == 'OK') {
-                    var latlng = results[0].geometry.location;
-                    upload_map.setCenter(latlng.lat(), latlng.lng());
-                    upload_map.addMarker({
-                        lat: latlng.lat(),
-                        lng: latlng.lng()
-                    });
-                }
-            }
-        });
-    });
-
+  setCentreMap();
 });
 </script>
 <!-- endbuild -->

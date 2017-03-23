@@ -78,9 +78,10 @@
   /*margin-top: 70px;*/
 }
 #map-second {
-  /*position: static !important;*/
-  /*margin-top: 70px;*/
-  position: initial !important;
+  width: 100%;
+  min-height: 200px;
+  max-width: 100%;
+  max-height: 210px; 
 }
 .pad-top-bottom-zero {
   padding-top: 0px !important;
@@ -117,4 +118,14 @@ html, body {
 .active-selected {
   background-color: #54ffff !important;
   color: rgba(0,0,0,.6) !important;
+}
+#second-tab-content {
+  padding-top: 20px;
+}
+#final-details p{
+  font-weight: bold;
+}
+#final-image {
+  max-width: 100%;
+  max-height: 100%;
 }

@@ -1,3 +1,4 @@
+// All variables
 var board = null;
 function handleFileSelect(evt) {
   var files = evt.target.files; // FileList object
@@ -39,7 +40,7 @@ function setImageEditor(){
     backgroundColor: '#000',
 
     // Plugins options
-    plugins: {
+    /*plugins: {
       // save: false,
       crop: {
         quickCropKey: 67, //key "c"
@@ -47,7 +48,7 @@ function setImageEditor(){
         //minWidth: 50,
         //ratio: 4/3
       }
-    },
+    },*/
 
     // Post initialize script
     initialize: function() {
@@ -68,11 +69,11 @@ function setImageEditor(){
 
 $("#image-upload-btn").on('click', function(){
   $("#image-wrapper span").remove();
-  $(this).css({ 'display': 'none' });
   $("#image-upload").focus().trigger('click');
 });
 
 $("#image-upload").on('change', function(evt){
+  $("#image-upload-btn").css({ 'display': 'none' });
   board = null;
   handleFileSelect(evt);
   setTimeout(function(){ setImageEditor(); }, 20);
@@ -121,36 +122,180 @@ semantic.ready = function() {
 // attach ready event
 $(document).ready(semantic.ready);
 
-// Initiate Tabs
+// Initiate Tabs: Navigate by clicking on steps 
 // $('.upload-tab-btn').tab();
 
 $("#my-photos-btn").on('click', function(){
   $('#my-photos-modal').modal('show');
 });
 
+var upload_state = "first";
+
 $("#upload-btn").on('click', function(){
   $('#upload-photo-modal').modal('show');
 });
 
+$("#upload-cancel-btn").on('click', function(){
+  gotoTab("first");
+  $("#image-wrapper span").remove();
+  $("#image-upload-btn").css({ 'display': 'initial' });
+  $('#upload-photo-modal').modal('hide');
+  $("#image-upload").val('');
+});
+
 // Upload Box
-var upload_state = "first";
 // Upload Box Step buttons click listener
 /*$(".upload-tab-btn").on('click', function(){
   $.tab('change tab', 'tab-name');
 });*/
 
-
+google.maps.event.addDomListener(window, 'load', get_suggestion_upload);
 // Next button Click listener
 $("#upload-next-btn").on('click', function(){
   if( $("#image-upload").get(0).files.length === 0 ) {
     gotoTab("first");
-    showUploadBoxError("Please select an image"); 
+    showUploadBoxError("Please select an image");
+
   } else if (upload_state == "first") { 
     gotoTab("second");
+    setUploadBoxMap();
+
   } else if (upload_state == "second") { 
-    gotoTab("third");
+    if (isSecondFormValid() === true) {
+      setThirdTabDetails();
+      gotoTab("third");
+    }
+
   } else showUploadBoxError("Please try again!");
 });
+
+function isSecondFormValid() {
+  image_caption = $("#image-caption-upload").val().trim();
+  image_location = $('#image-location-upload').val().trim();
+  image_tags = $("#tags-selector-upload").val();
+  if (image_caption == "") {
+    showUploadBoxError("Please fill in caption!");
+    return false;
+  }  else if (image_location == "") {
+    showUploadBoxError("Please fill in location!");
+    return false;
+  } else if (image_tags.length == 0) {
+    showUploadBoxError("Please select tags!");
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function setThirdTabDetails() {
+  $("#final-image").attr('src', getImageDataURL());
+  $("#final-caption").text(image_caption);
+  $("#final-location").text(image_location);
+  $("#final-tags").empty();
+  $.each(image_tags, function( index, value ) {
+    $("#final-tags").append('<a class="ui tag label">'+value+'</a>');
+  });
+}
+
+function get_suggestion() {
+    var input = (document).getElementById('search-location');
+    var autocomplete = new google.maps.places.Autocomplete(input);
+}
+function setCentreMap() {
+  center_map = new GMaps({
+      el: '#map-first',
+      lat: 22.3139,
+      lng: 87.31
+  });
+  
+  center_map.setContextMenu({
+      control: 'center_map',
+      options: [{
+          title: 'Add marker',
+          name: 'add_marker',
+          action: function (e) {
+              this.addMarker({
+                  lat: e.latLng.lat(),
+                  lng: e.latLng.lng(),
+                  title: 'New Marker',
+                  infoWindow: {
+                      content: '<p>Add Picture</p>'
+                  }
+              });
+          }
+      }]
+  });
+  
+  
+  
+  google.maps.event.addDomListener(window, 'load', get_suggestion);
+  $('#search-location').on('blur', function (e) {
+      e.preventDefault();
+      GMaps.geocode({
+          address: $('#search-location').val().trim(),
+          callback: function (results, status) {
+              if (status == 'OK') {
+                  var latlng = results[0].geometry.location;
+                  center_map.setCenter(latlng.lat(), latlng.lng());
+                  center_map.addMarker({
+                      lat: latlng.lat(),
+                      lng: latlng.lng()
+                  });
+              }
+          }
+      });
+  });
+}
+
+function get_suggestion_upload() {
+    var upload_input = (document).getElementById('image-location-upload');
+    var autocomplete_upload = new google.maps.places.Autocomplete(upload_input);
+}
+
+function setUploadBoxMap() {
+  upload_map = new GMaps({
+      el: '#map-second',
+      lat: 22.3139,
+      lng: 87.31
+  });
+  upload_map.setContextMenu({
+      control: 'upload_map',
+      options: [{
+          title: 'Add marker',
+          name: 'add_marker',
+          action: function (e) {
+              this.addMarker({
+                  lat: e.latLng.lat(),
+                  lng: e.latLng.lng(),
+                  title: 'New Marker',
+                  infoWindow: {
+                      content: '<p>Add Picture</p>'
+                  }
+              });
+          }
+      }]
+  });
+  
+  $('#image-location-upload').on('blur', function (e) {
+      e.preventDefault();
+      GMaps.geocode({
+          address: $('#image-location-upload').val().trim(),
+          callback: function (results, status) {
+              if (status == 'OK') {
+                  var latlng = results[0].geometry.location;
+                  upload_map.setCenter(latlng.lat(), latlng.lng());
+                  upload_map.addMarker({
+                      lat: latlng.lat(),
+                      lng: latlng.lng()
+                  });
+              }
+          }
+      });
+  });
+
+  // Trigger autocomplete
+  get_suggestion_upload();
+}
 
 function gotoTab(name) {
   $.tab('change tab', name);
