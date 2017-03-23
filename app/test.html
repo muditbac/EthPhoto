@@ -35,7 +35,7 @@
             <i class="search icon"></i>
         </div>
         <div class="ui fluid input" id="tags-input" style="display: none;">
-            <select class="ui search dropdown wide-search" id="tags-selector" multiple="">
+            <select class="ui search dropdown wide-search" id="search-tags" multiple="">
               <option value="">Search Tags</option>
               <option value="AL">Alabama</option>
               <option value="AK">Alaska</option>
@@ -92,7 +92,7 @@
         </div>
         &nbsp;
         <div class="ui input">
-            <button class="ui inverted teal button">Search</button>
+            <button class="ui inverted teal button" id="main-search-btn">Search</button>
         </div>
     </div>
     <div class="ui container margin-container-box" id="search-query-wrapper">
@@ -358,6 +358,8 @@ var upload_map;
 var image_caption;
 var image_location;
 var image_tags;
+var image_latitute;
+var image_longitute;
 
 $(document).ready(function () {
   setCentreMap();

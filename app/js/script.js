@@ -81,7 +81,7 @@ $("#image-upload").on('change', function(evt){
 
 
 // Completely new scripts
-$('#tags-selector').dropdown({
+$('#search-tags').dropdown({
   maxSelections: 2
 });
 
@@ -101,9 +101,8 @@ semantic.ready = function() {
     handler = {
       activate: function() {
         $(this).addClass('active-selected').siblings().removeClass('active-selected');
-        var a = $(this).attr('search-data');
-        console.log(a);
-        if (a == "location") { 
+        var option = $(this).attr('search-data');
+        if (option == "location") { 
           $("#tags-input").css({'display':'none'});
           $("#location-input").css({'display':'inherit'});
         } else {
@@ -163,11 +162,19 @@ $("#upload-next-btn").on('click', function(){
   } else if (upload_state == "second") { 
     if (isSecondFormValid() === true) {
       setThirdTabDetails();
+      $(this).html("Upload &nbsp; <i class='upload icon'></i>")
       gotoTab("third");
     }
+  } else if(upload_state == "third") {
+    handleUploadImage();
 
   } else showUploadBoxError("Please try again!");
 });
+
+function handleUploadImage() {
+  /*image_caption, image_location, image_tags <array>, image_latitute, image_longitute, getImageDataURL() <Imags's data URL>
+  is available here*/
+}
 
 function isSecondFormValid() {
   image_caption = $("#image-caption-upload").val().trim();
@@ -283,6 +290,8 @@ function setUploadBoxMap() {
           callback: function (results, status) {
               if (status == 'OK') {
                   var latlng = results[0].geometry.location;
+                  image_latitute = latlng.lat();
+                  image_longitute = latlng.lng();
                   upload_map.setCenter(latlng.lat(), latlng.lng());
                   upload_map.addMarker({
                       lat: latlng.lat(),
@@ -312,3 +321,14 @@ function showUploadBoxError(error_msg) {
   elem.fadeOut('fast');
   }, 3000);
 }
+
+// Main Search Bar handle
+$("#main-search-btn").on('click', function(){
+  var search_param = $(".s-query.active-selected").attr("search-data");
+  if(search_param == "location") {
+    var location_search = $("#search-location").val().trim();
+  } else if (search_param == "tags") {
+    var tags_search = $("#search-tags").val();
+
+  }
+});
