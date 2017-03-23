@@ -29,7 +29,7 @@ contract UserList is owned {
 	mapping (bytes32 => address) public usernameToUser;
 
 	/**
-			To be decided how to add reward?
+			TODO To be decided how to add reward?
 	**/
 	function addReward(address _user, uint _reward) onlyOwner{
 		addressToUserData[_user].reward += _reward;
@@ -40,8 +40,7 @@ contract UserList is owned {
 	}
 
 	function setUserName(bytes32 _uname){
-		address empty;
-		if(usernameToUser[_uname] == empty){
+		if(usernameToUser[_uname] == address(0x0)){
 			usernameToUser[_uname] = msg.sender;
 			addressToUserData[msg.sender].username = _uname;
 			setUserNameEvent(true);
@@ -52,17 +51,22 @@ contract UserList is owned {
 	}
 
 	function isUsernameSet() constant returns (bool){
-		bytes32 empty;
-		if(empty == addressToUserData[msg.sender].username){
+		if(bytes32(0) == addressToUserData[msg.sender].username){
 			return false;
 		}
 		return true;
 	}
 
 
+    function getUserInfo(address _user) constant returns (bytes32 username, uint[] images, uint reward){
+        return (addressToUserData[_user].username, addressToUserData[_user].userImages, addressToUserData[_user].reward);
+    }
+
 	function getReward(address _user) constant returns (uint){
 		return addressToUserData[_user].reward;
 	}
+
+
 	function getReward() constant returns (uint){
 		return addressToUserData[msg.sender].reward;
 	}
@@ -70,6 +74,7 @@ contract UserList is owned {
 	function getImages(address _user) constant returns (uint[]){
 		return addressToUserData[_user].userImages;
 	}
+
 	function getImages() constant returns (uint[]){
 		return addressToUserData[msg.sender].userImages;
 	}
@@ -77,18 +82,19 @@ contract UserList is owned {
 	function getUserName(address _user) constant returns (bytes32){
 		return addressToUserData[_user].username;
 	}
+
 	function getUserName() constant returns (bytes32){
 		return addressToUserData[msg.sender].username;
 	}
 
 }
 
-
+// Note: feature ananomonous upvoting and reporting
 contract VotingList is owned {
 	mapping (bytes32 => bool) public userImageUpvote;
 
-	function upvoteImage(address _user, uint index) onlyOwner returns(bool) {
-		var hash = sha3(_user, index);
+	function upvoteImage(address _user, uint index, bool isReport) onlyOwner returns(bool) {
+		var hash = sha3(_user, index, isReport);
 		if (userImageUpvote[hash] == false){
 			userImageUpvote[hash] = true;
 			return true;
@@ -98,7 +104,7 @@ contract VotingList is owned {
 		}
 	}
 
-	function isUpvoted(uint index) constant returns(bool) {
+	function isUpvoted(uint index, bool isReport) constant returns(bool) {
 		return userImageUpvote[sha3(msg.sender, index)];
 	}
 }
@@ -111,12 +117,11 @@ contract ImageList is owned {
 		address owner;
 		string image_hash;
 		string caption;
-		uint8 topicCount;
-		uint8 reportCount;
+        int64 lat;
+        int64 long;
 		uint16[5] topic;
-		int upvotes;
-		int64 lat;
-		int64 long;
+        uint8 reportCount;
+        int upvotes;
 	}
 
 	// UserList public ;
@@ -137,10 +142,10 @@ contract ImageList is owned {
 		return false;
 	}
 
-	function addImage(address sender, string _hash, string _caption, int64 _lat, int64 _long, uint16[5] _topic, uint8 _topicCount) onlyOwner returns (uint){
+	function addImage(address sender, string _hash, string _caption, int64 _lat, int64 _long, uint16[5] _topic) onlyOwner returns (uint){
 		var k = imageList.length;
 
-		Image memory temp = Image(true, sender, _hash, _caption, 0, 0, _topic, 0, _lat, _long);
+		Image memory temp = Image(true, sender, _hash, _caption, _lat, _long, _topic, 0, 0);
 		imageList.push(temp);
 		return k;
 	}
@@ -204,8 +209,8 @@ contract Controller is owned {
 		votingList = _votingList;
 	}
 
-	function addImage(string _hash, string _caption, int64 _lat, int64 _long, uint16[5] _topic, uint8 _topicCount){
-		var k = imageList.addImage(msg.sender, _hash, _caption, _lat, _long, _topic, _topicCount);
+	function addImage(string _hash, string _caption, int64 _lat, int64 _long, uint16[5] _topic){
+		var k = imageList.addImage(msg.sender, _hash, _caption, _lat, _long, _topic);
 		userList.addImageToUser(msg.sender, k);
 	}
 
@@ -215,8 +220,18 @@ contract Controller is owned {
 
 	function upvoteImage(uint index){
 		if (imageList.ifImageExists(index) && !(imageList.getImageOwner(index)==msg.sender))
-			if (votingList.upvoteImage(msg.sender, index)){
+			if (votingList.upvoteImage(msg.sender, index, false)){
 				imageList.upvoteImage(index);
+				userList.addReward(imageList.getImageOwner(index), 2);
+			}
+	}
+
+	function reportImage(uint index){
+		if (imageList.ifImageExists(index) && !(imageList.getImageOwner(index)==msg.sender))
+			if (votingList.upvoteImage(msg.sender, index, true)){
+				imageList.upvoteImage(index);
+//				userList.addReward(imageList.getImageOwner(index), -1);
+			// TODO Decrease rating
 			}
 	}
 }

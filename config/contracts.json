@@ -7,7 +7,7 @@
     		"gas": 4000000,
             "onDeploy": [
             ]
-    	}, 
+    	},
         "VotingList": {
         },
         "UserList" :{
@@ -18,7 +18,8 @@
                 "ImageList.transferOwnership(Controller.address)",
                 "UserList.transferOwnership(Controller.address)",
                 "VotingList.transferOwnership(Controller.address)"
-            ]
+            ],
+            "gas": 1000000
         },
     	"owned": {
     		"gas": 900000
