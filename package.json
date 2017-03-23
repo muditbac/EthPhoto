@@ -20,7 +20,9 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-express": "^1.4.1",
     "grunt-filerev": "^2.3.1",
+    "grunt-parallel": "^0.5.1",
     "grunt-usemin": "^3.1.1",
+    "matchdep": "^1.0.1",
     "mocha": "^2.2.5"
   },
   "dependencies": {
