@@ -18,15 +18,12 @@ function _base64ToArrayBuffer(base64) {
 function addImage(image_el, caption, lat, long, tags){
 
     return new Promise(function (resolve, reject) {
-        lat = new web3.BigNumber(lat);
-        lat = lat.mul(1e5).round();
-        long = new web3.BigNumber(long);
-        long = long.mul(1e5).round();
+        lat = Math.round(lat*1e5);
+        long = Math.round(long*1e5);
 
         var arr = _base64ToArrayBuffer(image_el.src.split(',')[1]);
         var buffer = EmbarkJS.Storage.ipfsConnection.Buffer.from(arr);
         EmbarkJS.Storage.ipfsConnection.add(buffer, function (err, result) {
-            console.log(result);
             if (err) {
                 reject(err);
             } else {
@@ -88,14 +85,17 @@ function getMyImages(){
 }
 
 function getImage(index){
-	return new Promise(function(resolve, reject){
+	var p = new Promise(function(resolve, reject){
         ImageList.getImage(index).then(function(data) {
             data[0] = getUrl(data[0]);
+            p.data = data;
             resolve(data);
         }, function(err){
             reject(err);
         });
     });
+
+	return p;
 }
 
 function allToNumber(list){

@@ -172,8 +172,22 @@ $("#upload-next-btn").on('click', function(){
 });
 
 function handleUploadImage() {
-  /*image_caption, image_location, image_tags <array>, image_latitute, image_longitute, getImageDataURL() <Imags's data URL>
+  /*image_caption, image_location, image_tags <array>, image_latitude, image_longitude, getImageDataURL() <Imags's data URL>
   is available here*/
+
+  $("#upload-next-btn").addClass('disabled loading');
+  addImage(document.getElementById('final-image'), image_caption, image_latitude, image_longitude, image_tags).then(function(){
+      $("#upload-next-btn").removeClass('disabled loading');
+      // TODO Change here for after success events
+      alert("Image Uploaded");
+      $("#upload-cancel-btn").trigger("click");
+  }, function (err){
+      $("#upload-next-btn").removeClass('disabled loading');
+      // TODO Change here for after err events
+      alert('Error');
+      $("#upload-cancel-btn").trigger("click");
+  });
+
 }
 
 function isSecondFormValid() {
@@ -200,7 +214,7 @@ function setThirdTabDetails() {
   $("#final-location").text(image_location);
   $("#final-tags").empty();
   $.each(image_tags, function( index, value ) {
-    $("#final-tags").append('<a class="ui tag label">'+value+'</a>');
+    $("#final-tags").append('<a class="ui tag label">'+tags[value-1]+'</a>');
   });
 }
 
@@ -290,8 +304,8 @@ function setUploadBoxMap() {
           callback: function (results, status) {
               if (status == 'OK') {
                   var latlng = results[0].geometry.location;
-                  image_latitute = latlng.lat();
-                  image_longitute = latlng.lng();
+                  image_latitude = latlng.lat();
+                  image_longitude = latlng.lng();
                   upload_map.setCenter(latlng.lat(), latlng.lng());
                   upload_map.addMarker({
                       lat: latlng.lat(),
