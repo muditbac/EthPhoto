@@ -88,13 +88,15 @@ function getImage(index){
 	var p = new Promise(function(resolve, reject){
         ImageList.getImage(index).then(function(data) {
             data[0] = getUrl(data[0]);
+            data[2] = data[2].toNumber()/1e5;
+            data[3] = data[3].toNumber()/1e5;
+            data[4] = allToNumber(data[4]);
             p.data = data;
             resolve(data);
         }, function(err){
             reject(err);
         });
     });
-
 	return p;
 }
 

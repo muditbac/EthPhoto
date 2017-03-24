@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
 <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'>
-<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI"></script>
+
 
 <!-- build:css css/app.css -->
 <link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
@@ -28,7 +28,7 @@
       <a href="#" class="header item">
         <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto </a>
       <a href="#" class="item">Home</a>
-      
+
     </div>
     <div class="ui container margin-container-box">
         <div class="ui icon input wide-search" id="location-input">
@@ -85,7 +85,7 @@
             <div class="ui container">
 
             <h2>Photos</h2>
-            <div class="ui three stackable cards" id="image-cards">
+            <!-- <div class="ui three stackable cards" id="image-cards">
               <div class="card">
                 <div class="image">
                   <img src="http://lorempixel.com/180/200?1">
@@ -142,7 +142,7 @@
                 </div>
               </div>
             </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -295,6 +295,7 @@
 <!-- endbuild -->
 
 <!-- build:js js/vendor.js -->
+<script src="components/v3-utility-library/markerclusterer/src/markerclusterer.js"></script>
 <script src="components/jquery/dist/jquery.min.js"></script>
 <script src="components/semantic/dist/semantic.js"></script>
 <script src="components/fabric/dist/fabric.min.js"></script>
@@ -304,6 +305,8 @@
 <!-- endbuild -->
 
 <!-- build:js js/base.js -->
+
+
 <script src="js/helper.js"></script>
 <script src="js/index.js"></script>
 <script src="js/script.js"></script>
@@ -314,13 +317,13 @@ var upload_map;
 var image_caption;
 var image_location;
 var image_tags;
-var image_latitute;
-var image_longitute;
-
-$(document).ready(function () {
-  initMap();
-});
+var image_latitude;
+var image_longitude;
+var marker_center;
+var marker_upload;
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI&callback=initMap" async defer></script>
+
 <!-- endbuild -->
 
 </body>

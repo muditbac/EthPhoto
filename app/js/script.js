@@ -1,5 +1,9 @@
 // All variables
 var board = null;
+var markers = {};
+var images = {};
+var myimages = {};
+
 function handleFileSelect(evt) {
   var files = evt.target.files; // FileList object
 
@@ -28,6 +32,21 @@ function handleFileSelect(evt) {
     reader.readAsDataURL(f);
   }
 }
+
+// loading my images
+$(document).ready(function(){
+  getMyImages().then(function(data){
+    $.each(data, function(i, id){
+      if (!(id in myimages)){
+        getImage(id).then(function(data){
+          myimages[id] = data;
+        });
+      }
+    });
+  }, function(err){
+    alert("Cannot Load My Images");
+  })
+})
 
 function setImageEditor(){
   board = new Darkroom('#target', {
@@ -121,7 +140,7 @@ semantic.ready = function() {
 // attach ready event
 $(document).ready(semantic.ready);
 
-// Initiate Tabs: Navigate by clicking on steps 
+// Initiate Tabs: Navigate by clicking on steps
 $('.upload-tab-btn').tab();
 
 $("#my-photos-btn").on('click', function(){
@@ -162,6 +181,9 @@ $("#upload-next-btn").on('click', function(){
   } else if (upload_state == "first") {
     gotoTab("second");
     initUploadMap();
+    if (image_latitude!=undefined && image_longitude!=undefined){
+      upload_map.setCenter(image_latitude, image_longitude);
+    }
     $("#upload-first-tb").addClass('completed');
       $("#upload-second-tb").removeClass('disabled');
 
@@ -227,17 +249,58 @@ function setThirdTabDetails() {
   });
 }
 
+function refreshImages(data){
+}
 
 function initCenterMap(){
+
   center_map = new GMaps({
       el: '#map-first',
-      lat: 22.3139,
-      lng: 87.31
+      lat: 20.5937,
+      lng: 78.9629,
+      idle: function(e){
+        var b = center_map.getBounds();
+        var r = Math.max((b.b.f-b.b.b)/2, (b.f.f-b.f.b)/2);
+        var p  = getImagesWithLatLong(e.center.lat(), e.center.lng(), r)
+        p.then(function(data){
+          current_images = data;
+          $.each(data, function(i, id){
+            if (!(id in markers)){
+              console.log("Happening");
+              getImage(id).then(function(data){
+                images[id] = data;
+                if (!(id in markers)){
+                  console.log(id);
+                  markers[id] = center_map.addMarker({
+                    lat: data[2],
+                    lng: data[3],
+                  });
+                  cluster.addMarker(markers[id]);
+                  refreshImages();
+                }
+              });
+            }
+          })
+        }, function(err){
+          alert("Cannot connect to Ethereum Network!");
+        })
+        // console.log(e.center.lat());
+        // console.log(e.center.lng());
+      }
   });
+  cluster =  new MarkerClusterer(center_map.map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
+
+  var center = center_map.getCenter();
+  marker_center = center_map.addMarker({
+    lat: center.lat(),
+    lng: center.lng()
+  })
 
   GMaps.geolocate({
     success: function(position) {
       center_map.setCenter(position.coords.latitude, position.coords.longitude);
+      marker_center.setPosition(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+      center_map.setZoom(15);
     },
     error: function(error) {
       console.log('Geolocation failed: '+error.message);
@@ -249,7 +312,7 @@ function initCenterMap(){
     }
   });
 
-  // TODO Add image from here
+  // TODO Add set coordinates and open modal
   center_map.setContextMenu({
       control: 'map',
       options: [{
@@ -273,11 +336,7 @@ function initCenterMap(){
   autocomplete.bindTo('bounds', center_map);
 
 
-  var center = center_map.getCenter();
-  var marker = center_map.addMarker({
-    lat: center.lat(),
-    lng: center.lng()
-  })
+
 
   autocomplete.addListener('place_changed', function() {
 
@@ -296,7 +355,7 @@ function initCenterMap(){
       center_map.setCenter(place.geometry.location);
       center_map.setZoom(17);  // Why 17? Because it looks good.
     }
-    marker.setPosition(place.geometry.location);
+    marker_center.setPosition(place.geometry.location);
 
 
   });
@@ -312,13 +371,20 @@ function initMap() {
 function initUploadMap() {
   upload_map = new GMaps({
       el: '#map-second',
-      lat: 22.3139,
-      lng: 87.31
+      lat: 20.5937,
+      lng: 78.9629
   });
+
+  var center = upload_map.getCenter();
+  marker_upload = upload_map.addMarker({
+    lat: center.lat(),
+    lng: center.lng()
+  })
 
   GMaps.geolocate({
     success: function(position) {
       upload_map.setCenter(position.coords.latitude, position.coords.longitude);
+      marker_upload.setPosition(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
     },
     error: function(error) {
       console.log('Geolocation failed: '+error.message);
@@ -336,11 +402,6 @@ function initUploadMap() {
   autocomplete_upload.bindTo('bounds', upload_map);
 
 
-  var center = upload_map.getCenter();
-  var marker2 = upload_map.addMarker({
-    lat: center.lat(),
-    lng: center.lng()
-  })
 
   autocomplete_upload.addListener('place_changed', function() {
 
@@ -359,7 +420,7 @@ function initUploadMap() {
       upload_map.setCenter(place.geometry.location);
       upload_map.setZoom(17);  // Why 17? Because it looks good.
     }
-    marker2.setPosition(place.geometry.location);
+    marker_upload.setPosition(place.geometry.location);
     image_latitude = place.geometry.location.lat();
     image_longitude = place.geometry.location.lng();
 

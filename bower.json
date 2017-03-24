@@ -13,7 +13,8 @@
     "twitter-bootstrap-wizard": "^1.4.2",
     "gmaps": "^0.4.25",
     "Bootstrap-Wizard": "https://github.com/gilluminate/Bootstrap-Wizard.git",
-    "semantic": "semantic-ui#^2.2.9"
+    "semantic": "semantic-ui#^2.2.9",
+    "v3-utility-library": "https://github.com/googlemaps/v3-utility-library.git"
   },
   "devDependencies": {
     "fotorama": "^4.6.4"
