@@ -142,6 +142,7 @@ html, body {
   max-width: 100%;
   max-height: 100%;
 }
+<<<<<<< HEAD
 #settings-btn {
   cursor: pointer;
   font-size: 24px;
@@ -150,3 +151,5 @@ html, body {
 #settings-btn-wrapper {
   margin: auto;
 }
+=======
+>>>>>>> 5c3db3979776f51f399a1a3be5419f8f8c9aece8

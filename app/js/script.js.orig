@@ -121,8 +121,13 @@ semantic.ready = function() {
 // attach ready event
 $(document).ready(semantic.ready);
 
+<<<<<<< HEAD
 // Initiate Tabs: Navigate by clicking on steps 
 $('.upload-tab-btn').tab();
+=======
+// Initiate Tabs: Navigate by clicking on steps
+// $('.upload-tab-btn').tab();
+>>>>>>> 5c3db3979776f51f399a1a3be5419f8f8c9aece8
 
 $("#my-photos-btn").on('click', function(){
   $('#my-photos-modal').modal('show');
@@ -140,10 +145,8 @@ $("#upload-cancel-btn").on('click', function(){
   $("#image-upload-btn").css({ 'display': 'initial' });
   $('#upload-photo-modal').modal('hide');
   $("#image-upload").val('');
-  setNextButtonText("next");
+  $("#upload-next-btn").html("Next &nbsp; <i class='long arrow right icon'></i>");
   $(".upload-tab-btn").removeClass('completed');
-  $("#upload-second-tb").addClass('disabled');
-  $("#upload-third-tb").addClass('disabled');
 });
 
 // Upload Box
@@ -154,23 +157,24 @@ $("#upload-cancel-btn").on('click', function(){
 
 // Next button Click listener
 $("#upload-next-btn").on('click', function(){
-  upload_state = $(".upload-tab-btn.active").attr("data-tab");
   if( $("#image-upload").get(0).files.length === 0 ) {
     gotoTab("first");
     showUploadBoxError("Please select an image");
 
   } else if (upload_state == "first") {
     gotoTab("second");
-    initUploadMap();
+<<<<<<< HEAD
+    setUploadBoxMap();
     $("#upload-first-tb").addClass('completed');
-      $("#upload-second-tb").removeClass('disabled');
+=======
+    initUploadMap();
+>>>>>>> 5c3db3979776f51f399a1a3be5419f8f8c9aece8
 
   } else if (upload_state == "second") {
     if (isSecondFormValid() === true) {
       setThirdTabDetails();
-      setNextButtonText("upload");
+      $(this).html("Upload &nbsp; <i class='upload icon'></i>");
       $("#upload-second-tb").addClass('completed');
-      $("#upload-third-tb").removeClass('disabled');
       gotoTab("third");
     }
   } else if(upload_state == "third") {
@@ -384,13 +388,6 @@ function showUploadBoxError(error_msg) {
   }, 3000);
 }
 
-function setNextButtonText(state) {
-  if (state == "next")
-    $("#upload-next-btn").html("Next &nbsp; <i class='long arrow right icon'></i>");
-  else if(state=="upload")
-    $("#upload-next-btn").html("Upload &nbsp; <i class='upload icon'></i>");
-}
-
 // Main Search Bar handle
 $("#main-search-btn").on('click', function(){
   var search_param = $(".s-query.active-selected").attr("search-data");
@@ -401,9 +398,12 @@ $("#main-search-btn").on('click', function(){
 
   }
 });
+<<<<<<< HEAD
 
 // Settings Button triggers
 $('#settings-gear').dropdown();
 function showRewardModal() {
   $("#reward-modal").modal('show');
 }
+=======
+>>>>>>> 5c3db3979776f51f399a1a3be5419f8f8c9aece8

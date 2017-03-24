@@ -8,6 +8,11 @@
 <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'>
 <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI"></script>
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 5c3db3979776f51f399a1a3be5419f8f8c9aece8
 <!-- build:css css/app.css -->
 <link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
 <link rel="stylesheet" href="css/main.css">
@@ -28,7 +33,7 @@
       <a href="#" class="header item">
         <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto </a>
       <a href="#" class="item">Home</a>
-      
+
     </div>
     <div class="ui container margin-container-box">
         <div class="ui icon input wide-search" id="location-input">
@@ -37,7 +42,7 @@
         </div>
         <div class="ui fluid input" id="tags-input" style="display: none;">
             <select class="ui search dropdown wide-search" id="search-tags" multiple="">
-              <option value="">Search Tags</option>
+              <option value="" selected disabled>Search Tags</option>
 
             </select>
         </div>
@@ -85,7 +90,7 @@
             <div class="ui container">
 
             <h2>Photos</h2>
-            <div class="ui three stackable cards" id="image-cards">
+            <!-- <div class="ui three stackable cards" id="image-cards">
               <div class="card">
                 <div class="image">
                   <img src="http://lorempixel.com/180/200?1">
@@ -142,7 +147,7 @@
                 </div>
               </div>
             </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -179,14 +184,14 @@
             <div class="description">Choose and Edit your photo</div>
           </div>
         </div>
-        <div class="step item upload-tab-btn disabled" id="upload-second-tb" data-tab="second">
+        <div class="step item upload-tab-btn" id="upload-second-tb" data-tab="second">
           <i class="write icon"></i>
           <div class="content">
             <div class="title">Fill-in Details</div>
             <div class="description">Fill details for the photo</div>
           </div>
         </div>
-        <div class="step item upload-tab-btn disabled" id="upload-third-tb" data-tab="third">
+        <div class="step item upload-tab-btn" id="upload-third-tb" data-tab="third">
           <i class="upload icon"></i>
           <div class="content">
             <div class="title">Confirm Upload</div>
@@ -256,15 +261,23 @@
             <div id="final-tags">
             </div>
           </div>
+<<<<<<< HEAD
+        </div>  
+=======
         </div>
 
 
+>>>>>>> 5c3db3979776f51f399a1a3be5419f8f8c9aece8
       </div>
 
       <div class="ui row">
         <div class="ui ten column wide">
+<<<<<<< HEAD
+          
+=======
 
           <!-- <button class="big ui teal button"><i class="long arrow left icon"></i> &nbsp; Previous</button> -->
+>>>>>>> 5c3db3979776f51f399a1a3be5419f8f8c9aece8
           <div class="ui red message" style="display: none;" id="upload-box-err"></div>
           <button class="big ui teal button right floated" id="upload-next-btn">Next &nbsp; <i class="long arrow right icon"></i></button>
           <button class="big ui red button right floated" id="upload-cancel-btn">Cancel</button>
