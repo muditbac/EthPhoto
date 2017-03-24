@@ -122,7 +122,7 @@ semantic.ready = function() {
 $(document).ready(semantic.ready);
 
 // Initiate Tabs: Navigate by clicking on steps 
-// $('.upload-tab-btn').tab();
+$('.upload-tab-btn').tab();
 
 $("#my-photos-btn").on('click', function(){
   $('#my-photos-modal').modal('show');
@@ -140,6 +140,8 @@ $("#upload-cancel-btn").on('click', function(){
   $("#image-upload-btn").css({ 'display': 'initial' });
   $('#upload-photo-modal').modal('hide');
   $("#image-upload").val('');
+  $("#upload-next-btn").html("Next &nbsp; <i class='long arrow right icon'></i>");
+  $(".upload-tab-btn").removeClass('completed');
 });
 
 // Upload Box
@@ -158,14 +160,17 @@ $("#upload-next-btn").on('click', function(){
   } else if (upload_state == "first") { 
     gotoTab("second");
     setUploadBoxMap();
+    $("#upload-first-tb").addClass('completed');
 
   } else if (upload_state == "second") { 
     if (isSecondFormValid() === true) {
       setThirdTabDetails();
-      $(this).html("Upload &nbsp; <i class='upload icon'></i>")
+      $(this).html("Upload &nbsp; <i class='upload icon'></i>");
+      $("#upload-second-tb").addClass('completed');
       gotoTab("third");
     }
   } else if(upload_state == "third") {
+    $("#upload-third-tb").addClass('completed');
     handleUploadImage();
 
   } else showUploadBoxError("Please try again!");
@@ -346,3 +351,9 @@ $("#main-search-btn").on('click', function(){
 
   }
 });
+
+// Settings Button triggers
+$('#settings-gear').dropdown();
+function showRewardModal() {
+  $("#reward-modal").modal('show');
+}

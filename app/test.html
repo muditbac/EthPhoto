@@ -8,8 +8,6 @@
 <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'>
 <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI"></script>
 
-    
-
 <!-- build:css css/app.css -->
 <link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
 <link rel="stylesheet" href="css/main.css">
@@ -20,6 +18,9 @@
 
 </head>
 <body>
+
+<!-- Loader -->
+<div class="se-pre-con"></div>
 
 <!-- Navigation bar -->
 <div class="ui fixed inverted menu" id="main-nav-bar">
@@ -36,7 +37,7 @@
         </div>
         <div class="ui fluid input" id="tags-input" style="display: none;">
             <select class="ui search dropdown wide-search" id="search-tags" multiple="">
-              <option value="">Search Tags</option>
+              <option value="" selected disabled>Search Tags</option>
 
             </select>
         </div>
@@ -59,8 +60,20 @@
     <div class="ui container margin-container-box">
         <button class="ui inverted teal button" id="my-photos-btn">My Photos</button>
         <button class="ui inverted teal button" id="upload-btn">Upload Photo</button>
+        <div class="ui" id="settings-btn-wrapper">
+        <div class="ui right pointing dropdown" id="settings-gear">
+          <i class="inverted setting icon" id="settings-btn"></i>
+          <div class="menu">
+            <div class="item" onclick="showRewardModal();">My Rewards</div>
+            <div class="item">Profile</div>
+            <div class="item">Settings</div>
+            <div class="item">Logout</div>
+          </div>
+        </div>
+        </div>
+        <!-- <button class="ui inverted teal button" id="settings-btn"><i class="setting icon"></i></button> -->
     </div>
-</div>
+  </div>
 
 <!-- Main Container -->
 <div id="content" class="ui main container">  
@@ -158,8 +171,8 @@
     <!-- Header -->
     <!--TODO Add completed marker-->
     <div class="ui header">
-      <div class="ui three top attached ordered steps" id="tab-menu-upload">
-        <div class="active step item upload-tab-btn" id="upload-first-tb" data-tab="first">
+      <div class="ui top attached steps" id="tab-menu-upload">
+        <div class="step item upload-tab-btn active" id="upload-first-tb" data-tab="first">
           <i class="photo icon"></i>
           <div class="content">
             <div class="title">Choose/ Edit Photo</div>
@@ -192,7 +205,6 @@
           <input type="file" id="image-upload" value="Choose Photo" style="display: none;" />
           <div id="image-wrapper"></div>
         </div>
-        <div></div>
       </div>
 
 
@@ -245,14 +257,11 @@
             </div>
           </div>
         </div>  
-               
-       
       </div>
 
       <div class="ui row">
         <div class="ui ten column wide">
           
-          <!-- <button class="big ui teal button"><i class="long arrow left icon"></i> &nbsp; Previous</button> -->
           <div class="ui red message" style="display: none;" id="upload-box-err"></div>
           <button class="big ui teal button right floated" id="upload-next-btn">Next &nbsp; <i class="long arrow right icon"></i></button>
           <button class="big ui red button right floated" id="upload-cancel-btn">Cancel</button>
@@ -262,6 +271,16 @@
     </div>
 
 
+  </div>
+</div>
+
+<!-- Reward Modal -->
+<div class="ui inverted modal" id="reward-modal">
+  <div class="header">Hey there!</div>
+  <div class="content">Your Rewards: </div>
+  <div class="actions">
+    <div class="ui green approve button">Accept</div>
+    <div class="ui red cancel button">Reject</div>
   </div>
 </div>
 

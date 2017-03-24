@@ -1,3 +1,9 @@
+// Loader screen
+$(window).on('load', function() {
+  // Animate loader off screen
+  $(".se-pre-con").fadeOut("slow");
+});
+
 // Function to get final Edited Image
 function getEditedImage() {
   var newImage = board.canvas.toDataURL();
