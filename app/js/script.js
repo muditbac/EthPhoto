@@ -102,7 +102,7 @@ semantic.ready = function() {
       activate: function() {
         $(this).addClass('active-selected').siblings().removeClass('active-selected');
         var option = $(this).attr('search-data');
-        if (option == "location") { 
+        if (option == "location") {
           $("#tags-input").css({'display':'none'});
           $("#location-input").css({'display':'inherit'});
         } else {
@@ -121,7 +121,7 @@ semantic.ready = function() {
 // attach ready event
 $(document).ready(semantic.ready);
 
-// Initiate Tabs: Navigate by clicking on steps 
+// Initiate Tabs: Navigate by clicking on steps
 // $('.upload-tab-btn').tab();
 
 $("#my-photos-btn").on('click', function(){
@@ -148,18 +148,17 @@ $("#upload-cancel-btn").on('click', function(){
   $.tab('change tab', 'tab-name');
 });*/
 
-google.maps.event.addDomListener(window, 'load', get_suggestion_upload);
 // Next button Click listener
 $("#upload-next-btn").on('click', function(){
   if( $("#image-upload").get(0).files.length === 0 ) {
     gotoTab("first");
     showUploadBoxError("Please select an image");
 
-  } else if (upload_state == "first") { 
+  } else if (upload_state == "first") {
     gotoTab("second");
-    setUploadBoxMap();
+    initUploadMap();
 
-  } else if (upload_state == "second") { 
+  } else if (upload_state == "second") {
     if (isSecondFormValid() === true) {
       setThirdTabDetails();
       $(this).html("Upload &nbsp; <i class='upload icon'></i>")
@@ -218,22 +217,34 @@ function setThirdTabDetails() {
   });
 }
 
-function get_suggestion() {
-    var input = (document).getElementById('search-location');
-    var autocomplete = new google.maps.places.Autocomplete(input);
-}
-function setCentreMap() {
+
+function initCenterMap(){
   center_map = new GMaps({
       el: '#map-first',
       lat: 22.3139,
       lng: 87.31
   });
-  
+
+  GMaps.geolocate({
+    success: function(position) {
+      center_map.setCenter(position.coords.latitude, position.coords.longitude);
+    },
+    error: function(error) {
+      console.log('Geolocation failed: '+error.message);
+    },
+    not_supported: function() {
+      console.log("Your browser does not support geolocation");
+    },
+    always: function() {
+    }
+  });
+
+  // TODO Add image from here
   center_map.setContextMenu({
-      control: 'center_map',
+      control: 'map',
       options: [{
-          title: 'Add marker',
-          name: 'add_marker',
+          title: 'Add Image',
+          name: 'add_image',
           action: function (e) {
               this.addMarker({
                   lat: e.latLng.lat(),
@@ -246,78 +257,105 @@ function setCentreMap() {
           }
       }]
   });
-  
-  
-  
-  google.maps.event.addDomListener(window, 'load', get_suggestion);
-  $('#search-location').on('blur', function (e) {
-      e.preventDefault();
-      GMaps.geocode({
-          address: $('#search-location').val().trim(),
-          callback: function (results, status) {
-              if (status == 'OK') {
-                  var latlng = results[0].geometry.location;
-                  center_map.setCenter(latlng.lat(), latlng.lng());
-                  center_map.addMarker({
-                      lat: latlng.lat(),
-                      lng: latlng.lng()
-                  });
-              }
-          }
-      });
+
+  var input = (document).getElementById('search-location');
+  var autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', center_map);
+
+
+  var center = center_map.getCenter();
+  var marker = center_map.addMarker({
+    lat: center.lat(),
+    lng: center.lng()
+  })
+
+  autocomplete.addListener('place_changed', function() {
+
+    var place = autocomplete.getPlace();
+    if (!place.geometry) {
+      // User entered the name of a Place that was not suggested and
+      // pressed the Enter key, or the Place Details request failed.
+      window.alert("No details available for input: '" + place.name + "'");
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (place.geometry.viewport) {
+      center_map.fitBounds(place.geometry.viewport);
+    } else {
+      center_map.setCenter(place.geometry.location);
+      center_map.setZoom(17);  // Why 17? Because it looks good.
+    }
+    marker.setPosition(place.geometry.location);
+
+
   });
+
+
+  return center_map;
 }
 
-function get_suggestion_upload() {
-    var upload_input = (document).getElementById('image-location-upload');
-    var autocomplete_upload = new google.maps.places.Autocomplete(upload_input);
+function initMap() {
+    initCenterMap();
 }
 
-function setUploadBoxMap() {
+function initUploadMap() {
   upload_map = new GMaps({
       el: '#map-second',
       lat: 22.3139,
       lng: 87.31
   });
-  upload_map.setContextMenu({
-      control: 'upload_map',
-      options: [{
-          title: 'Add marker',
-          name: 'add_marker',
-          action: function (e) {
-              this.addMarker({
-                  lat: e.latLng.lat(),
-                  lng: e.latLng.lng(),
-                  title: 'New Marker',
-                  infoWindow: {
-                      content: '<p>Add Picture</p>'
-                  }
-              });
-          }
-      }]
-  });
-  
-  $('#image-location-upload').on('blur', function (e) {
-      e.preventDefault();
-      GMaps.geocode({
-          address: $('#image-location-upload').val().trim(),
-          callback: function (results, status) {
-              if (status == 'OK') {
-                  var latlng = results[0].geometry.location;
-                  image_latitude = latlng.lat();
-                  image_longitude = latlng.lng();
-                  upload_map.setCenter(latlng.lat(), latlng.lng());
-                  upload_map.addMarker({
-                      lat: latlng.lat(),
-                      lng: latlng.lng()
-                  });
-              }
-          }
-      });
+
+  GMaps.geolocate({
+    success: function(position) {
+      upload_map.setCenter(position.coords.latitude, position.coords.longitude);
+    },
+    error: function(error) {
+      console.log('Geolocation failed: '+error.message);
+    },
+    not_supported: function() {
+      console.log("Your browser does not support geolocation");
+    },
+    always: function() {
+    }
   });
 
-  // Trigger autocomplete
-  get_suggestion_upload();
+  var upload_input = (document).getElementById('image-location-upload');
+  var autocomplete_upload = new google.maps.places.Autocomplete(upload_input);
+
+  autocomplete_upload.bindTo('bounds', upload_map);
+
+
+  var center = upload_map.getCenter();
+  var marker2 = upload_map.addMarker({
+    lat: center.lat(),
+    lng: center.lng()
+  })
+
+  autocomplete_upload.addListener('place_changed', function() {
+
+    var place = autocomplete_upload.getPlace();
+    if (!place.geometry) {
+      // User entered the name of a Place that was not suggested and
+      // pressed the Enter key, or the Place Details request failed.
+      window.alert("No details available for input: '" + place.name + "'");
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (place.geometry.viewport) {
+      upload_map.fitBounds(place.geometry.viewport);
+    } else {
+      upload_map.setCenter(place.geometry.location);
+      upload_map.setZoom(17);  // Why 17? Because it looks good.
+    }
+    marker2.setPosition(place.geometry.location);
+    image_latitude = place.geometry.location.lat();
+    image_longitude = place.geometry.location.lng();
+
+  });
+
+
 }
 
 function gotoTab(name) {

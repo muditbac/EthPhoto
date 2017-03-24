@@ -8,7 +8,7 @@
 <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'>
 <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI"></script>
 
-    
+
 
 <!-- build:css css/app.css -->
 <link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
@@ -25,9 +25,9 @@
 <div class="ui fixed inverted menu" id="main-nav-bar">
     <div class="ui container">
       <a href="#" class="header item">
-        <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto </a> 
+        <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto </a>
       <a href="#" class="item">Home</a>
-      
+
     </div>
     <div class="ui container margin-container-box">
         <div class="ui icon input wide-search" id="location-input">
@@ -63,16 +63,16 @@
 </div>
 
 <!-- Main Container -->
-<div id="content" class="ui main container">  
+<div id="content" class="ui main container">
     <div class="ui grid">
         <div class="ten wide column pad-top-bottom-zero" id="left-main-wrapper">
             <div id="map-first"></div>
         </div>
         <div class="six wide column" id="right-main-wrapper">
             <div class="ui container">
-                
+
             <h2>Photos</h2>
-            <div class="ui three stackable cards" id="image-cards">
+            <!-- <div class="ui three stackable cards" id="image-cards">
               <div class="card">
                 <div class="image">
                   <img src="http://lorempixel.com/180/200?1">
@@ -129,7 +129,7 @@
                 </div>
               </div>
             </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -227,8 +227,8 @@
 
             </div>
           </div>
-        </div>          
-       
+        </div>
+
       </div>
 
       <div class="ui container tab upload-tab-content" data-tab="third" id="third-tab-content">
@@ -244,14 +244,14 @@
             <div id="final-tags">
             </div>
           </div>
-        </div>  
-               
-       
+        </div>
+
+
       </div>
 
       <div class="ui row">
         <div class="ui ten column wide">
-          
+
           <!-- <button class="big ui teal button"><i class="long arrow left icon"></i> &nbsp; Previous</button> -->
           <div class="ui red message" style="display: none;" id="upload-box-err"></div>
           <button class="big ui teal button right floated" id="upload-next-btn">Next &nbsp; <i class="long arrow right icon"></i></button>
@@ -296,7 +296,7 @@ var image_latitute;
 var image_longitute;
 
 $(document).ready(function () {
-  setCentreMap();
+  initMap();
 });
 </script>
 <!-- endbuild -->

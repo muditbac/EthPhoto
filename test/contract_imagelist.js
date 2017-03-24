@@ -204,4 +204,6 @@ describe("Controller", function() {
             });
         });
     });
+    // TODO check downvotes
+
 });

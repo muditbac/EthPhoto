@@ -73,15 +73,15 @@
     background-color: #eee;
 }
 #map-first {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   /*margin-top: 70px;*/
 }
 #map-second {
   width: 100%;
   min-height: 200px;
   max-width: 100%;
-  max-height: 210px; 
+  max-height: 210px;
 }
 .pad-top-bottom-zero {
   padding-top: 0px !important;
@@ -97,7 +97,7 @@
   width: 100%;
 }
 .main.container > .ui.grid {
-  overflow-y: scroll; 
+  overflow-y: scroll;
 }
 #upload-container {
   min-height: 380px;
