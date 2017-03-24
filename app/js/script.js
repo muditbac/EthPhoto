@@ -61,7 +61,7 @@ function setImageEditor(){
           this.darkroom.selfDestroy(); // Cleanup
           var newImage = board.canvas.toDataURL();
           // fileStorageLocation = newImage;
-          console.log(imageObj);
+          // console.log(imageObj);
         }
     }
   });
@@ -121,14 +121,19 @@ semantic.ready = function() {
 // attach ready event
 $(document).ready(semantic.ready);
 
+var upload_state = "first";
+
 // Initiate Tabs: Navigate by clicking on steps 
-$('.upload-tab-btn').tab();
+// $('.upload-tab-btn').tab();
+$(".upload-tab-btn").on('click', function(){
+  upload_state = $(this).attr('data-tab');
+  gotoTab(upload_state);
+});
 
 $("#my-photos-btn").on('click', function(){
   $('#my-photos-modal').modal('show');
 });
 
-var upload_state = "first";
 
 $("#upload-btn").on('click', function(){
   $('#upload-photo-modal').modal('show');
@@ -163,7 +168,7 @@ $("#upload-next-btn").on('click', function(){
     gotoTab("second");
     initUploadMap();
     $("#upload-first-tb").addClass('completed');
-      $("#upload-second-tb").removeClass('disabled');
+    $("#upload-second-tb").removeClass('disabled');
 
   } else if (upload_state == "second") {
     if (isSecondFormValid() === true) {
@@ -174,8 +179,10 @@ $("#upload-next-btn").on('click', function(){
       gotoTab("third");
     }
   } else if(upload_state == "third") {
-    $("#upload-third-tb").addClass('completed');
-    handleUploadImage();
+    if (isSecondFormValid() === true) {
+      $("#upload-third-tb").addClass('completed');
+      handleUploadImage();
+    }
 
   } else showUploadBoxError("Please try again!");
 });
