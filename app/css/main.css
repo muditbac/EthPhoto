@@ -150,3 +150,8 @@ html, body {
 #settings-btn-wrapper {
   margin: auto;
 }
+
+
+.hidden {
+  display: none !important;
+}

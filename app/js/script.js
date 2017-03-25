@@ -3,7 +3,9 @@ var board = null;
 var markers = {};
 var images = {};
 var myimages = {};
-
+var images_dom = {};
+var template_image = $("#image-cards > div");
+var shown_images = [];
 function handleFileSelect(evt) {
   var files = evt.target.files; // FileList object
 
@@ -139,10 +141,25 @@ semantic.ready = function() {
 
 // attach ready event
 $(document).ready(semantic.ready);
-
+$(document)
+  .ready(function() {
+    $('.ui.menu .ui.dropdown').dropdown({
+      on: 'hover'
+    });
+    $('.ui.menu a.item')
+      .on('click', function() {
+        $(this)
+          .addClass('active')
+          .siblings()
+          .removeClass('active')
+        ;
+      })
+    ;
+  })
+;
 var upload_state = "first";
 
-// Initiate Tabs: Navigate by clicking on steps 
+// Initiate Tabs: Navigate by clicking on steps
 // $('.upload-tab-btn').tab();
 $(".upload-tab-btn").on('click', function(){
   upload_state = $(this).attr('data-tab');
@@ -256,7 +273,49 @@ function setThirdTabDetails() {
   });
 }
 
-function refreshImages(data){
+function updateImageInfo(jimage_obj, data){
+  jimage_obj.find("img").attr('src', data[0]);
+}
+
+function refreshImages(){
+  // use current_images
+    // var temp = $(current_images).not(shown_images).get();
+  for (var i in current_images){
+    var index = current_images[i];
+    if (index in images){
+      if (index in images_dom){
+
+        if (images_dom[index].hasClass('hidden')){
+          images_dom[index].appendTo("#image-cards");
+          // images_dom[index].removeClass('hidden');
+          images_dom[index].transition('swing up');
+        }
+
+      } else {
+        console.log("Here");
+        var dom = template_image.clone();
+        images_dom[index] = dom;
+        dom.appendTo("#image-cards");
+        // dom.removeClass("hidden");
+        dom.transition('swing up');
+        updateImageInfo(dom, images[index]);
+      }
+    }
+  }
+
+  var toHide = $(shown_images).not(current_images).get();
+  for (var i in toHide){
+    var index = toHide[i];
+    // images_dom[index].addClass('hidden');
+    images_dom[index].transition('swing up');
+  }
+  shown_images = current_images;
+  // loop over indexes
+  //   check if image exists in loaded_images
+        // check if dom created
+  //     if yes then show image if not shown
+  //    else create image dom and show
+  // hide other images
 }
 
 function initCenterMap(){
@@ -271,13 +330,12 @@ function initCenterMap(){
         var p  = getImagesWithLatLong(e.center.lat(), e.center.lng(), r)
         p.then(function(data){
           current_images = data;
+          refreshImages();
           $.each(data, function(i, id){
             if (!(id in markers)){
-              console.log("Happening");
               getImage(id).then(function(data){
                 images[id] = data;
                 if (!(id in markers)){
-                  console.log(id);
                   markers[id] = center_map.addMarker({
                     lat: data[2],
                     lng: data[3],
@@ -295,6 +353,9 @@ function initCenterMap(){
         // console.log(e.center.lng());
       }
   });
+
+  // center_map.setOptions({ minZoom: 10, maxZoom: 20 });
+
   cluster =  new MarkerClusterer(center_map.map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
 
   var center = center_map.getCenter();

@@ -2,7 +2,6 @@
  * Created by mudit on 23/3/17.
  */
 
-
 var tags = [
     'love',
     'instagood',
