@@ -141,14 +141,25 @@
 <!-- Modals -->
 
 <!-- My Photos Modal -->
-<div class="ui basic modal" id="my-photos-modal">
-  <div class="content">
-    <div class="fotorama" data-width="100%" data-height="75%" data-max-width="100%" data-nav="thumbs" data-allowfullscreen="true" data-fit="cover" data-transition="crossfade" data-loop="true" data-keyboard="true">
-        <img src="http://s.fotorama.io/okonechnikov/1-lo.jpg" data-caption="Caption here!">
-        <img src="http://s.fotorama.io/okonechnikov/2-lo.jpg" data-caption="Caption here!">
-        <img src="http://s.fotorama.io/okonechnikov/9-lo.jpg" data-caption="Caption here!">
-        <img src="http://s.fotorama.io/okonechnikov/6-lo.jpg" data-caption="Caption here!">
-        <img src="http://s.fotorama.io/okonechnikov/5-lo.jpg" data-caption="Caption here!">
+<div class="ui modal" id="my-photos-modal">
+  <div class="image content">
+    <div id="my-photos-div" style="width:100%" class="fotorama"
+      data-width="100%"
+      data-ratio="800/600"
+      data-minwidth="400"
+      data-maxwidth="1000"
+      data-minheight="600"
+      data-maxheight="100%"
+      data-ratio="800/600"
+      data-nav="thumbs"
+      data-allowfullscreen="true"
+      data-fit="cover"
+      data-transition="crossfade"
+      data-loop="true"
+      data-keyboard="true"
+      data-auto="false">
+
+      <img src="" data-caption="Caption here!">
     </div>
   </div>
 </div>

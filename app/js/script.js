@@ -27,6 +27,21 @@ function loadMyInfo(){
       });
     }
 
+    var div = $("#my-photos-div");
+    var template = div.find("img");
+    for(var i in myimages){
+      var index = myimages[i];
+      getImage(index).then(function(data){
+        // Update Data here
+        var temp = template.clone();
+        temp.attr("src", data[0]);
+        temp.attr("data-caption", data[1]);
+        temp.appendTo(div);
+      });
+    }
+
+    template.remove();
+
   }, function(err){
 
   })
@@ -70,7 +85,7 @@ function handleFileSelect(evt) {
 // loading my images
 $(document).ready(function(){
   loadMyInfo();
-})
+});
 
 function setImageEditor(){
   board = new Darkroom('#target', {
@@ -188,10 +203,15 @@ $(".upload-tab-btn").on('click', function(){
   gotoTab(upload_state);
 });
 
+var first_open = true;
 $("#my-photos-btn").on('click', function(){
-  $('#my-photos-modal').modal('show');
+  $('#my-photos-modal').modal('show')
+  if (first_open) {
+    $('.fotorama').fotorama();
+    first_open=false;
+  }
+  $('#my-photos-modal').modal('refresh');
 });
-
 
 $("#upload-btn").on('click', function(){
   $('#upload-photo-modal').modal('show');
@@ -310,18 +330,28 @@ function updateImageInfo(jimage_obj, index){
   }
   else {
     VotingList.isUpvoted(index, false).then(function(isUpvoted){
-      console.log(isUpvoted);
       if (isUpvoted) {
-        jimage_obj.find('i')
-          .removeClass('outline')
-          .removeAttr("onclick");
+        changeToLiked(jimage_obj.find('i'));
 
       }
     }, function(err){
       alert("Cannot connect to Ethereum Network");
     });
   }
+}
 
+function changeToLiked(el){
+  el
+  .removeClass('outline')
+  .addClass('red')
+  .removeAttr("onclick");
+}
+
+function changeToUnliked(el){
+  el
+  .addClass('outline')
+  .removeClass('red')
+  .attr("onclick", 'likeClicked(this);');
 }
 
 function likeClicked(element){
@@ -330,13 +360,12 @@ function likeClicked(element){
   var likes = parseInt(obj.find('.extra.content > span').html(),10);
   likes = likes + 1;
 
-  obj.find('i')
-    .removeClass('outline')
-    .removeAttr("onclick");
+  changeToLiked(obj.find('i'));
 
   Controller.upvoteImage(index).then(function(data){
     obj.find('.extra.content > span').html(likes);
   }, function (err){
+    changeToUnliked(obj.find('i'));
     alert("Error Upvoting");
   })
 
@@ -357,7 +386,6 @@ function refreshImages(){
         }
 
       } else {
-        console.log(index);
         var dom = template_image.clone();
         images_dom[index] = dom;
         dom.appendTo("#image-cards");
@@ -409,8 +437,8 @@ function initCenterMap(){
                   if (data[6] in username){
                     refreshImages();
                   } else {
-                    UserList.getUserName(data[6]).then(function(name){
-                      name = toAscii(name);
+                    UserList.getUserInfo(data[6]).then(function(name){
+                      var name = toAscii(name[0]);
                       username[data[6]] = name;
                       refreshImages();
                     }, function(err){
