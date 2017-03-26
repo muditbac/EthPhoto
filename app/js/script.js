@@ -4,8 +4,38 @@ var markers = {};
 var images = {};
 var myimages = {};
 var images_dom = {};
+var username = {};
 var template_image = $("#image-cards > div");
 var shown_images = [];
+
+var my = {}
+
+toAscii = function(s){
+    return web3.toAscii(s).replace(/\0/g,'');
+};
+
+function loadMyInfo(){
+  UserList.getUserInfo(web3.eth.defaultAccount).then(function(data){
+    my.username = toAscii(data[0]);
+    myimages = data[1];
+    my.reward = data[2].toNumber();
+
+    while (my.username=="" || my.username==null){
+      my.username = prompt("Please Set Username")
+      UserList.setUserName(my.username).then(function(){
+        console.log("UserName successfully set");
+      });
+    }
+
+  }, function(err){
+
+  })
+}
+
+function isOwnerImage(index){
+  return (images[index][6]==web3.eth.defaultAccount);
+}
+
 function handleFileSelect(evt) {
   var files = evt.target.files; // FileList object
 
@@ -35,19 +65,11 @@ function handleFileSelect(evt) {
   }
 }
 
+
+
 // loading my images
 $(document).ready(function(){
-  getMyImages().then(function(data){
-    $.each(data, function(i, id){
-      if (!(id in myimages)){
-        getImage(id).then(function(data){
-          myimages[id] = data;
-        });
-      }
-    });
-  }, function(err){
-    alert("Cannot Load My Images");
-  })
+  loadMyInfo();
 })
 
 function setImageEditor(){
@@ -273,8 +295,51 @@ function setThirdTabDetails() {
   });
 }
 
-function updateImageInfo(jimage_obj, data){
+function updateImageInfo(jimage_obj, index){
+  var data = images[index];
   jimage_obj.find("img").attr('src', data[0]);
+  jimage_obj.find('.header').html(data[1]);
+
+  jimage_obj.find('.meta').html(username[data[6]]);
+
+  jimage_obj.find('.extra.content > span').html(data[5].toNumber());
+  jimage_obj.attr("value", index);
+
+  if (isOwnerImage(index)){
+    jimage_obj.find('i').remove();
+  }
+  else {
+    VotingList.isUpvoted(index, false).then(function(isUpvoted){
+      console.log(isUpvoted);
+      if (isUpvoted) {
+        jimage_obj.find('i')
+          .removeClass('outline')
+          .removeAttr("onclick");
+
+      }
+    }, function(err){
+      alert("Cannot connect to Ethereum Network");
+    });
+  }
+
+}
+
+function likeClicked(element){
+  var obj = $(element).parent().parent();
+  var index = parseInt(obj.attr("value"));
+  var likes = parseInt(obj.find('.extra.content > span').html(),10);
+  likes = likes + 1;
+
+  obj.find('i')
+    .removeClass('outline')
+    .removeAttr("onclick");
+
+  Controller.upvoteImage(index).then(function(data){
+    obj.find('.extra.content > span').html(likes);
+  }, function (err){
+    alert("Error Upvoting");
+  })
+
 }
 
 function refreshImages(){
@@ -282,23 +347,23 @@ function refreshImages(){
     // var temp = $(current_images).not(shown_images).get();
   for (var i in current_images){
     var index = current_images[i];
-    if (index in images){
+    if ((index in images) && (images[index][6] in username)){
       if (index in images_dom){
 
         if (images_dom[index].hasClass('hidden')){
           images_dom[index].appendTo("#image-cards");
           // images_dom[index].removeClass('hidden');
-          images_dom[index].transition('swing up');
+          images_dom[index].transition('fade up');
         }
 
       } else {
-        console.log("Here");
+        console.log(index);
         var dom = template_image.clone();
         images_dom[index] = dom;
         dom.appendTo("#image-cards");
         // dom.removeClass("hidden");
-        dom.transition('swing up');
-        updateImageInfo(dom, images[index]);
+        dom.transition('fade up');
+        updateImageInfo(dom, index);
       }
     }
   }
@@ -307,7 +372,7 @@ function refreshImages(){
   for (var i in toHide){
     var index = toHide[i];
     // images_dom[index].addClass('hidden');
-    images_dom[index].transition('swing up');
+    images_dom[index].transition('fade up');
   }
   shown_images = current_images;
   // loop over indexes
@@ -341,7 +406,17 @@ function initCenterMap(){
                     lng: data[3],
                   });
                   cluster.addMarker(markers[id]);
-                  refreshImages();
+                  if (data[6] in username){
+                    refreshImages();
+                  } else {
+                    UserList.getUserName(data[6]).then(function(name){
+                      name = toAscii(name);
+                      username[data[6]] = name;
+                      refreshImages();
+                    }, function(err){
+                      console.log("Cannot load usernames");
+                    });
+                  }
                 }
               });
             }
