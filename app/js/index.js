@@ -15,7 +15,7 @@ function getEditedImage() {
 }
 
 function getImageDataURL() {
-  return board.canvas.toDataURL();
+  return $('#image-wrapper > span > img').attr('src');
 }
 
 function dataURItoBlob(dataURI) {

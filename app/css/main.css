@@ -128,6 +128,13 @@ html, body {
   padding: 0px;
   overflow: hidden;
 }
+
+#image-cards > .card > .content {
+  padding: 8px;
+}
+#image-cards > .card > .extra.content {
+  padding: 8px;
+}
 .active-selected {
   background-color: #54ffff !important;
   color: rgba(0,0,0,.6) !important;
@@ -154,4 +161,10 @@ html, body {
 
 .hidden {
   display: none !important;
+}
+
+
+
+.ui-alert-content-bottom-left {
+  bottom: 20px !important;
 }

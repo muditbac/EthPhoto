@@ -10,9 +10,238 @@ var shown_images = [];
 
 var my = {}
 
+var map_styles = [
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#bdbdbd"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dadada"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#c9c9c9"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  }
+];
+
 toAscii = function(s){
     return web3.toAscii(s).replace(/\0/g,'');
 };
+
+
+alert = function(message, body){
+  $.uiAlert({
+    textHead: message,
+    text: body,
+    bgcolor: '#19c3aa',
+    textcolor: '#fff',
+    position: 'bottom-left', // top And bottom ||  left / center / right
+    icon: 'checkmark box',
+    time: 5
+  });
+};
+alertErr = function(message, body){
+  $.uiAlert({
+    textHead: message,
+    text: body,
+    bgcolor: '#DB2828',
+    textcolor: '#fff',
+    position: 'bottom-left', // top And bottom ||  left / center / right
+    icon: 'remove circle',
+    time: 5
+  });
+};
+alertInfo = function(message, body){
+  $.uiAlert({
+    textHead: message,
+    text: body,
+    bgcolor: '#55a9ee',
+    textcolor: '#fff',
+    position: 'bottom-left', // top And bottom ||  left / center / right
+    icon: 'info circle',
+    time: 5
+  });
+};
+
+var page = 1;
+var total_pages = 1;
+
+function changePagination(pageno, tpages){
+  if (pageno!=null) {
+    $("#right-main-wrapper > div > div.sixteen.wide.column > div.ui.right.floated.pagination.menu > a:nth-child(2) > span:nth-child(1)")
+      .html(pageno);
+    page = pageno;
+  }
+  if (tpages!=null) {
+    $('#right-main-wrapper > div > div.sixteen.wide.column > div.ui.right.floated.pagination.menu > a:nth-child(2) > span:nth-child(2)')
+      .html(tpages);
+    total_pages = tpages
+  }
+}
+
+function nextPage(){
+  console.log("sdf");
+  if (page<total_pages){
+    current_images = all_images.slice(page*9, (page+1)*9);
+    processMapChanges();
+    changePagination(page+1, null);
+  }
+}
+
+function prevPage(){
+  if (page>1){
+    changePagination(page-1, null);
+    current_images = all_images.slice((page-1)*9, (page)*9);
+    processMapChanges();
+  }
+}
 
 function loadMyInfo(){
   UserList.getUserInfo(web3.eth.defaultAccount).then(function(data){
@@ -23,7 +252,7 @@ function loadMyInfo(){
     while (my.username=="" || my.username==null){
       my.username = prompt("Please Set Username")
       UserList.setUserName(my.username).then(function(){
-        console.log("UserName successfully set");
+        alertInfo("UserName successfully set");
       });
     }
 
@@ -276,12 +505,12 @@ function handleUploadImage() {
   addImage(document.getElementById('final-image'), image_caption, image_latitude, image_longitude, image_tags).then(function(){
       $("#upload-next-btn").removeClass('disabled loading');
       // TODO Change here for after success events
-      alert("Image Uploaded");
+      alert("Image Successfully Uploaded!", "The image has been successfully uploaded.");
       $("#upload-cancel-btn").trigger("click");
   }, function (err){
       $("#upload-next-btn").removeClass('disabled loading');
       // TODO Change here for after err events
-      alert('Error');
+      alertErr('Error in Uploading Image', "Some problem with Ethereum network. Please Try Again.");
       $("#upload-cancel-btn").trigger("click");
   });
 
@@ -335,7 +564,7 @@ function updateImageInfo(jimage_obj, index){
 
       }
     }, function(err){
-      alert("Cannot connect to Ethereum Network");
+      alertErr("Cannot connect to Ethereum Network");
     });
   }
 }
@@ -366,7 +595,7 @@ function likeClicked(element){
     obj.find('.extra.content > span').html(likes);
   }, function (err){
     changeToUnliked(obj.find('i'));
-    alert("Error Upvoting");
+    alertErr("Error Upvoting");
   })
 
 }
@@ -411,46 +640,55 @@ function refreshImages(){
   // hide other images
 }
 
+
+function processMapChanges(){
+  refreshImages();
+  $.each(current_images, function(i, id){
+    if (!(id in markers)){
+      getImage(id).then(function(data){
+        images[id] = data;
+        if (!(id in markers)){
+          markers[id] = center_map.addMarker({
+            lat: data[2],
+            lng: data[3],
+          });
+          cluster.addMarker(markers[id]);
+          if (data[6] in username){
+            refreshImages();
+          } else {
+            UserList.getUserInfo(data[6]).then(function(name){
+              var name = toAscii(name[0]);
+              username[data[6]] = name;
+              refreshImages();
+            }, function(err){
+              alertInfo("Cannot load usernames");
+            });
+          }
+        }
+      });
+    }
+  });
+}
+
+
 function initCenterMap(){
 
   center_map = new GMaps({
       el: '#map-first',
       lat: 20.5937,
       lng: 78.9629,
+      styles: map_styles,
       idle: function(e){
         var b = center_map.getBounds();
         var r = Math.max((b.b.f-b.b.b)/2, (b.f.f-b.f.b)/2);
         var p  = getImagesWithLatLong(e.center.lat(), e.center.lng(), r)
         p.then(function(data){
-          current_images = data;
-          refreshImages();
-          $.each(data, function(i, id){
-            if (!(id in markers)){
-              getImage(id).then(function(data){
-                images[id] = data;
-                if (!(id in markers)){
-                  markers[id] = center_map.addMarker({
-                    lat: data[2],
-                    lng: data[3],
-                  });
-                  cluster.addMarker(markers[id]);
-                  if (data[6] in username){
-                    refreshImages();
-                  } else {
-                    UserList.getUserInfo(data[6]).then(function(name){
-                      var name = toAscii(name[0]);
-                      username[data[6]] = name;
-                      refreshImages();
-                    }, function(err){
-                      console.log("Cannot load usernames");
-                    });
-                  }
-                }
-              });
-            }
-          })
+          all_images = data
+          current_images = data.slice(0,9);
+          changePagination(1, Math.ceil(data.length/9));
+          processMapChanges();
         }, function(err){
-          alert("Cannot connect to Ethereum Network!");
+          alertErr("Cannot connect to Ethereum Network!");
         })
         // console.log(e.center.lat());
         // console.log(e.center.lng());
@@ -474,10 +712,10 @@ function initCenterMap(){
       center_map.setZoom(15);
     },
     error: function(error) {
-      console.log('Geolocation failed: '+error.message);
+      alertInfo('Geolocation failed: '+error.message);
     },
     not_supported: function() {
-      console.log("Your browser does not support geolocation");
+      alertInfo("Your browser does not support geolocation");
     },
     always: function() {
     }
@@ -558,10 +796,10 @@ function initUploadMap() {
       marker_upload.setPosition(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
     },
     error: function(error) {
-      console.log('Geolocation failed: '+error.message);
+      alertInfo('Geolocation failed: '+error.message);
     },
     not_supported: function() {
-      console.log("Your browser does not support geolocation");
+      alertInfo("Your browser does not support geolocation");
     },
     always: function() {
     }
