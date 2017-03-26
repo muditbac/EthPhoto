@@ -71,21 +71,22 @@ contract UserList is owned {
 		return addressToUserData[msg.sender].reward;
 	}
 
-	function getImages(address _user) constant returns (uint[]){
+	function getImages() constant returns (uint[]){
+		return addressToUserData[msg.sender].userImages;
+	}
+
+  function getImages(address _user) constant returns (uint[]){
 		return addressToUserData[_user].userImages;
 	}
 
-	function getImages() constant returns (uint[]){
-		return addressToUserData[msg.sender].userImages;
+  function getUserName() constant returns (bytes32){
+		return addressToUserData[msg.sender].username;
 	}
 
 	function getUserName(address _user) constant returns (bytes32){
 		return addressToUserData[_user].username;
 	}
 
-	function getUserName() constant returns (bytes32){
-		return addressToUserData[msg.sender].username;
-	}
 
 }
 
@@ -105,7 +106,7 @@ contract VotingList is owned {
 	}
 
 	function isUpvoted(uint index, bool isReport) constant returns(bool) {
-		return userImageUpvote[sha3(msg.sender, index)];
+		return userImageUpvote[sha3(msg.sender, index, isReport)];
 	}
 }
 
@@ -174,10 +175,10 @@ contract ImageList is owned {
 		return imageList[index].upvotes;
 	}
 
-	function getImage(uint index)  constant returns (string, string, int64, int64, uint16[5], int){
+	function getImage(uint index)  constant returns (string, string, int64, int64, uint16[5], int, address){
 		// TODO Exclude deleted images
 		if (ifImageExists(index))
-			return (imageList[index].image_hash, imageList[index].caption, imageList[index].lat, imageList[index].long, imageList[index].topic, imageList[index].upvotes);
+			return (imageList[index].image_hash, imageList[index].caption, imageList[index].lat, imageList[index].long, imageList[index].topic, imageList[index].upvotes, imageList[index].owner);
 	}
 
 	// TODO: Test all delete corner cases

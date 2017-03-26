@@ -33,8 +33,12 @@
     <div class="ui container margin-container-box">
         <div class="ui icon input wide-search" id="location-input">
             <input type="text" placeholder="Search by Location" name="search-location" id="search-location">
-            <i class="search icon"></i>
+            <i class="search icon link"></i>
         </div>
+        <!-- <div class="ui transparent icon input" id="location-input">
+          <input class="prompt" type="text" placeholder="Search ..." id="search-location">
+          <i class="search link icon"></i>
+        </div> -->
         <div class="ui fluid input" id="tags-input" style="display: none;">
             <select class="ui search dropdown wide-search" id="search-tags" multiple="">
               <option value="">Search Tags</option>
@@ -42,9 +46,9 @@
             </select>
         </div>
         &nbsp;
-        <div class="ui input">
+        <!-- <div class="ui input">
             <button class="ui inverted teal button" id="main-search-btn">Search</button>
-        </div>
+        </div> -->
     </div>
     <div class="ui container margin-container-box" id="search-query-wrapper">
         <div class="ui large buttons">
@@ -82,6 +86,10 @@
             <div class="item">Separated Link</div>
             <div class="divider"></div>
             <div class="item">About</div>
+            <div class="item">Action</div>
+            <div class="item">Another Action</div>
+            <div class="divider"></div>
+            <div class="item">Separated Link</div>
           </div>
         </div> -->
 
@@ -96,8 +104,23 @@
         </div>
         <div class="seven wide column" id="right-main-wrapper">
             <div class="ui container">
+              <div class="sixteen wide column" style="padding-right:30px">
+                <div class="ui large header" style="padding-top: 10px;display: inline-block;">Photos</div>
+                <div class="ui right floated pagination menu">
+                  <a class="icon item">
+                    <i class="left arrow icon"></i>
+                  </a>
+                  <a class="item">
+                    <span>1</span>
+                    /
+                    <span>10<span>
+                  </a>
+                  <a class="icon item">
+                    <i class="right arrow icon"></i>
+                  </a>
+                </div>
+              </div>
 
-              <h2>Photos</h2>
               <div class="ui link three stackable cards" id="image-cards">
                 <div class="card hidden">
                   <div class="image">
@@ -110,10 +133,9 @@
                     </div>
                     </div>
                     <div class="extra content">
-                    <span>
-                      <i class="heart outline like icon"></i>
-                     0
-                    </span>
+                      <i class="heart outline like icon" onclick="var x = likeClicked(this);"></i>
+                      <span>0</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -125,14 +147,25 @@
 <!-- Modals -->
 
 <!-- My Photos Modal -->
-<div class="ui basic modal" id="my-photos-modal">
-  <div class="content">
-    <div class="fotorama" data-width="100%" data-height="75%" data-max-width="100%" data-nav="thumbs" data-allowfullscreen="true" data-fit="cover" data-transition="crossfade" data-loop="true" data-keyboard="true">
-        <img src="http://s.fotorama.io/okonechnikov/1-lo.jpg" data-caption="Caption here!">
-        <img src="http://s.fotorama.io/okonechnikov/2-lo.jpg" data-caption="Caption here!">
-        <img src="http://s.fotorama.io/okonechnikov/9-lo.jpg" data-caption="Caption here!">
-        <img src="http://s.fotorama.io/okonechnikov/6-lo.jpg" data-caption="Caption here!">
-        <img src="http://s.fotorama.io/okonechnikov/5-lo.jpg" data-caption="Caption here!">
+<div class="ui modal" id="my-photos-modal">
+  <div class="image content">
+    <div id="my-photos-div" style="width:100%" class="fotorama"
+      data-width="100%"
+      data-ratio="800/600"
+      data-minwidth="400"
+      data-maxwidth="1000"
+      data-minheight="600"
+      data-maxheight="100%"
+      data-ratio="800/600"
+      data-nav="thumbs"
+      data-allowfullscreen="true"
+      data-fit="cover"
+      data-transition="crossfade"
+      data-loop="true"
+      data-keyboard="true"
+      data-auto="false">
+
+      <img src="" data-caption="Caption here!">
     </div>
   </div>
 </div>

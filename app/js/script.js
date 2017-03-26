@@ -4,8 +4,53 @@ var markers = {};
 var images = {};
 var myimages = {};
 var images_dom = {};
+var username = {};
 var template_image = $("#image-cards > div");
 var shown_images = [];
+
+var my = {}
+
+toAscii = function(s){
+    return web3.toAscii(s).replace(/\0/g,'');
+};
+
+function loadMyInfo(){
+  UserList.getUserInfo(web3.eth.defaultAccount).then(function(data){
+    my.username = toAscii(data[0]);
+    myimages = data[1];
+    my.reward = data[2].toNumber();
+
+    while (my.username=="" || my.username==null){
+      my.username = prompt("Please Set Username")
+      UserList.setUserName(my.username).then(function(){
+        console.log("UserName successfully set");
+      });
+    }
+
+    var div = $("#my-photos-div");
+    var template = div.find("img");
+    for(var i in myimages){
+      var index = myimages[i];
+      getImage(index).then(function(data){
+        // Update Data here
+        var temp = template.clone();
+        temp.attr("src", data[0]);
+        temp.attr("data-caption", data[1]);
+        temp.appendTo(div);
+      });
+    }
+
+    template.remove();
+
+  }, function(err){
+
+  })
+}
+
+function isOwnerImage(index){
+  return (images[index][6]==web3.eth.defaultAccount);
+}
+
 function handleFileSelect(evt) {
   var files = evt.target.files; // FileList object
 
@@ -35,20 +80,12 @@ function handleFileSelect(evt) {
   }
 }
 
+
+
 // loading my images
 $(document).ready(function(){
-  getMyImages().then(function(data){
-    $.each(data, function(i, id){
-      if (!(id in myimages)){
-        getImage(id).then(function(data){
-          myimages[id] = data;
-        });
-      }
-    });
-  }, function(err){
-    alert("Cannot Load My Images");
-  })
-})
+  loadMyInfo();
+});
 
 function setImageEditor(){
   board = new Darkroom('#target', {
@@ -166,10 +203,15 @@ $(".upload-tab-btn").on('click', function(){
   gotoTab(upload_state);
 });
 
+var first_open = true;
 $("#my-photos-btn").on('click', function(){
-  $('#my-photos-modal').modal('show');
+  $('#my-photos-modal').modal('show')
+  if (first_open) {
+    $('.fotorama').fotorama();
+    first_open=false;
+  }
+  $('#my-photos-modal').modal('refresh');
 });
-
 
 $("#upload-btn").on('click', function(){
   $('#upload-photo-modal').modal('show');
@@ -273,8 +315,60 @@ function setThirdTabDetails() {
   });
 }
 
-function updateImageInfo(jimage_obj, data){
+function updateImageInfo(jimage_obj, index){
+  var data = images[index];
   jimage_obj.find("img").attr('src', data[0]);
+  jimage_obj.find('.header').html(data[1]);
+
+  jimage_obj.find('.meta').html(username[data[6]]);
+
+  jimage_obj.find('.extra.content > span').html(data[5].toNumber());
+  jimage_obj.attr("value", index);
+
+  if (isOwnerImage(index)){
+    jimage_obj.find('i').remove();
+  }
+  else {
+    VotingList.isUpvoted(index, false).then(function(isUpvoted){
+      if (isUpvoted) {
+        changeToLiked(jimage_obj.find('i'));
+
+      }
+    }, function(err){
+      alert("Cannot connect to Ethereum Network");
+    });
+  }
+}
+
+function changeToLiked(el){
+  el
+  .removeClass('outline')
+  .addClass('red')
+  .removeAttr("onclick");
+}
+
+function changeToUnliked(el){
+  el
+  .addClass('outline')
+  .removeClass('red')
+  .attr("onclick", 'likeClicked(this);');
+}
+
+function likeClicked(element){
+  var obj = $(element).parent().parent();
+  var index = parseInt(obj.attr("value"));
+  var likes = parseInt(obj.find('.extra.content > span').html(),10);
+  likes = likes + 1;
+
+  changeToLiked(obj.find('i'));
+
+  Controller.upvoteImage(index).then(function(data){
+    obj.find('.extra.content > span').html(likes);
+  }, function (err){
+    changeToUnliked(obj.find('i'));
+    alert("Error Upvoting");
+  })
+
 }
 
 function refreshImages(){
@@ -282,23 +376,22 @@ function refreshImages(){
     // var temp = $(current_images).not(shown_images).get();
   for (var i in current_images){
     var index = current_images[i];
-    if (index in images){
+    if ((index in images) && (images[index][6] in username)){
       if (index in images_dom){
 
         if (images_dom[index].hasClass('hidden')){
           images_dom[index].appendTo("#image-cards");
           // images_dom[index].removeClass('hidden');
-          images_dom[index].transition('swing up');
+          images_dom[index].transition('fade up');
         }
 
       } else {
-        console.log("Here");
         var dom = template_image.clone();
         images_dom[index] = dom;
         dom.appendTo("#image-cards");
         // dom.removeClass("hidden");
-        dom.transition('swing up');
-        updateImageInfo(dom, images[index]);
+        dom.transition('fade up');
+        updateImageInfo(dom, index);
       }
     }
   }
@@ -307,7 +400,7 @@ function refreshImages(){
   for (var i in toHide){
     var index = toHide[i];
     // images_dom[index].addClass('hidden');
-    images_dom[index].transition('swing up');
+    images_dom[index].transition('fade up');
   }
   shown_images = current_images;
   // loop over indexes
@@ -341,7 +434,17 @@ function initCenterMap(){
                     lng: data[3],
                   });
                   cluster.addMarker(markers[id]);
-                  refreshImages();
+                  if (data[6] in username){
+                    refreshImages();
+                  } else {
+                    UserList.getUserInfo(data[6]).then(function(name){
+                      var name = toAscii(name[0]);
+                      username[data[6]] = name;
+                      refreshImages();
+                    }, function(err){
+                      console.log("Cannot load usernames");
+                    });
+                  }
                 }
               });
             }
