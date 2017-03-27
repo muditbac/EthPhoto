@@ -21,14 +21,14 @@
 <body>
 
 <!-- Loader -->
- <div class="se-pre-con"></div>
+<div class="se-pre-con"></div>
 
 <!-- Navigation bar -->
 <div class="ui fixed menu" id="main-nav-bar">
-    <div class="ui container">
-      <a href="#" class="header item">
-        <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto
-      </a>
+  <div class="ui container">
+    <a href="#" class="header item">
+      <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto
+    </a>
 
     </div>
     <div class="ui container margin-container-box">
@@ -79,23 +79,33 @@
         <!-- <button class="ui inverted teal button" id="settings-btn"><i class="setting icon"></i></button> -->
         <!-- <div class="ui right dropdown item">
           <i class="inverted setting icon" id="settings-btn"></i>
-          <i class="dropdown icon"></i>
           <div class="menu">
+            <div class="item" onclick="showRewardModal();">My Rewards</div>
+            <div class="item">Profile</div>
             <div class="item">Settings</div>
-            <div class="item">My Rewards</div>
-            <div class="divider"></div>
-            <div class="item">Separated Link</div>
-            <div class="divider"></div>
-            <div class="item">About</div>
-            <div class="item">Action</div>
-            <div class="item">Another Action</div>
-            <div class="divider"></div>
-            <div class="item">Separated Link</div>
+            <div class="item">Logout</div>
           </div>
-        </div> -->
-
-    </div>
+        </div>
+      </div> -->
+      <!-- <button class="ui inverted teal button" id="settings-btn"><i class="setting icon"></i></button> -->
+      <!-- <div class="ui right dropdown item">
+        <i class="inverted setting icon" id="settings-btn"></i>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div class="item">Settings</div>
+          <div class="item">My Rewards</div>
+          <div class="divider"></div>
+          <div class="item">Separated Link</div>
+          <div class="divider"></div>
+          <div class="item">About</div>
+          <div class="item">Action</div>
+          <div class="item">Another Action</div>
+          <div class="divider"></div>
+          <div class="item">Separated Link</div>
+        </div>
+      </div> -->
   </div>
+</div>
 
 <!-- Main Container -->
 <div id="content" class="ui main container">
@@ -114,7 +124,7 @@
                   <a class="item">
                     <span>1</span>
                     /
-                    <span>10<span>
+                    <span>10</span>
                   </a>
                   <a class="icon item" onclick="nextPage();">
                     <i class="right arrow icon"></i>
@@ -134,7 +144,7 @@
                     </div>
                     </div>
                     <div class="extra content">
-                      <i class="heart outline like icon" onclick="var x = likeClicked(this);"></i>
+                      <i class="heart outline like icon" onclick="likeClicked(this);"></i>
                       <span>0</span>
                     </div>
                   </div>
@@ -143,30 +153,24 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Modals -->
 
-<!-- My Photos Modal -->
 <div class="ui modal" id="my-photos-modal">
   <div class="image content">
     <div id="my-photos-div" style="width:100%" class="fotorama"
       data-width="100%"
-      data-ratio="800/600"
       data-minwidth="400"
       data-maxwidth="1000"
-      data-minheight="600"
-      data-maxheight="100%"
+      data-minheight="400"
+      data-maxheight="500"
       data-ratio="800/600"
       data-nav="thumbs"
       data-allowfullscreen="true"
-      data-fit="cover"
       data-transition="crossfade"
       data-loop="true"
       data-keyboard="true"
       data-auto="false">
 
-      <img src="" data-caption="Caption here!">
     </div>
   </div>
 </div>
@@ -211,7 +215,7 @@
           <button type="button" class="huge ui teal button" style="margin: 60px;" id="image-upload-btn" />
           <i class="camera retro icon"></i>  Choose Photo
           </button>
-          <input type="file" id="image-upload" value="Choose Photo" style="display: none;" />
+          <input type="file" id="image-upload" accept="image/*" value="Choose Photo" style="display: none;" />
           <div id="image-wrapper"></div>
         </div>
       </div>
@@ -239,8 +243,8 @@
 
                 <div class="field">
                   <label>Tags (atmost 5)</label>
-                  <select name="skills" multiple="" id="tags-selector-upload" class="ui fluid dropdown" required>
-                    <option value="" selected disabled>Tags</option>
+                  <select name="skills" multiple="" id="tags-selector-upload" class="ui search fluid dropdown" required>
+                    <option value="" selected disabled>Skills</option>
                   </select>
                 </div>
                 <div class="ui error message"></div>
@@ -288,6 +292,7 @@
 
 <!-- Reward Modal -->
 <div class="ui inverted modal" id="reward-modal">
+  <i class="close icon"></i>
   <div class="header">Hey there!</div>
   <div class="content">Your Rewards: </div>
   <div class="actions">
@@ -305,6 +310,13 @@
   <p>This is a special notification which you can dismiss if you're bored with it.</p>
 </div>
 
+<!-- Individual Image Modal -->
+<div class="ui modal" id="single-image-modal">
+  <i class="close icon"></i>
+  <div class="content" align="center">
+    <img src="#" id="photo-modal-image">
+  </div>
+</div>
 
 <!-- Delete Image  -->
 <div class="ui modal" id="delete-image-modal">
@@ -314,7 +326,7 @@
   </div>
   <div class="image content">
     <div class="ui medium image">
-      <img src="/images/avatar/large/chris.jpg">
+      <img src="#">
     </div>
     <div class="description">
       <div class="ui header">You have selected to delete this photo.</div>
@@ -331,6 +343,12 @@
       <i class="checkmark icon"></i>
     </div>
   </div>
+</div>
+
+
+
+<div class="hidden" style="display: none">
+  <img id="my-images-template" src="" data-caption="Caption here!">
 </div>
 
 <!-- build:js js/embark.js -->
