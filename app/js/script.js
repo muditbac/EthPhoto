@@ -610,16 +610,16 @@ function refreshImages(){
 
         if (images_dom[index].hasClass('hidden')){
           images_dom[index].appendTo("#image-cards");
-          // images_dom[index].removeClass('hidden');
-          images_dom[index].transition('fade up');
+          images_dom[index].removeClass('hidden');
+          // images_dom[index].transition('fly left');
         }
 
       } else {
         var dom = template_image.clone();
         images_dom[index] = dom;
         dom.appendTo("#image-cards");
-        // dom.removeClass("hidden");
-        dom.transition('fade up');
+        dom.removeClass("hidden");
+        // dom.transition('fly left');
         updateImageInfo(dom, index);
       }
     }
@@ -628,8 +628,10 @@ function refreshImages(){
   var toHide = $(shown_images).not(current_images).get();
   for (var i in toHide){
     var index = toHide[i];
-    // images_dom[index].addClass('hidden');
-    images_dom[index].transition('fade up');
+    if (index in images_dom){
+      images_dom[index].addClass('hidden');
+    }
+    // images_dom[index].transition('fly left');
   }
   shown_images = current_images;
   // loop over indexes
@@ -670,6 +672,8 @@ function processMapChanges(){
   });
 }
 
+isExecuting = false;
+lastCall = null;
 
 function initCenterMap(){
 
@@ -678,18 +682,32 @@ function initCenterMap(){
       lat: 20.5937,
       lng: 78.9629,
       styles: map_styles,
-      idle: function(e){
-        var b = center_map.getBounds();
-        var r = Math.max((b.b.f-b.b.b)/2, (b.f.f-b.f.b)/2);
-        var p  = getImagesWithLatLong(e.center.lat(), e.center.lng(), r)
-        p.then(function(data){
-          all_images = data
-          current_images = data.slice(0,9);
-          changePagination(1, Math.ceil(data.length/9));
-          processMapChanges();
-        }, function(err){
-          alertErr("Cannot connect to Ethereum Network!");
-        })
+      bounds_changed: function(e){
+        if (isExecuting){
+          // isExecuting=true;
+          clearTimeout(lastCall);
+        }
+
+        lastCall = setTimeout(function(){
+          var b = center_map.getBounds();
+          var map = center_map.map;
+          var r = Math.max((b.b.f-b.b.b)/2, (b.f.f-b.f.b)/2);
+          var p  = getImagesWithLatLong(e.center.lat(), e.center.lng(), r)
+          console.log("exe");
+          console.log(p);
+          p.then(function(data){
+            console.log("exe got");
+            all_images = data
+            current_images = data.slice(0,9);
+            changePagination(1, Math.ceil(data.length/9));
+            processMapChanges();
+
+          }, function(err){
+            alertErr("Cannot connect to Ethereum Network!");
+          })
+          isExecuting=false;
+        }, 1000);
+        isExecuting = true;
         // console.log(e.center.lat());
         // console.log(e.center.lng());
       }
