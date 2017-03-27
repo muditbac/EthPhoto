@@ -21,13 +21,13 @@
 <body>
 
 <!-- Loader -->
-<div class="se-pre-con"></div>
+ <div class="se-pre-con"></div>
 
 <!-- Navigation bar -->
-<div class="ui fixed inverted menu" id="main-nav-bar">
+<div class="ui fixed menu" id="main-nav-bar">
     <div class="ui container">
       <a href="#" class="header item">
-        <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto 
+        <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto
       </a>
 
     </div>
@@ -100,7 +100,7 @@
 <!-- Main Container -->
 <div id="content" class="ui main container">
     <div class="ui grid">
-        <div class="nine wide column pad-top-bottom-zero" id="left-main-wrapper">
+        <div class="nine wide column pad-top-bottom-zero" id="left-main-wrapper" style="margin-top: 75px;">
             <div id="map-first"></div>
         </div>
         <div class="seven wide column" id="right-main-wrapper">
@@ -125,7 +125,7 @@
               <div class="ui link three stackable cards" id="image-cards">
                 <div class="card hidden">
                   <div class="image">
-                    <img src="http://lorempixel.com/180/200?1">
+                    <img src="#">
                   </div>
                   <div class="content">
                     <div class="header">Caption</div>
@@ -303,6 +303,34 @@
     Welcome back!
   </div>
   <p>This is a special notification which you can dismiss if you're bored with it.</p>
+</div>
+
+
+<!-- Delete Image  -->
+<div class="ui modal" id="delete-image-modal">
+  <i class="close icon"></i>
+  <div class="header">
+    Delete Image
+  </div>
+  <div class="image content">
+    <div class="ui medium image">
+      <img src="/images/avatar/large/chris.jpg">
+    </div>
+    <div class="description">
+      <div class="ui header">You have selected to delete this photo.</div>
+      <p>Please note that once deleted, this image cannot be recovered.</p>
+      <p>Are you sure want to delete this image?</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button">
+      Nope
+    </div>
+    <div class="ui positive right labeled icon button">
+      Yes, I am sure!
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
 </div>
 
 <!-- build:js js/embark.js -->

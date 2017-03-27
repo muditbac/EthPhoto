@@ -227,7 +227,6 @@ function changePagination(pageno, tpages){
 }
 
 function nextPage(){
-  console.log("sdf");
   if (page<total_pages){
     current_images = all_images.slice(page*9, (page+1)*9);
     processMapChanges();
@@ -471,7 +470,12 @@ $("#upload-next-btn").on('click', function(){
     gotoTab("first");
     showUploadBoxError("Please select an image");
 
-  } else if (upload_state == "first") {
+  }
+  else if ($('.darkroom-toolbar').length==1){
+    alertErr("Please save the image first", '');
+    gotoTab("first");
+  }
+  else if (upload_state == "first") {
     gotoTab("second");
     initUploadMap();
     if (image_latitude!=undefined && image_longitude!=undefined){
@@ -480,7 +484,8 @@ $("#upload-next-btn").on('click', function(){
     $("#upload-first-tb").addClass('completed');
     $("#upload-second-tb").removeClass('disabled');
 
-  } else if (upload_state == "second") {
+  }
+  else if (upload_state == "second") {
     if (isSecondFormValid() === true) {
       setThirdTabDetails();
       setNextButtonText("upload");
@@ -488,7 +493,8 @@ $("#upload-next-btn").on('click', function(){
       $("#upload-third-tb").removeClass('disabled');
       gotoTab("third");
     }
-  } else if(upload_state == "third") {
+  }
+  else if(upload_state == "third") {
     if (isSecondFormValid() === true) {
       $("#upload-third-tb").addClass('completed');
       handleUploadImage();
@@ -507,6 +513,7 @@ function handleUploadImage() {
       // TODO Change here for after success events
       alert("Image Successfully Uploaded!", "The image has been successfully uploaded.");
       $("#upload-cancel-btn").trigger("click");
+      google.maps.event.trigger(center_map.map, 'bounds_changed');
   }, function (err){
       $("#upload-next-btn").removeClass('disabled loading');
       // TODO Change here for after err events
@@ -544,42 +551,15 @@ function setThirdTabDetails() {
   });
 }
 
-function updateImageInfo(jimage_obj, index){
-  var data = images[index];
-  jimage_obj.find("img").attr('src', data[0]);
-  jimage_obj.find('.header').html(data[1]);
-
-  jimage_obj.find('.meta').html(username[data[6]]);
-
-  jimage_obj.find('.extra.content > span').html(data[5].toNumber());
-  jimage_obj.attr("value", index);
-
-  if (isOwnerImage(index)){
-    jimage_obj.find('i').remove();
-  }
-  else {
-    VotingList.isUpvoted(index, false).then(function(isUpvoted){
-      if (isUpvoted) {
-        changeToLiked(jimage_obj.find('i'));
-
-      }
-    }, function(err){
-      alertErr("Cannot connect to Ethereum Network");
-    });
-  }
-}
-
 function changeToLiked(el){
   el
   .removeClass('outline')
-  .addClass('red')
   .removeAttr("onclick");
 }
 
 function changeToUnliked(el){
   el
   .addClass('outline')
-  .removeClass('red')
   .attr("onclick", 'likeClicked(this);');
 }
 
@@ -599,6 +579,42 @@ function likeClicked(element){
   })
 
 }
+
+function deleteClicked(element){
+  var obj = $(element).parent().parent();
+  var index = parseInt(obj.attr("value"));
+  showDeleteModal(index);
+}
+
+function updateImageInfo(jimage_obj, index){
+  var data = images[index];
+  jimage_obj.find("img").attr('src', data[0]);
+  jimage_obj.find('.header').html(data[1]);
+
+  jimage_obj.find('.meta').html(username[data[6]]);
+
+  jimage_obj.find('.extra.content > span').html(data[5].toNumber());
+  jimage_obj.attr("value", index);
+
+  if (isOwnerImage(index)){
+    jimage_obj.find('i')
+      .removeClass('heart')
+      .removeClass('like')
+      .addClass('trash')
+      .attr('onclick', 'deleteClicked(this)');
+  }
+  else {
+    VotingList.isUpvoted(index, false).then(function(isUpvoted){
+      if (isUpvoted) {
+        changeToLiked(jimage_obj.find('i'));
+
+      }
+    }, function(err){
+      alertErr("Cannot connect to Ethereum Network");
+    });
+  }
+}
+
 
 function refreshImages(){
   // use current_images
@@ -694,7 +710,6 @@ function initCenterMap(){
           var r = Math.max((b.b.f-b.b.b)/2, (b.f.f-b.f.b)/2);
           var p  = getImagesWithLatLong(e.center.lat(), e.center.lng(), r)
           console.log("exe");
-          console.log(p);
           p.then(function(data){
             console.log("exe got");
             all_images = data
@@ -730,7 +745,7 @@ function initCenterMap(){
       center_map.setZoom(15);
     },
     error: function(error) {
-      alertInfo('Geolocation failed: '+error.message);
+      alertErr('Geolocation failed: '+error.message);
     },
     not_supported: function() {
       alertInfo("Your browser does not support geolocation");
@@ -763,15 +778,13 @@ function initCenterMap(){
   autocomplete.bindTo('bounds', center_map);
 
 
-
-
   autocomplete.addListener('place_changed', function() {
 
     var place = autocomplete.getPlace();
     if (!place.geometry) {
       // User entered the name of a Place that was not suggested and
       // pressed the Enter key, or the Place Details request failed.
-      window.alert("No details available for input: '" + place.name + "'");
+      alertInfo("No details available for input: '" + place.name + "'");
       return;
     }
 
@@ -894,4 +907,23 @@ $("#main-search-btn").on('click', function(){
 $('#settings-gear').dropdown();
 function showRewardModal() {
   $("#reward-modal").modal('show');
+}
+
+
+function showDeleteModal(index){
+  $('#delete-image-modal > div.image.content > div.ui.medium.image > img')
+    .attr('src', images[index][0]);
+  $('#delete-image-modal > div.actions > div.ui.positive.right.labeled.icon.button')
+    .attr('onclick', 'deleteImage('+index+')');
+  $('#delete-image-modal').modal('show');
+}
+
+
+function deleteImage(index){
+  Controller.deleteImage(index).then(function(){
+    alert("Image Deleted Successfully", 'The image has been successfully removed from Ethereum network');
+    google.maps.event.trigger(center_map.map, 'bounds_changed');
+  }, function(err){
+    alertErr("Error deleting image!", '');
+  })
 }
