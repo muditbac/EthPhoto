@@ -61,6 +61,23 @@ function getImagesWithLatLong(lat, long, rad){
 
     return p;
 }
+function getImagesWithTags(_tags){
+
+    var p =  new Promise(function (resolve, reject) {
+        ImageList.getImagesWithTags(_tags, 0).then(function (data){
+            ImageList.getImagesWithTags(_tags, data[1].toNumber()).then(function(data){
+                p.data = allToNumber(data[0]);
+                resolve(p.data);
+            }, function(err){
+                reject(err);
+            })
+        }, function(err){
+            reject(err);
+        })
+    });
+
+    return p;
+}
 
 function loadImage(img_div, hash){
     img_div.src = getUrl(hash);

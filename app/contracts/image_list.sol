@@ -167,6 +167,36 @@ contract ImageList is owned {
 		return (ids, count);
 	}
 
+	function getImagesWithTags(uint16[3] tags, uint _count) constant returns(uint[], uint){
+
+		uint[] memory ids = new uint[](_count);
+		uint count=0;
+
+		for (var i=0;i<imageList.length;i++){
+			if (imageList[i].init){
+        bool found=false;
+        for(var j=0;j<5;j++){
+          if (imageList[i].topic[j]==0) break;
+          for(var k=0;k<3;k++){
+            if (tags[k]==0) break;
+            if (tags[k]==imageList[i].topic[j]){
+              found=true;
+              break;
+            }
+          }
+          if (found) break;
+        }
+
+        if (found){
+          if (_count!=0) ids[count] =  i;
+          count++;
+        }
+
+			}
+		}
+		return (ids, count);
+	}
+
 	function upvoteImage(uint index) onlyOwner {
 		imageList[index].upvotes ++;
 	}

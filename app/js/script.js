@@ -376,6 +376,28 @@ $('#tags-selector-upload').dropdown({
   maxSelections: 5
 });
 
+$('#search-tags').on('change', function(e){
+  e.preventDefault();
+  var tags = []
+  $.each($('#search-tags').val(), function(i, val){
+    tags.push(parseInt(val));
+  });
+  console.log(tags);
+  console.log("exe");
+  getImagesWithTags(tags).then(function(data){
+    console.log("exe got");
+    all_images = data
+    current_images = data.slice(0,9);
+    changePagination(1, Math.ceil(data.length/9));
+    processMapChanges();
+
+  }, function(err){
+    alertErr("Cannot connect to Ethereum Network!");
+  });
+
+});
+
+
 semantic = {};
 // ready event
 semantic.ready = function() {
@@ -403,6 +425,37 @@ semantic.ready = function() {
   $buttons.on('click', handler.activate);
 };
 
+disable_map_event=false;
+
+function switchToTagView(){
+  old_center = center_map.getCenter();
+  old_zoom = center_map.getZoom();
+  disable_map_event = true;
+  center_map.map.setOptions({
+    draggable: false,
+    scrollwheel: false,
+    panControl: false,
+    maxZoom: 5,
+    minZoom: 5,
+    zoom: 5,
+    // center: latlng,
+  });
+  setTimeout(function(){
+    $('#search-tags').trigger('change');
+  }, 0);
+}
+function switchToLocationView(){
+  disable_map_event = false;
+  center_map.map.setOptions({
+    draggable: true,
+    scrollwheel: true,
+    panControl: true,
+    maxZoom: 20,
+    minZoom: 1,
+  });
+  center_map.setZoom(old_zoom);
+  center_map.map.setCenter(old_center);
+}
 
 // attach ready event
 $(document).ready(semantic.ready);
@@ -688,6 +741,8 @@ function processMapChanges(){
   });
 }
 
+
+// TODO show markers only to the results;
 isExecuting = false;
 lastCall = null;
 
@@ -699,6 +754,7 @@ function initCenterMap(){
       lng: 78.9629,
       styles: map_styles,
       bounds_changed: function(e){
+        if (disable_map_event) return;
         if (isExecuting){
           // isExecuting=true;
           clearTimeout(lastCall);
@@ -728,7 +784,7 @@ function initCenterMap(){
       }
   });
 
-  // center_map.setOptions({ minZoom: 10, maxZoom: 20 });
+  center_map.setOptions({ minZoom: 5, maxZoom: 20 });
 
   cluster =  new MarkerClusterer(center_map.map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
 
