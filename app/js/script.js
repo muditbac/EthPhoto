@@ -256,7 +256,7 @@ function loadMyInfo(){
     }
 
     var div = $("#my-photos-div");
-    var template = div.find("img");
+    var template = $('#my-images-template');
     for(var i in myimages){
       var index = myimages[i];
       getImage(index).then(function(data){
@@ -268,7 +268,7 @@ function loadMyInfo(){
       });
     }
 
-    template.remove();
+    // template.remove();
 
   }, function(err){
 
@@ -432,13 +432,18 @@ $(".upload-tab-btn").on('click', function(){
 });
 
 var first_open = true;
+var slider;
 $("#my-photos-btn").on('click', function(){
-  $('#my-photos-modal').modal('show')
-  if (first_open) {
-    $('.fotorama').fotorama();
-    first_open=false;
+  if (typeof myimages === 'undefined' || myimages.length <= 0) {
+    alertErr("No images found!", "You have not uploaded any photos");
+  } else {
+    $('#my-photos-modal').modal('show');
+    if (first_open) {
+      slider = $('.fotorama').fotorama();
+      first_open=false;
+    }
+    $('#my-photos-modal').modal('refresh');
   }
-  $('#my-photos-modal').modal('refresh');
 });
 
 $("#upload-btn").on('click', function(){
@@ -508,12 +513,15 @@ function handleUploadImage() {
   is available here*/
 
   $("#upload-next-btn").addClass('disabled loading');
-  addImage(document.getElementById('final-image'), image_caption, image_latitude, image_longitude, image_tags).then(function(){
+  addImage(document.getElementById('final-image'), image_caption, image_latitude, image_longitude, image_tags).then(function(data){
       $("#upload-next-btn").removeClass('disabled loading');
       // TODO Change here for after success events
       alert("Image Successfully Uploaded!", "The image has been successfully uploaded.");
       $("#upload-cancel-btn").trigger("click");
       google.maps.event.trigger(center_map.map, 'bounds_changed');
+      
+      slider.push({img: getUrl(data.hash)});
+
   }, function (err){
       $("#upload-next-btn").removeClass('disabled loading');
       // TODO Change here for after err events
@@ -927,3 +935,10 @@ function deleteImage(index){
     alertErr("Error deleting image!", '');
   })
 }
+
+//Individual image modal
+$("#image-cards").on('click', ".image", function(){
+  var img_src = $(this).children("img").attr('src');
+  $("#photo-modal-image").attr('src', img_src);
+  $('#single-image-modal').modal('show');
+});
