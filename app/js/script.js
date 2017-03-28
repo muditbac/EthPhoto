@@ -998,3 +998,17 @@ $("#image-cards").on('click', ".image", function(){
   $("#photo-modal-image").attr('src', img_src);
   $('#single-image-modal').modal('show');
 });
+
+//Glide Initialisation
+$("#Glide").glide({
+  type: "carousel"
+});
+
+function t() {
+  var cards = $("#image-cards .card").not(".hidden");
+  $.each(cards, function(index, card) {
+    card = $(card);
+    var link = card.find("img").attr('src');
+    $("#card-slider").append('<img src="'+link+'" />');
+  });
+}

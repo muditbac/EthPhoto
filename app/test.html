@@ -12,6 +12,8 @@
 <link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
 <link rel="stylesheet" href="components/semanticUiAlert/Semantic-UI-Alert.css">
 <link rel="stylesheet" href="components/darkroom/build/darkroom.css">
+<link rel="stylesheet" href="components/glidejs/dist/css/glide.core.min.css">
+<link rel="stylesheet" href="components/glidejs/dist/css/glide.theme.min.css">
 <link href="components/fotorama/fotorama.css" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <!-- endbuild -->
@@ -345,6 +347,37 @@
   </div>
 </div>
 
+<!-- Glids Js Modal -->
+<div class="ui modal" id="glide-image-modal">
+  <i class="close icon"></i>
+  <div class="header">
+    Photos
+  </div>
+  <div class="content">
+    <div id="Glide" class="glide">
+
+        <div class="glide__arrows">
+            <button class="glide__arrow prev" data-glide-dir="<">prev</button>
+            <button class="glide__arrow next" data-glide-dir=">">next</button>
+        </div>
+
+        <div class="glide__wrapper">
+            <ul class="glide__track" id="card-slider">
+                <li class="glide__slide">Hi</li>
+                <li class="glide__slide">Hello</li>
+                <li class="glide__slide">OKay</li>
+            </ul>
+        </div>
+
+        <div class="glide__bullets"></div>
+
+    </div>
+   
+  </div>
+  
+</div>
+
+
 
 
 <div class="hidden" style="display: none">
@@ -364,6 +397,7 @@
 <script src="components/darkroom/build/darkroom.js"></script>
 <script src="components/gmaps/gmaps.js"></script>
 <script src="components/fotorama/fotorama.js"></script>
+<script src="components/glidejs/dist/glide.min.js"></script>
 <!-- endbuild -->
 
 <!-- build:js js/base.js -->

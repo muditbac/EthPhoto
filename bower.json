@@ -8,14 +8,12 @@
   "homepage": "https://github.com/muditbac/EthPhoto",
   "private": true,
   "dependencies": {
-    "bootstrap": "^3.3.7",
     "darkroom": "^2.0.1",
-    "twitter-bootstrap-wizard": "^1.4.2",
     "gmaps": "^0.4.25",
-    "Bootstrap-Wizard": "https://github.com/gilluminate/Bootstrap-Wizard.git",
     "semantic": "semantic-ui#^2.2.9",
     "v3-utility-library": "https://github.com/googlemaps/v3-utility-library.git",
-    "semanticUiAlert": "https://github.com/diw112/semanticUiAlert.git"
+    "semanticUiAlert": "https://github.com/diw112/semanticUiAlert.git",
+    "glidejs": "^2.1.0"
   },
   "devDependencies": {
     "fotorama": "^4.6.4"
