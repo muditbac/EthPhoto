@@ -283,11 +283,30 @@ function generateMyPhotoSlider() {
   }
   Promise.all(photo_promises).then(function() {
     console.log("All my photos loaded");
-    slider = $('.fotorama').fotorama({
+    slider = $('.fotorama')
+    .on('fotorama:show', function(e, fotorama, direct){
+      fotorama = $("#my-photos-div").data('fotorama');
+      console.log(fotorama);
+      if(photo_push_pending) {
+        photo_push_pending = false;
+        images_data.push(photo_push_pending_data);
+        fotorama.push(photo_push_pending_data);
+        fotorama.show('>');
+      }
+      if (photo_delete_pending) {
+        photo_delete_pending = false;
+        var ndata = $.grep(images_data, function(e){ 
+          return e.img != photo_delete_pending_data; 
+        });
+        fotorama.load(ndata);
+        images_data = ndata;
+        fotorama.show('<');
+      }
+      $("#my-photos-modal").modal('refresh');
+    })
+    .fotorama({
       data: images_data
     });
-    var $fotoramaDiv = $('#my-photos-div').fotorama();
-    fotorama = $fotoramaDiv.data('fotorama');
   });
 }
 
@@ -585,9 +604,11 @@ function handleUploadImage() {
       $("#upload-cancel-btn").trigger("click");
       google.maps.event.trigger(center_map.map, 'bounds_changed');
       
-      // myimages.push(id)
-      // slider.push({img: getUrl(data.hash)});
-      fotorama.push({ img: getUrl(data.hash), caption: image_caption});
+      photo_push_pending = true;
+      photo_push_pending_data = {
+        img: getUrl(data.hash),
+        caption: image_caption
+      }
 
   }, function (err){
       $("#upload-cancel-btn").removeClass('disabled');
@@ -1002,6 +1023,8 @@ function deleteImage(index){
   Controller.deleteImage(index).then(function(){
     alert("Image Deleted Successfully", 'The image has been successfully removed from Ethereum network');
     google.maps.event.trigger(center_map.map, 'bounds_changed');
+    photo_delete_pending = true;
+    photo_delete_pending_data = images[index][0];
   }, function(err){
     alertErr("Error deleting image!", '');
   })

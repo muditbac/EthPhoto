@@ -170,6 +170,7 @@
       data-transition="crossfade"
       data-loop="true"
       data-keyboard="true"
+      data-fit="cover"
       data-auto="false">
 
     </div>
@@ -384,6 +385,9 @@ var image_latitude;
 var image_longitude;
 var marker_center;
 var marker_upload;
+var photo_push_pending = false;
+var photo_delete_pending = false;
+var fotorama;
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI&callback=initMap" async defer></script>
 
