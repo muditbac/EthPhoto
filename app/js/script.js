@@ -289,26 +289,49 @@ function generateMyPhotoSlider() {
       console.log(fotorama);
       if(photo_push_pending) {
         photo_push_pending = false;
-        images_data.push(photo_push_pending_data);
-        fotorama.push(photo_push_pending_data);
+        $.each(photo_push_pending_data, function(index, val) {
+          images_data.push(val);
+          fotorama.push(val);
+        });
         fotorama.show('>');
       }
       if (photo_delete_pending) {
         photo_delete_pending = false;
-        var ndata = $.grep(images_data, function(e){ 
-          return e.img != photo_delete_pending_data; 
+        var ndata = images_data;
+        $.each(photo_delete_pending_data, function(index, val) {
+          removeItem(ndata,'img', val);
         });
-        fotorama.load(ndata);
-        images_data = ndata;
-        fotorama.show('<');
+        if (ndata.length == 0) {
+          $("my-photos-modal").modal('hide');
+          alertErr("No images found!", "You have not uploaded any photos");
+        } else {
+          fotorama.load(ndata);
+          images_data = ndata;
+          fotorama.show('>');
+        }
       }
       $("#my-photos-modal").modal('refresh');
+    })
+    .on('fotorama:ready', function(){
+      fotorama = $("#my-photos-div").data('fotorama');
+      fotorama.show('>');
     })
     .fotorama({
       data: images_data
     });
   });
 }
+
+var removeItem = function (object, key, value) {
+    if (value == undefined)
+        return;
+
+    for (var i in object) {
+        if (object[i][key] == value) {
+            object.splice(i, 1);
+        }
+    }
+};
 
 function isOwnerImage(index){
   return (images[index][6]==web3.eth.defaultAccount);
@@ -524,6 +547,9 @@ $("#my-photos-btn").on('click', function(){
     alertErr("No images found!", "You have not uploaded any photos");
   } else {
     $('#my-photos-modal').modal('show');
+    if (fotorama !== undefined) {
+      fotorama.show('>');
+    }
     // $('#my-photos-modal').modal('refresh');
   }
 });
@@ -605,10 +631,11 @@ function handleUploadImage() {
       google.maps.event.trigger(center_map.map, 'bounds_changed');
       
       photo_push_pending = true;
-      photo_push_pending_data = {
+      temp = {
         img: getUrl(data.hash),
         caption: image_caption
       }
+      photo_push_pending_data.push(temp);
 
   }, function (err){
       $("#upload-cancel-btn").removeClass('disabled');
@@ -1024,7 +1051,7 @@ function deleteImage(index){
     alert("Image Deleted Successfully", 'The image has been successfully removed from Ethereum network');
     google.maps.event.trigger(center_map.map, 'bounds_changed');
     photo_delete_pending = true;
-    photo_delete_pending_data = images[index][0];
+    photo_delete_pending_data.push(images[index][0]);
   }, function(err){
     alertErr("Error deleting image!", '');
   })
