@@ -255,24 +255,40 @@ function loadMyInfo(){
       });
     }
 
-    var div = $("#my-photos-div");
-    var template = $('#my-images-template');
-    for(var i in myimages){
-      var index = myimages[i];
-      getImage(index).then(function(data){
-        // Update Data here
-        var temp = template.clone();
-        temp.attr("src", data[0]);
-        temp.attr("data-caption", data[1]);
-        temp.appendTo(div);
-      });
-    }
-
-    // template.remove();
+    generateMyPhotoSlider();
 
   }, function(err){
 
   })
+}
+
+// Observe changes in modal content
+$('#my-photos-modal').modal({observeChanges: true});
+
+function generateMyPhotoSlider() {
+  images_data = [];
+  var photo_promises = [];
+  for(var i in myimages){
+    var index = myimages[i];
+    var p = getImage(index).then(function(data){
+      // Update Data here
+      var meta = {
+        img: data[0],
+        caption: data[1]
+      }
+      images_data.push(meta);
+    });
+    console.log(p);
+    photo_promises.push(p);
+  }
+  Promise.all(photo_promises).then(function() {
+    console.log("All my photos loaded");
+    slider = $('.fotorama').fotorama({
+      data: images_data
+    });
+    var $fotoramaDiv = $('#my-photos-div').fotorama();
+    fotorama = $fotoramaDiv.data('fotorama');
+  });
 }
 
 function isOwnerImage(index){
@@ -484,18 +500,12 @@ $(".upload-tab-btn").on('click', function(){
   gotoTab(upload_state);
 });
 
-var first_open = true;
-var slider;
 $("#my-photos-btn").on('click', function(){
   if (typeof myimages === 'undefined' || myimages.length <= 0) {
     alertErr("No images found!", "You have not uploaded any photos");
   } else {
     $('#my-photos-modal').modal('show');
-    if (first_open) {
-      slider = $('.fotorama').fotorama();
-      first_open=false;
-    }
-    $('#my-photos-modal').modal('refresh');
+    // $('#my-photos-modal').modal('refresh');
   }
 });
 
@@ -566,16 +576,21 @@ function handleUploadImage() {
   is available here*/
 
   $("#upload-next-btn").addClass('disabled loading');
+  $("#upload-cancel-btn").addClass('disabled');
   addImage(document.getElementById('final-image'), image_caption, image_latitude, image_longitude, image_tags).then(function(data){
       $("#upload-next-btn").removeClass('disabled loading');
       // TODO Change here for after success events
       alert("Image Successfully Uploaded!", "The image has been successfully uploaded.");
+      $("#upload-cancel-btn").removeClass('disabled');
       $("#upload-cancel-btn").trigger("click");
       google.maps.event.trigger(center_map.map, 'bounds_changed');
       
-      slider.push({img: getUrl(data.hash)});
+      // myimages.push(id)
+      // slider.push({img: getUrl(data.hash)});
+      fotorama.push({ img: getUrl(data.hash), caption: image_caption});
 
   }, function (err){
+      $("#upload-cancel-btn").removeClass('disabled');
       $("#upload-next-btn").removeClass('disabled loading');
       // TODO Change here for after err events
       alertErr('Error in Uploading Image', "Some problem with Ethereum network. Please Try Again.");
