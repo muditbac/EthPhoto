@@ -72,7 +72,9 @@
 /*Completely new styles*/
 #main-nav-bar {
   /*cornflowerblue*/
-  background: #6495ed;
+  /*background: #6495ed;*/
+  /*Maroon*/
+  background: maroon;
 }
 .margin-container-box {
   margin: 10px;
@@ -151,7 +153,7 @@ html, body {
 }
 #settings-btn {
   cursor: pointer;
-  font-size: 24px;
+  font-size: 20px;
   margin: auto;
 }
 #settings-btn-wrapper {
