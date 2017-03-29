@@ -88,22 +88,16 @@
         </div>
       </div> -->
       <!-- <button class="ui inverted teal button" id="settings-btn"><i class="setting icon"></i></button> -->
-      <!-- <div class="ui right dropdown item">
+      <div class="ui right dropdown item" style="padding: 10px 16px;">
         <i class="inverted setting icon" id="settings-btn"></i>
-        <i class="dropdown icon"></i>
+        <i class="dropdown icon" style="color: white;"></i>
         <div class="menu">
-          <div class="item">Settings</div>
-          <div class="item">My Rewards</div>
+          <div class="item" onclick="showRewardModal()">Rewards</div>
+          <div class="item" onclick="showSettingsModal()">Settings</div>
           <div class="divider"></div>
-          <div class="item">Separated Link</div>
-          <div class="divider"></div>
-          <div class="item">About</div>
-          <div class="item">Action</div>
-          <div class="item">Another Action</div>
-          <div class="divider"></div>
-          <div class="item">Separated Link</div>
+          <div class="item" onclick="showAboutModal()">About</div>
         </div>
-      </div> -->
+      </div>
   </div>
 </div>
 
@@ -301,6 +295,62 @@
   </div>
 </div>
 
+<!-- About Modal -->
+<div class="ui inverted modal" id="about-modal">
+  <i class="close icon"></i>
+  <div class="header">About Us</div>
+  <div class="content">About Us</div>
+  <div class="actions">
+    <div class="ui red cancel button">Close</div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="ui inverted modal" id="settings-modal">
+  <i class="close icon"></i>
+  <div class="header">Settings</div>
+  <div class="content">
+    <div class="ui grid">
+      <div class="sixteen wide column">
+        
+        <h4>Storage Type: IPFS</h4>
+
+        <div class="ui form">
+          <div class="inline fields">
+            <div class="field two wide field">
+              <label>IPFS URL: </label>
+            </div>
+            <div class="field eight wide field">
+              <input type="text" name="ipfs-data" id="ipfs-data" placeholder="IPFS URL" value="http://localhost:4545" />
+            </div>
+            <div class="field two wide field">
+              <button class="ui violet button" id="set-ipfs">Set URL</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui form">
+          <div class="inline fields">
+            <div class="field two wide field">
+                <label>RPC: </label>
+            </div>
+            <div class="field eight wide field">
+                <input type="text" name="rpc-data" id="rpc-data" placeholder="RPC" value="Default" />
+            </div>
+            <div class="field">
+              <button class="ui violet button" id="set-rpc">Set RPC</button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="actions">
+    <div class="ui red cancel button">Close</div>
+  </div>
+</div>
 
 <div class="ui message transition hidden">
   <i class="close icon"></i>

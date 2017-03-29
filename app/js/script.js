@@ -973,6 +973,13 @@ function showRewardModal() {
   $("#reward-modal").modal('show');
 }
 
+function showAboutModal() {
+  $("#about-modal").modal('show');
+}
+
+function showSettingsModal() {
+  $("#settings-modal").modal('show');
+}
 
 function showDeleteModal(index){
   $('#delete-image-modal > div.image.content > div.ui.medium.image > img')
@@ -997,4 +1004,12 @@ $("#image-cards").on('click', ".image", function(){
   var img_src = $(this).children("img").attr('src');
   $("#photo-modal-image").attr('src', img_src);
   $('#single-image-modal').modal('show');
+});
+
+$("#set-ipfs").on('click', function(){
+  var current_ipfs = $("#ipfs-data").val().trim();
+});
+
+$("#set-rpc").on('click', function(){
+  var current_rpc = $("#rpc-data").val().trim();
 });
