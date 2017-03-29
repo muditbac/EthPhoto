@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
 <link rel="stylesheet" href="components/semanticUiAlert/Semantic-UI-Alert.css">
 <link rel="stylesheet" href="components/darkroom/build/darkroom.css">
-<link rel="stylesheet" href="components/fotorama/fotorama.css" rel="stylesheet">
-<link rel="stylesheet" href="components/animate.css/animate.min.css">
+<link rel="stylesheet" href="components/nprogress/nprogress.css">
+<link href="components/fotorama/fotorama.css" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <!-- endbuild -->
 
@@ -89,22 +89,16 @@
         </div>
       </div> -->
       <!-- <button class="ui inverted teal button" id="settings-btn"><i class="setting icon"></i></button> -->
-      <!-- <div class="ui right dropdown item">
+      <div class="ui right dropdown item" style="padding: 10px 16px;">
         <i class="inverted setting icon" id="settings-btn"></i>
-        <i class="dropdown icon"></i>
+        <i class="dropdown icon" style="color: white;"></i>
         <div class="menu">
-          <div class="item">Settings</div>
-          <div class="item">My Rewards</div>
+          <div class="item" onclick="showRewardModal()">Rewards</div>
+          <div class="item" onclick="showSettingsModal()">Settings</div>
           <div class="divider"></div>
-          <div class="item">Separated Link</div>
-          <div class="divider"></div>
-          <div class="item">About</div>
-          <div class="item">Action</div>
-          <div class="item">Another Action</div>
-          <div class="divider"></div>
-          <div class="item">Separated Link</div>
+          <div class="item" onclick="showAboutModal()">About</div>
         </div>
-      </div> -->
+      </div>
   </div>
 </div>
 
@@ -134,19 +128,20 @@
               </div>
 
               <div class="ui link three stackable cards" id="image-cards">
-                <div class="card hidden animated">
+                <div class="card hidden">
                   <div class="image">
                     <img src="#">
                   </div>
-                  <div class="content" onclick="bounceMarkerCaller(this);">
+                  <div class="content">
                     <div class="header">Caption</div>
                     <div class="meta">
                       <a>User Name</a>
                     </div>
-                  </div>
-                  <div class="extra content">
-                    <i class="heart outline like icon" onclick="likeClicked(this);"></i>
-                    <span>0</span>
+                    </div>
+                    <div class="extra content">
+                      <i class="heart outline like icon" onclick="likeClicked(this);"></i>
+                      <span>0</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -301,6 +296,62 @@
   </div>
 </div>
 
+<!-- About Modal -->
+<div class="ui inverted modal" id="about-modal">
+  <i class="close icon"></i>
+  <div class="header">About Us</div>
+  <div class="content">About Us</div>
+  <div class="actions">
+    <div class="ui red cancel button">Close</div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="ui inverted modal" id="settings-modal">
+  <i class="close icon"></i>
+  <div class="header">Settings</div>
+  <div class="content">
+    <div class="ui grid">
+      <div class="sixteen wide column">
+        
+        <h4>Storage Type: IPFS</h4>
+
+        <div class="ui form">
+          <div class="inline fields">
+            <div class="field two wide field">
+              <label>IPFS URL: </label>
+            </div>
+            <div class="field eight wide field">
+              <input type="text" name="ipfs-data" id="ipfs-data" placeholder="IPFS URL" value="http://localhost:4545" />
+            </div>
+            <div class="field two wide field">
+              <button class="ui violet button" id="set-ipfs">Set URL</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui form">
+          <div class="inline fields">
+            <div class="field two wide field">
+                <label>RPC: </label>
+            </div>
+            <div class="field eight wide field">
+                <input type="text" name="rpc-data" id="rpc-data" placeholder="RPC" value="Default" />
+            </div>
+            <div class="field">
+              <button class="ui violet button" id="set-rpc">Set RPC</button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+  <div class="actions">
+    <div class="ui red cancel button">Close</div>
+  </div>
+</div>
 
 <div class="ui message transition hidden">
   <i class="close icon"></i>
@@ -314,7 +365,7 @@
 <div class="ui modal" id="single-image-modal">
   <i class="close icon"></i>
   <div class="content" align="center">
-    <img src="#" id="photo-modal-image" style="width: 100%;">
+    <img src="#" id="photo-modal-image">
   </div>
 </div>
 
@@ -364,6 +415,7 @@
 <script src="components/darkroom/build/darkroom.js"></script>
 <script src="components/gmaps/gmaps.js"></script>
 <script src="components/fotorama/fotorama.js"></script>
+<script src="components/nprogress/nprogress.js"></script>
 <!-- endbuild -->
 
 <!-- build:js js/base.js -->
