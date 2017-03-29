@@ -1006,6 +1006,11 @@ $("#image-cards").on('click', ".image", function(){
   $('#single-image-modal').modal('show');
 });
 
+// Progress Bar
+// Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
+NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
+
+
 $("#set-ipfs").on('click', function(){
   var current_ipfs = $("#ipfs-data").val().trim();
 });
