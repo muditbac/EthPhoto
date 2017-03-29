@@ -15,7 +15,8 @@
     "Bootstrap-Wizard": "https://github.com/gilluminate/Bootstrap-Wizard.git",
     "semantic": "semantic-ui#^2.2.9",
     "v3-utility-library": "https://github.com/googlemaps/v3-utility-library.git",
-    "semanticUiAlert": "https://github.com/diw112/semanticUiAlert.git"
+    "semanticUiAlert": "https://github.com/diw112/semanticUiAlert.git",
+    "animate.css": "^3.5.2"
   },
   "devDependencies": {
     "fotorama": "^4.6.4"

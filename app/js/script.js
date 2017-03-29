@@ -10,6 +10,8 @@ var shown_images = [];
 
 var my = {}
 
+var min_cluster_size = 2;
+
 var map_styles = [
   {
     "elementType": "geometry",
@@ -175,6 +177,52 @@ toAscii = function(s){
     return web3.toAscii(s).replace(/\0/g,'');
 };
 
+
+function bounceMarkerCaller(element){
+  var index = parseInt($(element).parent().attr('value'));
+  bounceMarker(markers[index]);
+}
+
+
+function bounceMarker(marker){
+
+//iterate over all clusters
+var clusters=cluster.clusters_;
+  for(var i = 0; i < clusters.length;++i){
+
+    if(clusters[i].markers_.length >= min_cluster_size && clusters[i].clusterIcon_.div_){
+
+        // clusters[i].clusterIcon_.div_ is the HTMLElement
+        // that contains the wanted clusterIcon,
+        // you should at first reset here recently applied changes
+      var dom_ = clusters[i].clusterIcon_.div_;
+      if(clusters[i].markers_.indexOf(marker)>-1){
+        //the marker has been found, do something with it
+        console.log(clusters[i]);
+        $(dom_).removeClass().addClass('bounce animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+            $(this).removeClass();
+        });
+        return true;
+      }
+    }
+    else {
+      if(clusters[i].markers_.indexOf(marker)>-1){
+        //the marker has been found, do something with it
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function(){ marker.setAnimation(null); }, 750);
+        console.log("found");
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function bounceImageCard(index){
+  images_dom[index].addClass('shake').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+      $(this).removeClass('shake');
+  });
+}
 
 alert = function(message, body){
   $.uiAlert({
@@ -572,7 +620,7 @@ function handleUploadImage() {
       alert("Image Successfully Uploaded!", "The image has been successfully uploaded.");
       $("#upload-cancel-btn").trigger("click");
       google.maps.event.trigger(center_map.map, 'bounds_changed');
-      
+
       slider.push({img: getUrl(data.hash)});
 
   }, function (err){
@@ -731,6 +779,9 @@ function processMapChanges(){
             lat: data[2],
             lng: data[3],
           });
+
+          markers[id].addListener('click', bounceImageCard.bind(this, id));
+
           cluster.addMarker(markers[id]);
           if (data[6] in username){
             refreshImages();
@@ -758,8 +809,8 @@ function initCenterMap(){
 
   center_map = new GMaps({
       el: '#map-first',
-      lat: 20.5937,
-      lng: 78.9629,
+      lat: 22.3145,
+      lng: 87.3091,
       styles: map_styles,
       bounds_changed: function(e){
         if (disable_map_event) return;
@@ -794,7 +845,17 @@ function initCenterMap(){
 
   center_map.setOptions({ minZoom: 5, maxZoom: 20 });
 
-  cluster =  new MarkerClusterer(center_map.map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
+  var options = {
+    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+    minimumClusterSize: min_cluster_size
+  }
+
+  cluster =  new MarkerClusterer(center_map.map, markers, options);
+  google.maps.event.addListener(cluster, 'clusterclick', function(cluster) {
+      for (var i=0;i<cluster.markers_.length;i++){
+        new google.maps.event.trigger(cluster.markers_[i] , 'click' );
+      }
+  });
 
   var center = center_map.getCenter();
   marker_center = center_map.addMarker({
@@ -986,6 +1047,7 @@ function showDeleteModal(index){
 function deleteImage(index){
   Controller.deleteImage(index).then(function(){
     alert("Image Deleted Successfully", 'The image has been successfully removed from Ethereum network');
+    markers[index].setMap(null);
     google.maps.event.trigger(center_map.map, 'bounds_changed');
   }, function(err){
     alertErr("Error deleting image!", '');

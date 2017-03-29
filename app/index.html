@@ -1,79 +1,392 @@
 <html>
-  <head>
-    <title>Embark</title>
+<head>
+<title>EthPhoto | Ethereum based image sharing app</title>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'>
 
 
-    <!-- build:css css/app.css -->
-    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="components/darkroom/build/darkroom.css">
-    <!-- endbuild -->
+<!-- build:css css/app.css -->
+<link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
+<link rel="stylesheet" href="components/semanticUiAlert/Semantic-UI-Alert.css">
+<link rel="stylesheet" href="components/darkroom/build/darkroom.css">
+<link rel="stylesheet" href="components/fotorama/fotorama.css" rel="stylesheet">
+<link rel="stylesheet" href="components/animate.css/animate.min.css">
+<link rel="stylesheet" href="css/main.css">
+<!-- endbuild -->
 
 
-  </head>
-  <body>
-    <h3>Welcome to Embark!</h3>
-    <p>See the <a href="https://github.com/iurimatias/embark-framework/wiki">Wiki</a> to see what you can do with Embark!</p>
+</head>
+<body>
 
-    <div>
-        File Upload:
-      <input type="file" id="fileUpload" onchange="loadFile(this)">
-      <img id="uploadedImage">
+<!-- Loader -->
+<div class="se-pre-con"></div>
+
+<!-- Navigation bar -->
+<div class="ui fixed menu" id="main-nav-bar">
+  <div class="ui container">
+    <a href="#" class="header item">
+      <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto
+    </a>
+
+    </div>
+    <div class="ui container margin-container-box">
+        <div class="ui icon input wide-search" id="location-input">
+            <input type="text" placeholder="Search by Location" name="search-location" id="search-location">
+            <i class="search icon link"></i>
+        </div>
+        <!-- <div class="ui transparent icon input" id="location-input">
+          <input class="prompt" type="text" placeholder="Search ..." id="search-location">
+          <i class="search link icon"></i>
+        </div> -->
+        <div class="ui fluid input" id="tags-input" style="display: none;">
+            <select class="ui search dropdown wide-search" id="search-tags" multiple="">
+              <option value="">Search Tags</option>
+
+            </select>
+        </div>
+        &nbsp;
+        <!-- <div class="ui input">
+            <button class="ui inverted teal button" id="main-search-btn">Search</button>
+        </div> -->
+    </div>
+    <div class="ui container margin-container-box" id="search-query-wrapper">
+        <div class="ui large buttons">
+          <button class="ui button inverted teal toggle s-query active-selected" search-data="location" onclick="switchToLocationView();">Location</button>
+          <div class="or"></div>
+          <button class="ui button inverted teal toggle s-query" search-data="tags" onclick="switchToTagView();">Tags</button>
+        </div>
+        <!-- <div class="ui buttons">
+          <button class="ui button search-toggle" search-data="location">Location</button>
+          <button class="ui button search-toggle" search-data="tags">Tags</button>
+        </div> -->
+    </div>
+    <div class="ui container margin-container-box">
+        <button class="ui inverted teal button" id="my-photos-btn">My Photos</button>
+        <button class="ui inverted teal button" id="upload-btn">Upload Photo</button>
+        <!-- <div class="ui" id="settings-btn-wrapper">
+          <div class="ui right pointing dropdown" id="settings-gear">
+            <i class="inverted setting icon" id="settings-btn"></i>
+            <div class="menu">
+              <div class="item" onclick="showRewardModal();">My Rewards</div>
+              <div class="item">Profile</div>
+              <div class="item">Settings</div>
+              <div class="item">Logout</div>
+            </div>
+          </div>
+        </div> -->
+        <!-- <button class="ui inverted teal button" id="settings-btn"><i class="setting icon"></i></button> -->
+        <!-- <div class="ui right dropdown item">
+          <i class="inverted setting icon" id="settings-btn"></i>
+          <div class="menu">
+            <div class="item" onclick="showRewardModal();">My Rewards</div>
+            <div class="item">Profile</div>
+            <div class="item">Settings</div>
+            <div class="item">Logout</div>
+          </div>
+        </div>
+      </div> -->
+      <!-- <button class="ui inverted teal button" id="settings-btn"><i class="setting icon"></i></button> -->
+      <!-- <div class="ui right dropdown item">
+        <i class="inverted setting icon" id="settings-btn"></i>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div class="item">Settings</div>
+          <div class="item">My Rewards</div>
+          <div class="divider"></div>
+          <div class="item">Separated Link</div>
+          <div class="divider"></div>
+          <div class="item">About</div>
+          <div class="item">Action</div>
+          <div class="item">Another Action</div>
+          <div class="divider"></div>
+          <div class="item">Separated Link</div>
+        </div>
+      </div> -->
+  </div>
+</div>
+
+<!-- Main Container -->
+<div id="content" class="ui main container">
+    <div class="ui grid">
+        <div class="nine wide column pad-top-bottom-zero" id="left-main-wrapper" style="margin-top: 75px;">
+            <div id="map-first"></div>
+        </div>
+        <div class="seven wide column" id="right-main-wrapper">
+            <div class="ui container">
+              <div class="sixteen wide column" style="padding-right:30px">
+                <div class="ui large header" style="padding-top: 10px;display: inline-block;">Photos</div>
+                <div class="ui right floated pagination menu">
+                  <a class="icon item" onclick="prevPage();">
+                    <i class="left arrow icon"></i>
+                  </a>
+                  <a class="item">
+                    <span>1</span>
+                    /
+                    <span>10</span>
+                  </a>
+                  <a class="icon item" onclick="nextPage();">
+                    <i class="right arrow icon"></i>
+                  </a>
+                </div>
+              </div>
+
+              <div class="ui link three stackable cards" id="image-cards">
+                <div class="card hidden animated">
+                  <div class="image">
+                    <img src="#">
+                  </div>
+                  <div class="content" onclick="bounceMarkerCaller(this);">
+                    <div class="header">Caption</div>
+                    <div class="meta">
+                      <a>User Name</a>
+                    </div>
+                  </div>
+                  <div class="extra content">
+                    <i class="heart outline like icon" onclick="likeClicked(this);"></i>
+                    <span>0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 
 
-    <div>
-      <input type="text" id="hashUrl">
-      <button onclick="loadImage(getElementById('uploadedImage'), getElementById('hashUrl').value);">Load Image</button>
+<div class="ui modal" id="my-photos-modal">
+  <div class="image content">
+    <div id="my-photos-div" style="width:100%" class="fotorama"
+      data-width="100%"
+      data-minwidth="400"
+      data-maxwidth="1000"
+      data-minheight="400"
+      data-maxheight="500"
+      data-ratio="800/600"
+      data-nav="thumbs"
+      data-allowfullscreen="true"
+      data-transition="crossfade"
+      data-loop="true"
+      data-keyboard="true"
+      data-auto="false">
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Upload Modal -->
+<div class="ui large modal" id="upload-photo-modal">
+  <i class="close icon"></i>
+  <div class="header">Upload Photo</div>
+  <div class="description">
+    <!-- Header -->
+    <!--TODO Add completed marker-->
+    <div class="ui header">
+      <div class="ui top attached steps" id="tab-menu-upload">
+        <div class="step item upload-tab-btn active" id="upload-first-tb" data-tab="first">
+          <i class="photo icon"></i>
+          <div class="content">
+            <div class="title">Choose/ Edit Photo</div>
+            <div class="description">Choose and Edit your photo</div>
+          </div>
+        </div>
+        <div class="step item upload-tab-btn disabled" id="upload-second-tb" data-tab="second">
+          <i class="write icon"></i>
+          <div class="content">
+            <div class="title">Fill-in Details</div>
+            <div class="description">Fill details for the photo</div>
+          </div>
+        </div>
+        <div class="step item upload-tab-btn disabled" id="upload-third-tb" data-tab="third">
+          <i class="upload icon"></i>
+          <div class="content">
+            <div class="title">Confirm Upload</div>
+            <div class="description">Verify and upload photo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Content box -->
+    <div class="ui container stackable center aligned grid" id="upload-container">
+      <div class="ui bottom attached tab upload-tab-content active" data-tab="first">
+        <div class="center aligned column">
+          <button type="button" class="huge ui teal button" style="margin: 60px;" id="image-upload-btn" />
+          <i class="camera retro icon"></i>  Choose Photo
+          </button>
+          <input type="file" id="image-upload" accept="image/*" value="Choose Photo" style="display: none;" />
+          <div id="image-wrapper"></div>
+        </div>
+      </div>
+
+
+      <div class="ui container tab upload-tab-content" data-tab="second" id="second-tab-content">
+        <div class="ui grid">
+          <div class="one wide column"></div>
+          <div class="seven wide column">
+            <!-- <img src="images/12.gif"> -->
+            <div id="map-second"></div>
+          </div>
+          <div class="seven wide column">
+            <div class="extra">
+               <form class="ui form container left aligned">
+                <div class="field">
+                  <label>Caption</label>
+                  <input name="caption" id="image-caption-upload" type="text" required>
+                </div>
+
+                <div class="field">
+                  <label>Location</label>
+                  <input type="text" name="location" id="image-location-upload" required />
+                </div>
+
+                <div class="field">
+                  <label>Tags (atmost 5)</label>
+                  <select name="skills" multiple="" id="tags-selector-upload" class="ui search fluid dropdown" required>
+                    <option value="" selected disabled>Skills</option>
+                  </select>
+                </div>
+                <div class="ui error message"></div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ui container tab upload-tab-content" data-tab="third" id="third-tab-content">
+        <div class="ui grid">
+          <div class="one wide column"></div>
+          <div class="seven wide column">
+            <img src="#" id="final-image">
+          </div>
+          <div class="seven wide column container left aligned" id="final-details">
+            <h3>Details: </h3>
+            <p id="final-caption"></p>
+            <p id="final-location"></p>
+            <div id="final-tags">
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="ui row">
+        <div class="ui ten column wide">
+
+          <!-- <button class="big ui teal button"><i class="long arrow left icon"></i> &nbsp; Previous</button> -->
+          <div class="ui red message" style="display: none;" id="upload-box-err"></div>
+          <button class="big ui teal button right floated" id="upload-next-btn">Next &nbsp; <i class="long arrow right icon"></i></button>
+          <button class="big ui red button right floated" id="upload-cancel-btn">Cancel</button>
+        </div>
+      </div>
+
     </div>
 
 
-    <div id="log">
-      This is log
+  </div>
+</div>
+
+<!-- Reward Modal -->
+<div class="ui inverted modal" id="reward-modal">
+  <i class="close icon"></i>
+  <div class="header">Hey there!</div>
+  <div class="content">Your Rewards: </div>
+  <div class="actions">
+    <div class="ui green approve button">Accept</div>
+    <div class="ui red cancel button">Reject</div>
+  </div>
+</div>
+
+
+<div class="ui message transition hidden">
+  <i class="close icon"></i>
+  <div class="header">
+    Welcome back!
+  </div>
+  <p>This is a special notification which you can dismiss if you're bored with it.</p>
+</div>
+
+<!-- Individual Image Modal -->
+<div class="ui modal" id="single-image-modal">
+  <i class="close icon"></i>
+  <div class="content" align="center">
+    <img src="#" id="photo-modal-image" style="width: 100%;">
+  </div>
+</div>
+
+<!-- Delete Image  -->
+<div class="ui modal" id="delete-image-modal">
+  <i class="close icon"></i>
+  <div class="header">
+    Delete Image
+  </div>
+  <div class="image content">
+    <div class="ui medium image">
+      <img src="#">
     </div>
-    <!-- build:js js/embark.js -->
-    <script src="js/app.js"></script>
-    <!-- endbuild -->
+    <div class="description">
+      <div class="ui header">You have selected to delete this photo.</div>
+      <p>Please note that once deleted, this image cannot be recovered.</p>
+      <p>Are you sure want to delete this image?</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button">
+      Nope
+    </div>
+    <div class="ui positive right labeled icon button">
+      Yes, I am sure!
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>
 
-    <!-- build:js js/vendor.js -->
-    <script src="components/jquery/dist/jquery.min.js"></script>
-    <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- endbuild -->
-
-    <!-- build:js js/base.js -->
-    <script src="js/helper.js"></script>
-    <script src="js/index.js"></script>
-    <script src="js/script.js"></script>
-    <!-- endbuild -->
 
 
-    <script>
-        function loadFile(element){
-            files = element.files;
-            // FileReader support
-            if (FileReader && files && files.length) {
-                var fr = new FileReader();
-                fr.onload = function () {
-                    document.getElementById('uploadedImage').src = fr.result;
+<div class="hidden" style="display: none">
+  <img id="my-images-template" src="" data-caption="Caption here!">
+</div>
 
-                    addImage(document.getElementById('uploadedImage'), 'This is caption', 100,100,100).then(function(data){
-                        console.log(data);
-                        $('#log').append('<br>' + data.hash);
-                    }, function(err){
-                        $('#log').append('<br>' + err);
-                    });
-                };
-                fr.readAsDataURL(files[0]);
-            }
+<!-- build:js js/embark.js -->
+<script src="js/app.js"></script>
+<!-- endbuild -->
 
-            // Not supported
-            else {
-                // fallback -- perhaps submit the input to an iframe and temporarily store
-                // them on the server until the user's session ends.
-            }
-        }
-    </script>
+<!-- build:js js/vendor.js -->
+<script src="components/v3-utility-library/markerclusterer/src/markerclusterer.js"></script>
+<script src="components/jquery/dist/jquery.min.js"></script>
+<script src="components/semantic/dist/semantic.js"></script>
+<script src="components/semanticUiAlert/Semantic-UI-Alert.js"></script>
+<script src="components/fabric/dist/fabric.min.js"></script>
+<script src="components/darkroom/build/darkroom.js"></script>
+<script src="components/gmaps/gmaps.js"></script>
+<script src="components/fotorama/fotorama.js"></script>
+<!-- endbuild -->
 
-  </body>
+<!-- build:js js/base.js -->
+
+
+<script src="js/helper.js"></script>
+<script src="js/index.js"></script>
+<script src="js/script.js"></script>
+<script src="js/connector.js"></script>
+<script type="text/javascript">
+var center_map;
+var upload_map;
+var image_caption;
+var image_location;
+var image_tags;
+var image_latitude;
+var image_longitude;
+var marker_center;
+var marker_upload;
+</script>
+<!-- endbuild -->
+
+<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI&callback=initMap" async defer></script>
+
+</body>
 </html>
