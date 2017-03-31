@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="components/darkroom/build/darkroom.css">
 <link rel="stylesheet" href="components/nprogress/nprogress.css">
 <link href="components/fotorama/fotorama.css" rel="stylesheet">
+<link href="components/animate.css/animate.min.css" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
 <!-- endbuild -->
 
@@ -22,7 +23,7 @@
 <body>
 
 <!-- Loader -->
-<div class="se-pre-con"></div>
+<!--<div class="se-pre-con"></div>-->
 
 <!-- Navigation bar -->
 <div class="ui fixed menu" id="main-nav-bar">
@@ -128,11 +129,11 @@
               </div>
 
               <div class="ui link three stackable cards" id="image-cards">
-                <div class="card hidden">
-                  <div class="image">
+                <div class="card hidden animated">
+                  <div class="ui centered image">
                     <img src="#">
                   </div>
-                  <div class="content">
+                  <div class="content" onclick="bounceMarkerCaller(this);">
                     <div class="header">Caption</div>
                     <div class="meta">
                       <a>User Name</a>
@@ -313,7 +314,7 @@
   <div class="content">
     <div class="ui grid">
       <div class="sixteen wide column">
-        
+
         <h4>Storage Type: IPFS</h4>
 
         <div class="ui form">
@@ -343,7 +344,7 @@
             </div>
           </div>
         </div>
-        
+
       </div>
     </div>
 

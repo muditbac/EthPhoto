@@ -198,7 +198,6 @@ var clusters=cluster.clusters_;
       var dom_ = clusters[i].clusterIcon_.div_;
       if(clusters[i].markers_.indexOf(marker)>-1){
         //the marker has been found, do something with it
-        console.log(clusters[i]);
         $(dom_).removeClass().addClass('bounce animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
             $(this).removeClass();
         });
@@ -476,33 +475,33 @@ semantic.ready = function() {
 disable_map_event=false;
 
 function switchToTagView(){
-  old_center = center_map.getCenter();
-  old_zoom = center_map.getZoom();
+  // old_center = center_map.getCenter();
+  // old_zoom = center_map.getZoom();
   disable_map_event = true;
-  center_map.map.setOptions({
-    draggable: false,
-    scrollwheel: false,
-    panControl: false,
-    maxZoom: 5,
-    minZoom: 5,
-    zoom: 5,
-    // center: latlng,
-  });
+  // center_map.map.setOptions({
+  //   draggable: false,
+  //   scrollwheel: false,
+  //   panControl: false,
+  //   maxZoom: 5,
+  //   minZoom: 5,
+  //   zoom: 5,
+  //   // center: latlng,
+  // });
   setTimeout(function(){
     $('#search-tags').trigger('change');
   }, 0);
 }
 function switchToLocationView(){
   disable_map_event = false;
-  center_map.map.setOptions({
-    draggable: true,
-    scrollwheel: true,
-    panControl: true,
-    maxZoom: 20,
-    minZoom: 1,
-  });
-  center_map.setZoom(old_zoom);
-  center_map.map.setCenter(old_center);
+  // center_map.map.setOptions({
+  //   draggable: true,
+  //   scrollwheel: true,
+  //   panControl: true,
+  //   maxZoom: 20,
+  //   minZoom: 1,
+  // });
+  // center_map.setZoom(old_zoom);
+  // center_map.map.setCenter(old_center);
 }
 
 // attach ready event
@@ -725,7 +724,8 @@ function updateImageInfo(jimage_obj, index){
 }
 
 
-function refreshImages(){
+function refreshImages(hide_other_markers){
+
   // use current_images
     // var temp = $(current_images).not(shown_images).get();
   for (var i in current_images){
@@ -738,6 +738,7 @@ function refreshImages(){
           images_dom[index].removeClass('hidden');
           // images_dom[index].transition('fly left');
         }
+        // markers[index].setMap(center_map.map);
 
       } else {
         var dom = template_image.clone();
@@ -755,6 +756,8 @@ function refreshImages(){
     var index = toHide[i];
     if (index in images_dom){
       images_dom[index].addClass('hidden');
+      if (hide_other_markers)
+        markers[index].setMap(null);
     }
     // images_dom[index].transition('fly left');
   }
@@ -1035,11 +1038,11 @@ function showRewardModal() {
 }
 
 function showAboutModal() {
-  $("#about-modal").modal('show');
+    $("#about-modal").modal('show');
 }
 
 function showSettingsModal() {
-  $("#settings-modal").modal('show');
+    $("#settings-modal").modal('show');
 }
 
 function showDeleteModal(index){
@@ -1055,6 +1058,7 @@ function deleteImage(index){
   Controller.deleteImage(index).then(function(){
     alert("Image Deleted Successfully", 'The image has been successfully removed from Ethereum network');
     markers[index].setMap(null);
+    delete markers[index];
     google.maps.event.trigger(center_map.map, 'bounds_changed');
   }, function(err){
     alertErr("Error deleting image!", '');
@@ -1074,9 +1078,9 @@ NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed:
 
 
 $("#set-ipfs").on('click', function(){
-  var current_ipfs = $("#ipfs-data").val().trim();
+    var current_ipfs = $("#ipfs-data").val().trim();
 });
 
 $("#set-rpc").on('click', function(){
-  var current_rpc = $("#rpc-data").val().trim();
+    var current_rpc = $("#rpc-data").val().trim();
 });
