@@ -7,12 +7,12 @@ var tags = ['Abstract', 'Accessories', 'Action', 'Active', 'Adidas', 'Adidas fas
 (function(){
     $.each(tags, function (i, item) {
         $('#search-tags').append($('<option>', {
-            value: i+1,
-            text : item
+            'data-value': i+1,
+            'text' : item
         }));
         $('#tags-selector-upload').append($('<option>', {
-            value: i+1,
-            text : item
+            'data-value': i+1,
+            'text' : item
         }));
     });
 })();
