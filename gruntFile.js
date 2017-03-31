@@ -83,6 +83,12 @@ module.exports = function(grunt) {
                 cwd: 'app/components/semantic/dist/themes/default/assets/fonts/',
                 src: '**',
                 dest: 'dist/css/themes/default/assets/fonts/'
+            },
+            fotorama: {
+                expand: true,
+                cwd: 'app/components/fotorama/',
+                src: '*.png',
+                dest: 'dist/components/fotorama/'
             }
         },
 

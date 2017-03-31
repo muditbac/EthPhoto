@@ -172,9 +172,10 @@ html, body {
 .center-crop-image {
   background-repeat: no-repeat;
   width: 100%;
-  height: 250px;
+  /*height: 250px;*/
   background-size: cover !important;
   background-position: center !important;
+  height: calc(40% - 100px) !important;
 }
 
 #single-image-modal img {
