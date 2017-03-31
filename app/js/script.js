@@ -180,6 +180,9 @@ toAscii = function(s){
 
 function bounceMarkerCaller(element){
   var index = parseInt($(element).parent().attr('value'));
+  if (!center_map.map.getBounds().contains(markers[index].getPosition())){
+    // TODO Show marker here
+  }
   bounceMarker(markers[index]);
 }
 
@@ -441,7 +444,7 @@ $('#search-tags').on('change', function(e){
     all_images = data
     current_images = data.slice(0,9);
     changePagination(1, Math.ceil(data.length/9));
-    processMapChanges();
+    processMapChanges(true);
 
   }, function(err){
     alertErr("Cannot connect to Ethereum Network!");
@@ -507,6 +510,9 @@ function switchToLocationView(){
   // });
   // center_map.setZoom(old_zoom);
   // center_map.map.setCenter(old_center);
+  setTimeout(function(){
+    google.maps.event.trigger(center_map.map, 'bounds_changed');
+  }, 0);
 }
 
 // attach ready event
@@ -613,6 +619,11 @@ $("#upload-next-btn").on('click', function(){
   } else showUploadBoxError("Please try again!");
 });
 
+function updateUI(){
+  google.maps.event.trigger(center_map.map, 'bounds_changed');
+  $('#search-tags').trigger('change');
+}
+
 function handleUploadImage() {
   /*image_caption, image_location, image_tags <array>, image_latitude, image_longitude, getImageDataURL() <Imags's data URL>
   is available here*/
@@ -623,7 +634,7 @@ function handleUploadImage() {
       // TODO Change here for after success events
       alert("Image Successfully Uploaded!", "The image has been successfully uploaded.");
       $("#upload-cancel-btn").trigger("click");
-      google.maps.event.trigger(center_map.map, 'bounds_changed');
+      updateUI();
 
       slider.push({img: getUrl(data.hash)});
 
@@ -709,11 +720,8 @@ function updateImageInfo(jimage_obj, index){
   // jimage_obj.find("img").attr('src', data[0]);
   jimage_obj.find('.center-crop-image')
     .css('background-image', 'url(' + data[0] + ')');
-
   jimage_obj.find('.header').html(data[1]);
-
   jimage_obj.find('.meta').html(username[data[6]]);
-
   jimage_obj.find('.extra.content > span').html(data[5].toNumber());
   jimage_obj.attr("value", index);
 
@@ -740,21 +748,28 @@ function updateImageInfo(jimage_obj, index){
 }
 
 
-function refreshImages(hide_other_markers){
+function refreshImages(set_bound){
 
   // use current_images
     // var temp = $(current_images).not(shown_images).get();
+  var bounds = new google.maps.LatLngBounds();
+
   for (var i in current_images){
     var index = current_images[i];
+    // markers[index].setMap(center_map.map);
     if ((index in images) && (images[index][6] in username)){
-      if (index in images_dom){
+      markers[index].setVisible(true);
+      bounds.extend(markers[index].getPosition());
 
+      if (cluster.markers_.indexOf(markers[index])<0)
+        cluster.addMarker(markers[index]);
+
+      if (index in images_dom){
         if (images_dom[index].hasClass('hidden')){
           images_dom[index].appendTo("#image-cards");
           images_dom[index].removeClass('hidden');
           // images_dom[index].transition('fly left');
         }
-        // markers[index].setMap(center_map.map);
 
       } else {
         var dom = template_image.clone();
@@ -772,12 +787,15 @@ function refreshImages(hide_other_markers){
     var index = toHide[i];
     if (index in images_dom){
       images_dom[index].addClass('hidden');
-      if (hide_other_markers)
-        markers[index].setMap(null);
+      // if (hide_other_markers)
+      //   markers[index].setMap(null);
     }
     // images_dom[index].transition('fly left');
   }
+  // cluster.repaint()
   shown_images = current_images;
+  if (set_bound) center_map.map.fitBounds(bounds);
+
   // loop over indexes
   //   check if image exists in loaded_images
         // check if dom created
@@ -787,8 +805,17 @@ function refreshImages(hide_other_markers){
 }
 
 
-function processMapChanges(){
-  refreshImages();
+function processMapChanges(hide_other_markers){
+  if (hide_other_markers){
+    for (i in markers){
+      if (markers.hasOwnProperty(i)){
+        markers[i].setVisible(false);
+        cluster.removeMarker_(markers[i]);
+      }
+    }
+    cluster.repaint();
+  }
+  refreshImages(hide_other_markers);
   $.each(current_images, function(i, id){
     if (!(id in markers)){
       getImage(id).then(function(data){
@@ -804,12 +831,12 @@ function processMapChanges(){
 
           cluster.addMarker(markers[id]);
           if (data[6] in username){
-            refreshImages();
+            refreshImages(hide_other_markers);
           } else {
             UserList.getUserInfo(data[6]).then(function(name){
               var name = toAscii(name[0]);
               username[data[6]] = name;
-              refreshImages();
+              refreshImages(hide_other_markers);
             }, function(err){
               alertInfo("Cannot load usernames");
             });
@@ -867,7 +894,8 @@ function initCenterMap(){
 
   var options = {
     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-    minimumClusterSize: min_cluster_size
+    minimumClusterSize: min_cluster_size,
+    ignoreHidden: true
   }
 
   cluster =  new MarkerClusterer(center_map.map, markers, options);
@@ -1081,6 +1109,7 @@ function deleteImage(index){
   Controller.deleteImage(index).then(function(){
     alert("Image Deleted Successfully", 'The image has been successfully removed from Ethereum network');
     markers[index].setMap(null);
+    cluster.removeMarker_(markers[index]);
     delete markers[index];
     google.maps.event.trigger(center_map.map, 'bounds_changed');
   }, function(err){
@@ -1096,9 +1125,8 @@ function reportImage(index){
 }
 
 //Individual image modal
-$("#image-cards").on('click', ".card", function(){
-  var index = parseInt($(this).attr('value'));
-  console.log(index);
+$("#image-cards").on('click', ".center-crop-image", function(){
+  var index = parseInt($(this).parent().attr('value'));
   var img_src = images[index][0];
   $("#photo-modal-image").attr('src', img_src);
   $('#single-image-modal').modal('show');
