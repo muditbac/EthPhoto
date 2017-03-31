@@ -294,6 +294,7 @@ function loadMyInfo(){
     my.username = toAscii(data[0]);
     myimages = data[1];
     my.reward = data[2].toNumber();
+    setReward(my.reward);
 
     while (my.username=="" || my.username==null){
       my.username = prompt("Please Set Username")
@@ -320,6 +321,10 @@ function loadMyInfo(){
   }, function(err){
 
   })
+}
+
+function setReward(reward) {
+  $("#my-reward").html(reward);
 }
 
 function isOwnerImage(index){
