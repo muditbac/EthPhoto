@@ -12,10 +12,11 @@
 <link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
 <link rel="stylesheet" href="components/semanticUiAlert/Semantic-UI-Alert.css">
 <link rel="stylesheet" href="components/darkroom/build/darkroom.css">
-<link href="components/fotorama/fotorama.css" rel="stylesheet">
-<link href="components/animate.css/animate.min.css" rel="stylesheet">
+<link rel="stylesheet" href="components/fotorama/fotorama.css">
+<link rel="stylesheet" href="components/animate.css/animate.min.css">
+<link rel="stylesheet" href="components/nprogress/nprogress.css">
 <link rel="stylesheet" href="css/main.css">
-<!-- <link rel="stylesheet" href="css/googlefonts.css"> -->
+<link rel="stylesheet" href="css/googlefonts.css">
 <!-- endbuild -->
 
 
@@ -43,8 +44,8 @@
           <i class="search link icon"></i>
         </div> -->
         <div class="ui fluid input" id="tags-input" style="display: none;">
-            <select class="ui search dropdown wide-search" id="search-tags" multiple="">
-              <option value="">Search Tags</option>
+            <select multiple="" name="tags" class="ui search dropdown wide-search" id="search-tags" >
+              <option value="" selected disabled>Search Tags</option>
 
             </select>
         </div>
@@ -438,6 +439,7 @@
 <script src="components/semanticUiAlert/Semantic-UI-Alert.js"></script>
 <script src="components/gmaps/gmaps.js"></script>
 <script src="components/v3-utility-library/markerclusterer/src/markerclusterer.js"></script>
+<script src="components/nprogress/nprogress.js"></script>
 <script src="components/fabric/dist/fabric.min.js"></script>
 <script src="components/darkroom/build/darkroom.js"></script>
 <script src="components/fotorama/fotorama.js"></script>

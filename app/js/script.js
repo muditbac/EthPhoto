@@ -237,7 +237,7 @@ alert = function(message, body){
     time: 5
   });
 };
-alertErr = function(message, body){
+alertErr = function(message, body = "Please try again after some time,.."){
   $.uiAlert({
     textHead: message,
     text: body,
@@ -248,7 +248,7 @@ alertErr = function(message, body){
     time: 5
   });
 };
-alertInfo = function(message, body){
+alertInfo = function(message, body = ""){
   $.uiAlert({
     textHead: message,
     text: body,
@@ -423,18 +423,15 @@ $("#image-upload").on('change', function(evt){
 
 // Completely new scripts
 $('#search-tags').dropdown({
-  maxSelections: 2
+  maxSelections: 3,
+  minCharacters: 2,
+  onChange: searchTagsChanged
 });
 
-// Completely new scripts
-$('#tags-selector-upload').dropdown({
-  maxSelections: 5
-});
-
-$('#search-tags').on('change', function(e){
-  e.preventDefault();
-  var tags = []
-  $.each($('#search-tags').val(), function(i, val){
+function searchTagsChanged(){
+  var raw_tags = $('#search-tags').val();
+  var tags = [];
+  $.each(raw_tags, function(i, val){
     tags.push(parseInt(val));
   });
   console.log(tags);
@@ -449,9 +446,12 @@ $('#search-tags').on('change', function(e){
   }, function(err){
     alertErr("Cannot connect to Ethereum Network!");
   });
+}
 
+$('#tags-selector-upload').dropdown({
+  maxSelections: 5,
+  minCharacters: 2
 });
-
 
 semantic = {};
 // ready event
@@ -496,8 +496,9 @@ function switchToTagView(){
   //   // center: latlng,
   // });
   setTimeout(function(){
-    $('#search-tags').trigger('change');
-  }, 0);
+    // $('#search-tags').trigger('change');
+    searchTagsChanged();
+  }, 10);
 }
 function switchToLocationView(){
   disable_map_event = false;
@@ -1134,7 +1135,7 @@ $("#image-cards").on('click', ".center-crop-image", function(){
 
 // Progress Bar
 // Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
-// NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
+NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
 
 
 $("#set-ipfs").on('click', function(){
