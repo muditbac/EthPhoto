@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-<link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'>
+<!-- <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'> -->
 
 
 <!-- build:css css/app.css -->
@@ -130,8 +130,9 @@
 
               <div class="ui link three stackable cards" id="image-cards">
                 <div class="card hidden animated">
-                  <div class="ui centered image">
-                    <img src="#">
+                  <div class="ui centered image center-crop-image" >
+                    <!-- <img src="#"> -->
+                    <!-- <div class="image" style=""> -->
                   </div>
                   <div class="content" onclick="bounceMarkerCaller(this);">
                     <div class="header">Caption</div>
@@ -140,8 +141,9 @@
                     </div>
                     </div>
                     <div class="extra content">
-                      <i class="heart outline like icon" onclick="likeClicked(this);"></i>
+                      <i class="heart outline like icon like-button" onclick="likeClicked(this);"></i>
                       <span>0</span>
+                      <i class="warning sign icon right floated report-button" onclick="reportClicked(this);"></i>
                     </div>
                   </div>
                 </div>
@@ -366,7 +368,7 @@
 <div class="ui modal" id="single-image-modal">
   <i class="close icon"></i>
   <div class="content" align="center">
-    <img src="#" id="photo-modal-image">
+    <img src="#" id="photo-modal-image" style="max-width: 100%;max-height: 500px;">
   </div>
 </div>
 
@@ -397,6 +399,31 @@
   </div>
 </div>
 
+<!-- Report Image  -->
+<div class="ui modal" id="report-image-modal">
+  <i class="close icon"></i>
+  <div class="header">
+    Report Image
+  </div>
+  <div class="image content">
+    <div class="ui medium image">
+      <img src="#">
+    </div>
+    <div class="description">
+      <div class="ui header">You have selected to Report this photo.</div>
+      <p>Are you sure want to report this image?</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button">
+      Nope
+    </div>
+    <div class="ui positive right labeled icon button">
+      Yes, I am sure!
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>
 
 
 <div class="hidden" style="display: none">

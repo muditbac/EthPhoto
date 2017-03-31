@@ -160,13 +160,18 @@ html, body {
   margin: auto;
 }
 
-
 .hidden {
   display: none !important;
 }
 
-
-
 .ui-alert-content-bottom-left {
   bottom: 20px !important;
+}
+
+.center-crop-image {
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 250px;
+  background-size: cover !important;
+  background-position: center;
 }

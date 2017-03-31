@@ -693,10 +693,18 @@ function deleteClicked(element){
   var index = parseInt(obj.attr("value"));
   showDeleteModal(index);
 }
+function reportClicked(element){
+  var obj = $(element).parent().parent();
+  var index = parseInt(obj.attr("value"));
+  showReportModal(index);
+}
 
 function updateImageInfo(jimage_obj, index){
   var data = images[index];
-  jimage_obj.find("img").attr('src', data[0]);
+  // jimage_obj.find("img").attr('src', data[0]);
+  jimage_obj.find('.center-crop-image')
+    .css('background-image', 'url(' + data[0] + ')');
+
   jimage_obj.find('.header').html(data[1]);
 
   jimage_obj.find('.meta').html(username[data[6]]);
@@ -705,16 +713,19 @@ function updateImageInfo(jimage_obj, index){
   jimage_obj.attr("value", index);
 
   if (isOwnerImage(index)){
-    jimage_obj.find('i')
+    jimage_obj.find('i.like-button')
       .removeClass('heart')
       .removeClass('like')
       .addClass('trash')
       .attr('onclick', 'deleteClicked(this)');
+
+    jimage_obj.find('i.report-button')
+      .remove();
   }
   else {
     VotingList.isUpvoted(index, false).then(function(isUpvoted){
       if (isUpvoted) {
-        changeToLiked(jimage_obj.find('i'));
+        changeToLiked(jimage_obj.find('i.like-button'));
 
       }
     }, function(err){
@@ -781,6 +792,7 @@ function processMapChanges(){
           markers[id] = center_map.addMarker({
             lat: data[2],
             lng: data[3],
+            icon: '../images/logo32.png'
           });
 
           markers[id].addListener('click', bounceImageCard.bind(this, id));
@@ -863,7 +875,7 @@ function initCenterMap(){
   var center = center_map.getCenter();
   marker_center = center_map.addMarker({
     lat: center.lat(),
-    lng: center.lng()
+    lng: center.lng(),
   })
 
   GMaps.geolocate({
@@ -1037,13 +1049,6 @@ function showRewardModal() {
   $("#reward-modal").modal('show');
 }
 
-function showAboutModal() {
-    $("#about-modal").modal('show');
-}
-
-function showSettingsModal() {
-    $("#settings-modal").modal('show');
-}
 
 function showDeleteModal(index){
   $('#delete-image-modal > div.image.content > div.ui.medium.image > img')
@@ -1052,7 +1057,13 @@ function showDeleteModal(index){
     .attr('onclick', 'deleteImage('+index+')');
   $('#delete-image-modal').modal('show');
 }
-
+function showReportModal(index){
+  $('#report-image-modal > div.image.content > div.ui.medium.image > img')
+    .attr('src', images[index][0]);
+  $('#report-image-modal > div.actions > div.ui.positive.right.labeled.icon.button')
+    .attr('onclick', 'reportImage('+index+')');
+  $('#report-image-modal').modal('show');
+}
 
 function deleteImage(index){
   Controller.deleteImage(index).then(function(){
@@ -1064,23 +1075,19 @@ function deleteImage(index){
     alertErr("Error deleting image!", '');
   })
 }
+function reportImage(index){
+  Controller.reportImage(index).then(function(){
+    alert("Image Reported Successfully", 'The image has been reported on Ethereum network');
+  }, function(err){
+    alertErr("Error reproting image!", '');
+  })
+}
 
 //Individual image modal
-$("#image-cards").on('click', ".image", function(){
-  var img_src = $(this).children("img").attr('src');
+$("#image-cards").on('click', ".card", function(){
+  var index = parseInt($(this).attr('value'));
+  console.log(index);
+  var img_src = images[index][0];
   $("#photo-modal-image").attr('src', img_src);
   $('#single-image-modal').modal('show');
-});
-
-// Progress Bar
-// Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
-NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
-
-
-$("#set-ipfs").on('click', function(){
-    var current_ipfs = $("#ipfs-data").val().trim();
-});
-
-$("#set-rpc").on('click', function(){
-    var current_rpc = $("#rpc-data").val().trim();
 });
