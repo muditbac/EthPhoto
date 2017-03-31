@@ -552,6 +552,7 @@ $("#my-photos-btn").on('click', function(){
     $('#my-photos-modal').modal('show');
     if (first_open) {
       slider = $('.fotorama').fotorama();
+      fotorama = slider.data('fotorama');
       first_open=false;
     }
     $('#my-photos-modal').modal('refresh');
@@ -622,7 +623,7 @@ $("#upload-next-btn").on('click', function(){
 
 function updateUI(){
   google.maps.event.trigger(center_map.map, 'bounds_changed');
-  $('#search-tags').trigger('change');
+  searchTagsChanged();
 }
 
 function handleUploadImage() {
@@ -637,7 +638,7 @@ function handleUploadImage() {
       $("#upload-cancel-btn").trigger("click");
       updateUI();
 
-      slider.push({img: getUrl(data.hash)});
+      fotorama.push({img: getUrl(data.hash), caption: image_caption});
 
   }, function (err){
       $("#upload-next-btn").removeClass('disabled loading');
