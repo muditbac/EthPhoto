@@ -72,7 +72,9 @@
 /*Completely new styles*/
 #main-nav-bar {
   /*cornflowerblue*/
-  background: #6495ed;
+  /*background: #6495ed;*/
+  /*Maroon*/
+  background: maroon;
 }
 .margin-container-box {
   margin: 10px;
@@ -148,10 +150,11 @@ html, body {
 #final-image {
   max-width: 100%;
   max-height: 100%;
+  max-height: 350px;
 }
 #settings-btn {
   cursor: pointer;
-  font-size: 24px;
+  font-size: 20px;
   margin: auto;
 }
 #settings-btn-wrapper {
@@ -167,4 +170,12 @@ html, body {
 
 .ui-alert-content-bottom-left {
   bottom: 20px !important;
+}
+
+#single-image-modal img {
+  max-height: 500px;
+}
+
+#my-reward {
+  font-weight: bold;
 }

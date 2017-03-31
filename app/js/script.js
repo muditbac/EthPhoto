@@ -10,6 +10,8 @@ var shown_images = [];
 
 var my = {}
 
+var min_cluster_size = 2;
+
 var map_styles = [
   {
     "elementType": "geometry",
@@ -176,6 +178,51 @@ toAscii = function(s){
 };
 
 
+function bounceMarkerCaller(element){
+  var index = parseInt($(element).parent().attr('value'));
+  bounceMarker(markers[index]);
+}
+
+
+function bounceMarker(marker){
+
+//iterate over all clusters
+var clusters=cluster.clusters_;
+  for(var i = 0; i < clusters.length;++i){
+
+    if(clusters[i].markers_.length >= min_cluster_size && clusters[i].clusterIcon_.div_){
+
+        // clusters[i].clusterIcon_.div_ is the HTMLElement
+        // that contains the wanted clusterIcon,
+        // you should at first reset here recently applied changes
+      var dom_ = clusters[i].clusterIcon_.div_;
+      if(clusters[i].markers_.indexOf(marker)>-1){
+        //the marker has been found, do something with it
+        $(dom_).removeClass().addClass('bounce animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+            $(this).removeClass();
+        });
+        return true;
+      }
+    }
+    else {
+      if(clusters[i].markers_.indexOf(marker)>-1){
+        //the marker has been found, do something with it
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function(){ marker.setAnimation(null); }, 750);
+        console.log("found");
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function bounceImageCard(index){
+  images_dom[index].addClass('shake').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+      $(this).removeClass('shake');
+  });
+}
+
 alert = function(message, body){
   $.uiAlert({
     textHead: message,
@@ -247,6 +294,7 @@ function loadMyInfo(){
     my.username = toAscii(data[0]);
     myimages = data[1];
     my.reward = data[2].toNumber();
+    setReward(my.reward);
 
     while (my.username=="" || my.username==null){
       my.username = prompt("Please Set Username")
@@ -262,64 +310,8 @@ function loadMyInfo(){
   })
 }
 
-// Observe changes in modal content
-$('#my-photos-modal').modal({observeChanges: true});
-
-function generateMyPhotoSlider() {
-  images_data = [];
-  var photo_promises = [];
-  for(var i in myimages){
-    var index = myimages[i];
-    var p = getImage(index).then(function(data){
-      // Update Data here
-      var meta = {
-        img: data[0],
-        caption: data[1]
-      }
-      images_data.push(meta);
-    });
-    console.log(p);
-    photo_promises.push(p);
-  }
-  Promise.all(photo_promises).then(function() {
-    console.log("All my photos loaded");
-    slider = $('.fotorama')
-    .on('fotorama:show', function(e, fotorama, direct){
-      fotorama = $("#my-photos-div").data('fotorama');
-      console.log(fotorama);
-      if(photo_push_pending) {
-        photo_push_pending = false;
-        $.each(photo_push_pending_data, function(index, val) {
-          images_data.push(val);
-          fotorama.push(val);
-        });
-        fotorama.show('>');
-      }
-      if (photo_delete_pending) {
-        photo_delete_pending = false;
-        var ndata = images_data;
-        $.each(photo_delete_pending_data, function(index, val) {
-          removeItem(ndata,'img', val);
-        });
-        if (ndata.length == 0) {
-          $("my-photos-modal").modal('hide');
-          alertErr("No images found!", "You have not uploaded any photos");
-        } else {
-          fotorama.load(ndata);
-          images_data = ndata;
-          fotorama.show('>');
-        }
-      }
-      $("#my-photos-modal").modal('refresh');
-    })
-    .on('fotorama:ready', function(){
-      fotorama = $("#my-photos-div").data('fotorama');
-      fotorama.show('>');
-    })
-    .fotorama({
-      data: images_data
-    });
-  });
+function setReward(reward) {
+  $("#my-reward").html(reward);
 }
 
 var removeItem = function (object, key, value) {
@@ -486,33 +478,33 @@ semantic.ready = function() {
 disable_map_event=false;
 
 function switchToTagView(){
-  old_center = center_map.getCenter();
-  old_zoom = center_map.getZoom();
+  // old_center = center_map.getCenter();
+  // old_zoom = center_map.getZoom();
   disable_map_event = true;
-  center_map.map.setOptions({
-    draggable: false,
-    scrollwheel: false,
-    panControl: false,
-    maxZoom: 5,
-    minZoom: 5,
-    zoom: 5,
-    // center: latlng,
-  });
+  // center_map.map.setOptions({
+  //   draggable: false,
+  //   scrollwheel: false,
+  //   panControl: false,
+  //   maxZoom: 5,
+  //   minZoom: 5,
+  //   zoom: 5,
+  //   // center: latlng,
+  // });
   setTimeout(function(){
     $('#search-tags').trigger('change');
   }, 0);
 }
 function switchToLocationView(){
   disable_map_event = false;
-  center_map.map.setOptions({
-    draggable: true,
-    scrollwheel: true,
-    panControl: true,
-    maxZoom: 20,
-    minZoom: 1,
-  });
-  center_map.setZoom(old_zoom);
-  center_map.map.setCenter(old_center);
+  // center_map.map.setOptions({
+  //   draggable: true,
+  //   scrollwheel: true,
+  //   panControl: true,
+  //   maxZoom: 20,
+  //   minZoom: 1,
+  // });
+  // center_map.setZoom(old_zoom);
+  // center_map.map.setCenter(old_center);
 }
 
 // attach ready event
@@ -740,7 +732,8 @@ function updateImageInfo(jimage_obj, index){
 }
 
 
-function refreshImages(){
+function refreshImages(hide_other_markers){
+
   // use current_images
     // var temp = $(current_images).not(shown_images).get();
   for (var i in current_images){
@@ -753,6 +746,7 @@ function refreshImages(){
           images_dom[index].removeClass('hidden');
           // images_dom[index].transition('fly left');
         }
+        // markers[index].setMap(center_map.map);
 
       } else {
         var dom = template_image.clone();
@@ -770,6 +764,8 @@ function refreshImages(){
     var index = toHide[i];
     if (index in images_dom){
       images_dom[index].addClass('hidden');
+      if (hide_other_markers)
+        markers[index].setMap(null);
     }
     // images_dom[index].transition('fly left');
   }
@@ -794,6 +790,9 @@ function processMapChanges(){
             lat: data[2],
             lng: data[3],
           });
+
+          markers[id].addListener('click', bounceImageCard.bind(this, id));
+
           cluster.addMarker(markers[id]);
           if (data[6] in username){
             refreshImages();
@@ -821,8 +820,8 @@ function initCenterMap(){
 
   center_map = new GMaps({
       el: '#map-first',
-      lat: 20.5937,
-      lng: 78.9629,
+      lat: 22.3145,
+      lng: 87.3091,
       styles: map_styles,
       bounds_changed: function(e){
         if (disable_map_event) return;
@@ -857,7 +856,17 @@ function initCenterMap(){
 
   center_map.setOptions({ minZoom: 5, maxZoom: 20 });
 
-  cluster =  new MarkerClusterer(center_map.map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
+  var options = {
+    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+    minimumClusterSize: min_cluster_size
+  }
+
+  cluster =  new MarkerClusterer(center_map.map, markers, options);
+  google.maps.event.addListener(cluster, 'clusterclick', function(cluster) {
+      for (var i=0;i<cluster.markers_.length;i++){
+        new google.maps.event.trigger(cluster.markers_[i] , 'click' );
+      }
+  });
 
   var center = center_map.getCenter();
   marker_center = center_map.addMarker({
@@ -1036,6 +1045,13 @@ function showRewardModal() {
   $("#reward-modal").modal('show');
 }
 
+function showAboutModal() {
+    $("#about-modal").modal('show');
+}
+
+function showSettingsModal() {
+    $("#settings-modal").modal('show');
+}
 
 function showDeleteModal(index){
   $('#delete-image-modal > div.image.content > div.ui.medium.image > img')
@@ -1049,6 +1065,8 @@ function showDeleteModal(index){
 function deleteImage(index){
   Controller.deleteImage(index).then(function(){
     alert("Image Deleted Successfully", 'The image has been successfully removed from Ethereum network');
+    markers[index].setMap(null);
+    delete markers[index];
     google.maps.event.trigger(center_map.map, 'bounds_changed');
     photo_delete_pending = true;
     photo_delete_pending_data.push(images[index][0]);
@@ -1062,4 +1080,17 @@ $("#image-cards").on('click', ".image", function(){
   var img_src = $(this).children("img").attr('src');
   $("#photo-modal-image").attr('src', img_src);
   $('#single-image-modal').modal('show');
+});
+
+// Progress Bar
+// Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
+// NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
+
+
+$("#set-ipfs").on('click', function(){
+    var current_ipfs = $("#ipfs-data").val().trim();
+});
+
+$("#set-rpc").on('click', function(){
+    var current_rpc = $("#rpc-data").val().trim();
 });

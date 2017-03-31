@@ -71,6 +71,18 @@ module.exports = function(grunt) {
                 cwd: 'app/',
                 src: '*.html',
                 dest: 'dist/'
+            },
+            images: {
+                expand: true,
+                cwd: 'app/images/',
+                src: '**',
+                dest: 'dist/images/'
+            },
+            icons: {
+                expand: true,
+                cwd: 'app/components/semantic/dist/themes/default/assets/fonts/',
+                src: '**',
+                dest: 'dist/css/themes/default/assets/fonts/'
             }
         },
 
@@ -87,7 +99,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('production',[
-        'copy:generated',
+        'copy',
         'useminPrepare',
         'concat',
         'uglify',

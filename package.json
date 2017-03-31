@@ -2,6 +2,7 @@
   "name": "EthPhoto",
   "version": "0.0.1",
   "description": "",
+  "main": "main.js",
   "scripts": {
     "test": "embark test"
   },
@@ -26,6 +27,7 @@
     "mocha": "^2.2.5"
   },
   "dependencies": {
-    "ethereumjs-testrpc": "^3.0.3"
+    "ethereumjs-testrpc": "^3.0.3",
+    "express": "^4.15.2"
   }
 }

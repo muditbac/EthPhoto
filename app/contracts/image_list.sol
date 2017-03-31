@@ -231,8 +231,6 @@ contract ImageList is owned {
 
 contract Controller is owned {
 
-	event Huha(string _hash);
-
 	ImageList public imageList;
 	UserList public userList;
 	VotingList public votingList;
@@ -246,7 +244,6 @@ contract Controller is owned {
 	function addImage(string _hash, string _caption, int64 _lat, int64 _long, uint16[5] _topic){
 		var k = imageList.addImage(msg.sender, _hash, _caption, _lat, _long, _topic);
 		userList.addImageToUser(msg.sender, k);
-		Huha("pankaj udas");
 	}
 
 	function deleteImage(uint index){
