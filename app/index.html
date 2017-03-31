@@ -113,7 +113,7 @@
             <div class="ui container">
               <div class="sixteen wide column" style="padding-right:30px">
                 <div class="ui large header" style="padding-top: 10px;display: inline-block;">Photos</div>
-                <div class="ui right floated pagination menu">
+                <!-- <div class="ui right floated pagination menu">
                   <a class="icon item" onclick="prevPage();">
                     <i class="left arrow icon"></i>
                   </a>
@@ -125,7 +125,7 @@
                   <a class="icon item" onclick="nextPage();">
                     <i class="right arrow icon"></i>
                   </a>
-                </div>
+                </div> -->
               </div>
 
               <div class="ui link three stackable cards" id="image-cards">
@@ -135,7 +135,7 @@
                     <!-- <div class="image" style=""> -->
                   </div>
                   <div class="content" onclick="bounceMarkerCaller(this);">
-                    <div class="header">Caption</div>
+                    <div class="header text-elipsis">Caption</div>
                     <div class="meta">
                       <a>User Name</a>
                     </div>
@@ -367,7 +367,9 @@
 <div class="ui modal" id="single-image-modal">
   <i class="close icon"></i>
   <div class="content" align="center">
+    <i class="chevron circle left icon" id="prev-image" style="position: absolute; font-size:2em; top: 50%; left:0; margin-top: -16px; cursor:pointer"></i>
     <img src="#" id="photo-modal-image" style="max-width: 100%;max-height: 500px;">
+    <i class="chevron circle right icon" id="next-image" style="position: absolute; font-size:2em; right:0; top: 50%; margin-top: -16px; cursor:pointer"></i>
   </div>
 </div>
 

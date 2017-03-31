@@ -620,8 +620,8 @@ $("#upload-next-btn").on('click', function(){
 });
 
 function updateUI(){
-  google.maps.event.trigger(center_map.map, 'bounds_changed');
   $('#search-tags').trigger('change');
+  google.maps.event.trigger(center_map.map, 'bounds_changed');
 }
 
 function handleUploadImage() {
@@ -794,7 +794,12 @@ function refreshImages(set_bound){
   }
   // cluster.repaint()
   shown_images = current_images;
-  if (set_bound) center_map.map.fitBounds(bounds);
+  var empty = new google.maps.LatLngBounds();
+  if (set_bound){
+    if (!(JSON.stringify(bounds) == JSON.stringify(empty)))
+      center_map.map.fitBounds(bounds);
+  }
+
 
   // loop over indexes
   //   check if image exists in loaded_images
@@ -867,6 +872,7 @@ function initCenterMap(){
         }
 
         lastCall = setTimeout(function(){
+          if (disable_map_event) return;
           var b = center_map.getBounds();
           var map = center_map.map;
           var r = Math.max((b.b.f-b.b.b)/2, (b.f.f-b.f.b)/2);
@@ -875,8 +881,8 @@ function initCenterMap(){
           p.then(function(data){
             console.log("exe got");
             all_images = data
-            current_images = data.slice(0,9);
-            changePagination(1, Math.ceil(data.length/9));
+            current_images = data;
+            // changePagination(1, Math.ceil(data.length/9));
             processMapChanges();
 
           }, function(err){
@@ -1132,6 +1138,41 @@ $("#image-cards").on('click', ".center-crop-image", function(){
   $('#single-image-modal').modal('show');
 });
 
+//Next image on main page
+function nextImage(index){
+  var img_src = images[index][0].next();
+  $("#photo-modal-image").attr('src', img_src);
+  $('#single-image-modal').modal('show');
+}
+$("#next-image").on('click',function() {
+console.log('Next');
+});
+
+//Prev Image on main page
+function prevImage(index){
+  if(index>=1){
+  var img_src = images[index][0].prev();
+  $("#photo-modal-image").attr('src', img_src);
+  $('#single-image-modal').modal('show');
+}
+else {
+  //no change
+}
+}
+$("#prev-image").on('click',function() {
+console.log('Previous');
+});
+
+// Left & Right Key Binding
+$("#single-image-modal").keydown(function(e) {
+  console.log('Here');
+  if(e.which == 37) { // left
+    $("#prev-image").trigger("click");
+  }
+  else if(e.which == 39) { // right
+    $("#next-image").trigger("click");
+  }
+});
 // Progress Bar
 // Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
 // NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });

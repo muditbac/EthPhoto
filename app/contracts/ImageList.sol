@@ -22,18 +22,28 @@ contract ImageList is owned {
 
 
 	// TODO Make Events
-	// TODO change msg.sender to tx.origin if origin in required
 	// TODO appopriately change to private or public settings
 
+  /**
+			A utility modifier to replace the specified condition.
+	**/
 	modifier onlyImageOwner (address sender, uint index){
 		if (index<imageList.length && (imageList[index].owner == sender)) _;
 	}
 
+  /**
+			A function to check if an image exists at the index passed.
+	**/
 	function ifImageExists(uint index) returns (bool){
 		if (index<imageList.length && imageList[index].init) return true;
 		return false;
 	}
 
+  /**
+			A function to add image information to the Image struct.
+			A temp Image struct is created and pushed in the dynamic array imagelist.
+			It returns one less than the length of the imagelist array.
+	**/
 	function addImage(address sender, string _hash, string _caption, int64 _lat, int64 _long, uint16[5] _topic) onlyOwner returns (uint){
 		var k = imageList.length;
 
@@ -42,8 +52,10 @@ contract ImageList is owned {
 		return k;
 	}
 
-
-
+  /**
+			A function to get the images in a range about some x and y coordinates passed.
+			A linear search is done on all the images.
+	**/
 	function getImagesWithLatLong(int rad, int64 x, int64 y, uint _count) constant returns(uint[], uint){
 
 		uint[] memory ids = new uint[](_count);
@@ -58,6 +70,10 @@ contract ImageList is owned {
 		return (ids, count);
 	}
 
+  /**
+			A function to get the array of images containing the tags passed.
+			A linear search is done on the images.
+	**/
 	function getImagesWithTags(uint16[3] tags, uint _count) constant returns(uint[], uint){
 
 		uint[] memory ids = new uint[](_count);
@@ -88,6 +104,9 @@ contract ImageList is owned {
 		return (ids, count);
 	}
 
+  /**
+			A function to add an upvote to the image.
+	**/
 	function upvoteImage(uint index) onlyOwner {
 		imageList[index].upvotes ++;
 	}
@@ -96,17 +115,30 @@ contract ImageList is owned {
 		imageList[index].reportCount ++;
 	}
 
+  /**
+			A function to get the total upvotes of the image passed.
+	**/
 	function getUpvotes(uint index) constant returns (int){
 		return imageList[index].upvotes;
 	}
 
+	function getReports(uint index) onlyOwner constant returns (int){
+		return imageList[index].upvotes;
+	}
+
+  /**
+			A function to get the Image parameters(struct Image) of the image index passed.
+	**/
 	function getImage(uint index)  constant returns (string, string, int64, int64, uint16[5], int, address){
-		// TODO Exclude deleted images
 		if (ifImageExists(index))
 			return (imageList[index].image_hash, imageList[index].caption, imageList[index].lat, imageList[index].long, imageList[index].topic, imageList[index].upvotes, imageList[index].owner);
 	}
 
-	// TODO: Test all delete corner cases
+  /**
+			A function to delete the image passed.
+			Image will be deleted only if the current user is the owner of the image.
+			A counter deleted maintains the total number of deleted images.
+	**/
 	function deleteImage(address sender, uint index) onlyOwner onlyImageOwner(sender, index) {
 		// When deleted entry is tried to delete again onlyImageOwner blocks the execution
 		// TODO you can also just copy the last element into the empty spot, then delete the last element.
@@ -114,10 +146,16 @@ contract ImageList is owned {
 		delete imageList[index];
 	}
 
+  /**
+			A function to get the total number of images.
+	**/
 	function getImageCount() constant returns (uint){
 		return imageList.length-deleted;
 	}
 
+  /**
+			A function to get the address of the owner of the image index passed.
+	**/
 	function getImageOwner(uint image_index) constant returns(address){
 		return imageList[image_index].owner;
 	}

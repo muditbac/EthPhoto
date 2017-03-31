@@ -185,3 +185,9 @@ html, body {
 #my-reward {
   font-weight: bold;
 }
+
+.text-elipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
