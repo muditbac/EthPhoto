@@ -84,7 +84,7 @@ function loadImage(img_div, hash){
 }
 
 
-getUrl = function(hash) {
+function getUrl(hash) {
     return 'http://localhost:8080/ipfs/' + hash;
 };
 

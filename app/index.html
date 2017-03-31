@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-<link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'>
+<!-- <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'> -->
 
 
 <!-- build:css css/app.css -->
@@ -16,6 +16,7 @@
 <link href="components/fotorama/fotorama.css" rel="stylesheet">
 <link href="components/animate.css/animate.min.css" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
+<!-- <link rel="stylesheet" href="css/googlefonts.css"> -->
 <!-- endbuild -->
 
 
@@ -402,11 +403,11 @@
   <img id="my-images-template" src="" data-caption="Caption here!">
 </div>
 
-<!-- build:js js/jquery.js -->
-<script src="components/jquery/dist/jquery.min.js"></script>
-<!-- endbuild -->
+<!-- Insert this line above script imports  -->
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
 <!-- build:js js/vendor.js -->
+<script src="components/jquery/dist/jquery.min.js"></script>
 <script src="components/semantic/dist/semantic.js"></script>
 <script src="components/semanticUiAlert/Semantic-UI-Alert.js"></script>
 <script src="components/gmaps/gmaps.js"></script>
@@ -438,6 +439,9 @@ var marker_center;
 var marker_upload;
 </script>
 <!-- endbuild -->
+
+<!-- Insert this line after script imports -->
+<script>if (window.module) module = window.module;</script>
 
 <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI&callback=initMap" async defer></script>
 
