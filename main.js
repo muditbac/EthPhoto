@@ -1,5 +1,4 @@
 const {app, BrowserWindow} = require('electron');
-
 let mainWindow;
 
 // Quit when all windows are closed.
@@ -18,7 +17,8 @@ app.on('ready', function() {
   mainWindow.setMenu(null);
 
   // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/dist/index.html');
+  mainWindow.loadURL('http://localhost:8000/');
+  // mainWindow.loadURL('file://' + __dirname + '/dist/index.html');
   mainWindow.openDevTools({detached: true})
   // mainWindow.loadURL('http://127.0.0.1:8000/index.html');
 

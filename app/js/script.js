@@ -294,6 +294,7 @@ function loadMyInfo(){
     my.username = toAscii(data[0]);
     myimages = data[1];
     my.reward = data[2].toNumber();
+    setReward(my.reward);
 
     while (my.username=="" || my.username==null){
       my.username = prompt("Please Set Username")
@@ -320,6 +321,10 @@ function loadMyInfo(){
   }, function(err){
 
   })
+}
+
+function setReward(reward) {
+  $("#my-reward").html(reward);
 }
 
 function isOwnerImage(index){
@@ -875,8 +880,8 @@ function initCenterMap(){
   var center = center_map.getCenter();
   marker_center = center_map.addMarker({
     lat: center.lat(),
-    lng: center.lng(),
-  })
+    lng: center.lng()
+  });
 
   GMaps.geolocate({
     success: function(position) {
@@ -1049,6 +1054,13 @@ function showRewardModal() {
   $("#reward-modal").modal('show');
 }
 
+function showAboutModal() {
+    $("#about-modal").modal('show');
+}
+
+function showSettingsModal() {
+    $("#settings-modal").modal('show');
+}
 
 function showDeleteModal(index){
   $('#delete-image-modal > div.image.content > div.ui.medium.image > img')
@@ -1090,4 +1102,17 @@ $("#image-cards").on('click', ".card", function(){
   var img_src = images[index][0];
   $("#photo-modal-image").attr('src', img_src);
   $('#single-image-modal').modal('show');
+});
+
+// Progress Bar
+// Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
+// NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
+
+
+$("#set-ipfs").on('click', function(){
+    var current_ipfs = $("#ipfs-data").val().trim();
+});
+
+$("#set-rpc").on('click', function(){
+    var current_rpc = $("#rpc-data").val().trim();
 });

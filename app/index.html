@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>EthPhoto | Ethereum based image sharing app</title>
+<title>EthPhoto | Decentralized Photo Sharing Application</title>
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -12,10 +12,10 @@
 <link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
 <link rel="stylesheet" href="components/semanticUiAlert/Semantic-UI-Alert.css">
 <link rel="stylesheet" href="components/darkroom/build/darkroom.css">
-<link rel="stylesheet" href="components/nprogress/nprogress.css">
 <link href="components/fotorama/fotorama.css" rel="stylesheet">
 <link href="components/animate.css/animate.min.css" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
+<!-- <link rel="stylesheet" href="css/googlefonts.css"> -->
 <!-- endbuild -->
 
 
@@ -292,10 +292,9 @@
 <div class="ui inverted modal" id="reward-modal">
   <i class="close icon"></i>
   <div class="header">Hey there!</div>
-  <div class="content">Your Rewards: </div>
+  <div class="content">Your Rewards: <span id="my-reward"></span> PhotoCoins</div>
   <div class="actions">
-    <div class="ui green approve button">Accept</div>
-    <div class="ui red cancel button">Reject</div>
+    <div class="ui green approve button">Okay</div>
   </div>
 </div>
 
@@ -430,6 +429,9 @@
   <img id="my-images-template" src="" data-caption="Caption here!">
 </div>
 
+<!-- Insert this line above script imports  -->
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
 <!-- build:js js/vendor.js -->
 <script src="components/jquery/dist/jquery.min.js"></script>
 <script src="components/semantic/dist/semantic.js"></script>
@@ -439,7 +441,6 @@
 <script src="components/fabric/dist/fabric.min.js"></script>
 <script src="components/darkroom/build/darkroom.js"></script>
 <script src="components/fotorama/fotorama.js"></script>
-<script src="components/nprogress/nprogress.js"></script>
 <!-- endbuild -->
 
 <!-- build:js js/embark.js -->
@@ -463,6 +464,9 @@ var marker_center;
 var marker_upload;
 </script>
 <!-- endbuild -->
+
+<!-- Insert this line after script imports -->
+<script>if (window.module) module = window.module;</script>
 
 <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB3I3pDp6S8UdmmrwvdaOOGS2HYZuC_fBI&callback=initMap" async defer></script>
 
