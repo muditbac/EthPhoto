@@ -13,10 +13,9 @@
     "semantic": "semantic-ui#^2.2.9",
     "v3-utility-library": "https://github.com/googlemaps/v3-utility-library.git",
     "semanticUiAlert": "https://github.com/diw112/semanticUiAlert.git",
-    "nprogress": "^0.2.0",
     "animate.css": "^3.5.2",
-    "fotorama": "^4.6.4"
+    "fotorama": "^4.6.4",
+    "nprogress": "^0.2.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

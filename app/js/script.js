@@ -1079,7 +1079,7 @@ $("#image-cards").on('click', ".image", function(){
 
 // Progress Bar
 // Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
-NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
+// NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
 
 
 $("#set-ipfs").on('click', function(){
