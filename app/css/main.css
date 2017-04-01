@@ -72,9 +72,9 @@
 /*Completely new styles*/
 #main-nav-bar {
   /*cornflowerblue*/
-  /*background: #6495ed;*/
+  background: #6495ed;
   /*Maroon*/
-  background: maroon;
+  /*background: maroon;*/
 }
 .margin-container-box {
   margin: 10px;
@@ -190,4 +190,9 @@ html, body {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+#nprogress .bar {
+  background: #555;
+  height: 3px;
 }

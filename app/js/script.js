@@ -477,11 +477,13 @@ function searchTagsChanged(){
   });
   console.log(tags);
   console.log("exe");
+  NProgress.start();
   getImagesWithTags(tags).then(function(data){
     console.log("exe got");
+    NProgress.inc();
     all_images = data
-    current_images = data.slice(0,9);
-    changePagination(1, Math.ceil(data.length/9));
+    current_images = data
+    // changePagination(1, Math.ceil(data.length/9));
     processMapChanges(true);
 
   }, function(err){
@@ -864,7 +866,9 @@ function processMapChanges(hide_other_markers){
     }
     cluster.repaint();
   }
+  NProgress.inc()
   refreshImages(hide_other_markers);
+  NProgress.inc()
   $.each(current_images, function(i, id){
     if (!(id in markers)){
       getImage(id).then(function(data){
@@ -894,6 +898,7 @@ function processMapChanges(hide_other_markers){
       });
     }
   });
+  NProgress.done()
 }
 
 
@@ -917,6 +922,7 @@ function initCenterMap(){
 
         lastCall = setTimeout(function(){
           if (disable_map_event) return;
+          NProgress.start();
           var b = center_map.getBounds();
           var map = center_map.map;
           var r = Math.max((b.b.f-b.b.b)/2, (b.f.f-b.f.b)/2);
@@ -927,6 +933,7 @@ function initCenterMap(){
             all_images = data
             current_images = data;
             // changePagination(1, Math.ceil(data.length/9));
+            NProgress.inc();
             processMapChanges();
 
           }, function(err){
@@ -1220,7 +1227,7 @@ $("#single-image-modal").keydown(function(e) {
 });
 // Progress Bar
 // Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
-NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
+NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 1200, easing: 'ease' });
 
 
 $("#set-ipfs").on('click', function(){
