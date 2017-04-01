@@ -299,11 +299,12 @@ function loadMyInfo(){
     my.reward = data[2].toNumber();
     setReward(my.reward);
 
-    while (my.username=="" || my.username==null){
-      my.username = prompt("Please Set Username")
-      UserList.setUserName(my.username).then(function(){
-        alertInfo("UserName successfully set");
-      });
+    if (my.username=="" || my.username==null){
+      $('#username-modal').modal({
+          closable: false
+        }
+      ).modal('show');
+
     }
 
     var div = $("#my-photos-div");
@@ -325,6 +326,37 @@ function loadMyInfo(){
 
   })
 }
+
+$('#username-modal-btn').click(function(){
+  var username = $('#username-field').val();
+  if (username==''){
+    alertErr("Enter a username!", '');
+    return;
+  }
+
+  UserList.isUsernameExists(username).then(function(exists){
+    if (exists==false){
+      UserList.setUserName(username).then(function(data){
+        my.username = username;
+        alert("Username Successfully Set!");
+        $('#username-modal').modal('hide');
+      }, function(err){
+        alertErr("Some error occured. Please try again.");
+      });
+    }
+    else {
+      alertErr("Username already exists.", "Please select another username.");
+    }
+  }, function (err){
+    alertErr("Some error occured. Please try again.");
+  })
+  //
+});
+
+$('#username-field').keypress(function(e){
+  if(e.keyCode==13)
+  $('#username-modal-btn').click();
+});
 
 function setReward(reward) {
   $("#my-reward").html(reward);

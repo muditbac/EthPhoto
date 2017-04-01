@@ -70,6 +70,13 @@ contract UserList is owned {
 		return true;
 	}
 
+	function isUsernameExists(bytes32 _username) constant returns (bool){
+		if(address(0) == usernameToUser[_username]){
+			return false;
+		}
+		return true;
+	}
+
   /**
 			A function to get the user information.
 			It returns the data from the User struct for the user address passed.
