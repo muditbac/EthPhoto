@@ -7,6 +7,7 @@
 
 <!-- <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700|Sigmar+One' rel='stylesheet' type='text/css'> -->
 
+<link rel="icon" href="images/nlogo32.png" sizes="16x16 32x32" type="image/png">
 
 <!-- build:css css/app.css -->
 <link rel="stylesheet" href="components/semantic/dist/semantic.min.css">
@@ -30,7 +31,7 @@
 <div class="ui fixed menu" id="main-nav-bar">
   <div class="ui container">
     <a href="#" class="header item">
-      <img class="logo" src="https://semantic-ui.com/examples/assets/images/logo.png"> &nbsp;&nbsp;&nbsp; EthPhoto
+      <img class="logo" src="images/logo3.png" style="width: 140px;" >
     </a>
 
     </div>
@@ -56,9 +57,9 @@
     </div>
     <div class="ui container margin-container-box" id="search-query-wrapper">
         <div class="ui large buttons">
-          <button class="ui button inverted teal toggle s-query active-selected" search-data="location" onclick="switchToLocationView();">Location</button>
+          <button class="ui button inverted white toggle s-query active-selected" search-data="location" onclick="switchToLocationView();">Location</button>
           <div class="or"></div>
-          <button class="ui button inverted teal toggle s-query" search-data="tags" onclick="switchToTagView();">Tags</button>
+          <button class="ui button inverted white toggle s-query" search-data="tags" onclick="switchToTagView();">Tags</button>
         </div>
         <!-- <div class="ui buttons">
           <button class="ui button search-toggle" search-data="location">Location</button>
@@ -66,8 +67,8 @@
         </div> -->
     </div>
     <div class="ui container margin-container-box">
-        <button class="ui inverted teal button" id="my-photos-btn">My Photos</button>
-        <button class="ui inverted teal button" id="upload-btn">Upload Photo</button>
+        <button class="ui inverted white button" id="my-photos-btn">My Photos</button>
+        <button class="ui inverted white button" id="upload-btn">Upload Photo</button>
         <!-- <div class="ui" id="settings-btn-wrapper">
           <div class="ui right pointing dropdown" id="settings-gear">
             <i class="inverted setting icon" id="settings-btn"></i>
@@ -112,8 +113,14 @@
         </div>
         <div class="seven wide column" id="right-main-wrapper">
             <div class="ui container">
-              <div class="sixteen wide column" style="padding-right:30px">
+              <div class="sixteen wide column" style="padding-right:30px; margin-bottom:7px;">
                 <div class="ui large header" style="padding-top: 10px;display: inline-block;">Photos</div>
+                <div class="ui input" id="filter-tags-input" style="position:absolute; right:15px;">
+                    <select multiple="" name="tags" class="ui search dropdown wide-search" id="filter-tags" >
+                      <option value="" selected disabled>Search Tags</option>
+
+                    </select>
+                </div>
                 <!-- <div class="ui right floated pagination menu">
                   <a class="icon item" onclick="prevPage();">
                     <i class="left arrow icon"></i>
@@ -365,23 +372,40 @@
 </div>
 
 <!-- Individual Image Modal -->
-<div class="ui modal" id="single-image-modal">
-  <i class="expand icon"></i>
-  <i class="close icon"></i>
-  <div class="content" align="center"  tabindex="1">
+<div class="ui modal inverted" id="single-image-modal">
+  <i class="expand icon" id="zoom-image"></i>
+  <div class="content" align="center"  tabindex="1" id="single-image">
     <i class="chevron circle left icon" id="prev-image" style="position: absolute; font-size:2em; top: 50%; left:0; margin-top: -16px; cursor:pointer"></i>
-    <img src="#" id="photo-modal-image" style="max-width: 100%;max-height: 500px;">
+    <!-- <img src="#" id="photo-modal-image" style="max-width: 100%;max-height: 500px;"> -->
     <i class="chevron circle right icon" id="next-image" style="position: absolute; font-size:2em; right:0; top: 50%; margin-top: -16px; cursor:pointer"></i>
-    <div class="actions left" style="text-align: left !important">
 
-      <!--<div class="ui labeled button" tabindex="0">-->
-        <!--<div class="ui red button">-->
-          <!--<i class="heart icon"></i> Like-->
-        <!--</div>-->
-        <!--<a class="ui basic red left pointing label">-->
-          <!--1,048-->
-        <!--</a>-->
-      <!--</div>-->
+    <div class="ui container grid" id="photo-strip">
+      <div class="four wide column">
+        <!-- <div class="ui labeled button" tabindex="0">
+          <div class="ui red button">
+            <i class="heart icon"></i> Like
+          </div>
+          <a class="ui basic red left pointing label" id="photo-strip-like"></a>
+        </div> -->
+      </div>
+      <div class="eight wide column">
+        <h3 id="one-caption" class="white" style="color: white">Caption: caption</h3>
+        <div id="one-tags" class="white" style="color: white">
+          <a class="ui horizontal label">Featured</a>
+
+
+        </div>
+      </div>
+      <!-- <div class="four wide column">
+        <div class="ui labeled button" tabindex="0">
+          <div class="ui red button">
+            <i class="heart icon"></i> Like
+          </div>
+          <a class="ui basic red left pointing label">
+            1,048
+          </a>
+        </div>
+      </div> -->
     </div>
   </div>
 

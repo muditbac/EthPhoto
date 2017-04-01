@@ -13,164 +13,52 @@ var my = {}
 var min_cluster_size = 2;
 
 var map_styles = [
-  {
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#f5f5f5"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.icon",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#616161"
-      }
-    ]
-  },
-  {
-    "elementType": "labels.text.stroke",
-    "stylers": [
-      {
-        "color": "#f5f5f5"
-      }
-    ]
-  },
-  {
-    "featureType": "administrative.land_parcel",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#bdbdbd"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#eeeeee"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#757575"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#e5e5e5"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#9e9e9e"
-      }
-    ]
-  },
-  {
-    "featureType": "road",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#ffffff"
-      }
-    ]
-  },
-  {
-    "featureType": "road.arterial",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#757575"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#dadada"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#616161"
-      }
-    ]
-  },
-  {
-    "featureType": "road.local",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#9e9e9e"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.line",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#e5e5e5"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.station",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#eeeeee"
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#c9c9c9"
-      }
-    ]
-  },
-  {
-    "featureType": "water",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#9e9e9e"
-      }
-    ]
-  }
+    {
+        "featureType": "all",
+        "stylers": [
+            {
+                "saturation": 0
+            },
+            {
+                "hue": "#e7ecf0"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "stylers": [
+            {
+                "saturation": -70
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "stylers": [
+            {
+                "visibility": "simplified"
+            },
+            {
+                "saturation": -60
+            }
+        ]
+    }
 ];
 
 toAscii = function(s){
@@ -468,6 +356,10 @@ $('#tags-selector-upload').dropdown({
   minCharacters: 2
 });
 
+$('#filter-tags').dropdown({
+  maxSelections: 3,
+  minCharacters: 2
+});
 
 function searchTagsChanged(){
   var raw_tags = $('#search-tags').val();
@@ -481,16 +373,52 @@ function searchTagsChanged(){
   getImagesWithTags(tags).then(function(data){
     console.log("exe got");
     NProgress.inc();
-    all_images = data
-    current_images = data
+    all_images = data;
+    current_images = data;
     // changePagination(1, Math.ceil(data.length/9));
-    processMapChanges(true);
+    // processMapChanges(true);
+    $('#filter-tags').trigger('change');
 
   }, function(err){
     alertErr("Cannot connect to Ethereum Network!");
   });
   // $('#search-tags').dropdown('hide');
 }
+
+
+
+$('#filter-tags').change(function(){
+
+  var raw_tags = $('#filter-tags').val();
+  if (raw_tags.length==0) {
+    current_images = all_images;
+    processMapChanges(disable_map_event);
+    return;
+  }
+
+  var _tags = [];
+  $.each(raw_tags, function(i, val){
+    _tags.push(parseInt(val));
+  });
+
+  var final_list = [];
+
+    for (var i in all_images){
+    var done=false;
+    for (var j in _tags){
+      if (images[all_images[i]][4].indexOf(_tags[i])>=0){
+        final_list.push(all_images[i]);
+        done = true;
+        break;
+      }
+    }
+  }
+
+  current_images = final_list;
+  processMapChanges(true);
+
+});
+
 
 semantic = {};
 // ready event
@@ -663,6 +591,9 @@ $("#upload-next-btn").on('click', function(){
 function updateUI(){
   searchTagsChanged();
   google.maps.event.trigger(center_map.map, 'bounds_changed');
+  var current_reward = $("#my-reward").val().trim();
+  current_reward = parseInt(current_reward);
+  setReward(current_reward+10);
 
 }
 
@@ -735,12 +666,12 @@ function likeClicked(element){
   var likes = parseInt(obj.find('.extra.content > span').html(),10);
   likes = likes + 1;
 
-  changeToLiked(obj.find('i'));
+  changeToLiked(obj.find('i.like-button'));
 
   Controller.upvoteImage(index).then(function(data){
     obj.find('.extra.content > span').html(likes);
   }, function (err){
-    changeToUnliked(obj.find('i'));
+    changeToUnliked(obj.find('i.like-button'));
     alertErr("Error Upvoting");
   })
 
@@ -873,7 +804,7 @@ function processMapChanges(hide_other_markers){
           markers[id] = center_map.addMarker({
             lat: data[2],
             lng: data[3],
-            icon: '../images/logo32.png'
+            icon: '../images/nlogo40.png'
           });
 
           markers[id].addListener('click', bounceImageCard.bind(this, id));
@@ -930,7 +861,8 @@ function initCenterMap(){
             current_images = data;
             // changePagination(1, Math.ceil(data.length/9));
             NProgress.inc();
-            processMapChanges();
+            $('#filter-tags').trigger('change');
+            // processMapChanges();
 
           }, function(err){
             alertErr("Cannot connect to Ethereum Network!");
@@ -946,7 +878,8 @@ function initCenterMap(){
   center_map.setOptions({ minZoom: 5, maxZoom: 20 });
 
   var options = {
-    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+    // imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+    imagePath: 'images/m',
     minimumClusterSize: min_cluster_size,
     ignoreHidden: true
   }
@@ -983,20 +916,25 @@ function initCenterMap(){
   // TODO Add set coordinates and open modal
   center_map.setContextMenu({
       control: 'map',
-      options: [{
-          title: 'Add Image',
-          name: 'add_image',
-          action: function (e) {
-              this.addMarker({
-                  lat: e.latLng.lat(),
-                  lng: e.latLng.lng(),
-                  title: 'New Marker',
-                  infoWindow: {
-                      content: '<p>Add Picture</p>'
-                  }
-              });
-          }
-      }]
+      options: [
+        // {
+        //   title: 'Add Image',
+        //   name: 'add_image',
+        //   action: function (e) {
+        //       // this.addMarker({
+        //       //     lat: e.latLng.lat(),
+        //       //     lng: e.latLng.lng(),
+        //       //     title: 'New Marker',
+        //       //     infoWindow: {
+        //       //         content: '<p>Add Picture</p>'
+        //       //     }
+        //       // });
+        //       image_latitude = e.latLng.lat();
+        //       image_longitude = e.latLng.lng();
+        //       $('#upload-btn').trigger('click');
+        //   }
+        // }
+      ]
   });
 
   var input = (document).getElementById('search-location');
@@ -1166,6 +1104,9 @@ function deleteImage(index){
     cluster.repaint();
     delete markers[index];
     google.maps.event.trigger(center_map.map, 'bounds_changed');
+    var current_reward = $("#my-reward").val().trim();
+    current_reward = parseInt(current_reward);
+    setReward(current_reward-10);
   }, function(err){
     alertErr("Error deleting image!", '');
   })
@@ -1173,6 +1114,10 @@ function deleteImage(index){
 function reportImage(index){
   Controller.reportImage(index).then(function(){
     alert("Image Reported Successfully", 'The image has been reported on Ethereum network');
+    var current_reward = $("#my-reward").val().trim();
+    current_reward = parseInt(current_reward);
+    setReward(current_reward-1);
+
   }, function(err){
     alertErr("Error reproting image!", '');
   })
@@ -1182,22 +1127,45 @@ function reportImage(index){
 function showImageModal(el){
   var index = parseInt($(el).parent().attr('value'));
   compileImageModal(index);
-  $('#single-image-modal').modal('show');
+  $('#single-image-modal')
+    .modal({
+      onHidden : function(){
+        console.log("sdlfksdkjfhsdkjf");
+        if ($('#single-image').hasClass('modal-fullscreen')){
+          $("#zoom-image").trigger("click");
+        }
+      }
+    })
+    .modal('show')
+    .modal('refresh');
   $('#single-image-modal .content').focus();
 }
 
 function compileImageModal(index){
   var img_src = images[index][0];
-  $("#photo-modal-image").attr('src', img_src);
-  $("#photo-modal-image").attr('index', index);
+  $("#single-image").css('background', 'url(' + img_src + ')');
+  $("#single-image").attr('index', index);
+  $('#one-caption').html(images[index][1]);
+  $('#one-tags').empty();
+  var _tags = images[index][4];
+
+  var i=0;
+  while(i<5 && _tags[i]!=0){
+    var el = $('<a>', {
+        class: 'ui horizontal label'
+    });
+    el.html(tags[_tags[i]-1]);
+    $('#one-tags').append(el);
+    i++;
+  }
 }
 
 $("#next-image").on('click',function() {
-  nextImage($("#photo-modal-image").attr('index'));
+  nextImage($("#single-image").attr('index'));
 });
 
 $("#prev-image").on('click',function() {
-  prevImage($("#photo-modal-image").attr('index'));
+  prevImage($("#single-image").attr('index'));
 });
 
 //Next image on main page
@@ -1236,6 +1204,9 @@ $("#single-image-modal .content").bind('keydown', function(e) {
   else if(e.keyCode == 39) { // right
     $("#next-image").trigger("click");
   }
+  else if(e.keyCode == 70) { // fullscreen
+    $("#zoom-image").trigger("click");
+  }
 });
 // Progress Bar
 // Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
@@ -1250,30 +1221,22 @@ $("#set-rpc").on('click', function(){
     var current_rpc = $("#rpc-data").val().trim();
 });
 
-function expandImage(index){
+closable = true;
+$("#zoom-image").on('click',function(){
+  $("#single-image").toggleClass('modal-fullscreen');
   $('#single-image-modal')
-            .modal('setting', {
-                onShow : function () {
-                    $(this).css({
-                        'top' : '0',
-                        'bottom' : '0',
-                        'left' : '0',
-                        'right' : '0',
-                        'width' : '100%',
-                        'height' : '100%',
-                        'background-color' : 'rgba(255, 255, 255, 0.90)',
-                        'margin' : '0 !important'
-                    });
-                }
-            })
-            .modal('hide dimmer')
-            .modal('show', 'closable');
-}
-
-$(".expand.icon").on('click',function(){
-// expandImage(index);
+    // .toggleClass('basic')
+    .toggleClass('fullscreen')
+    .modal('refresh');
+  // $('.close.icon').toggleClass('hidden');
+  $('#single-image-modal .content').focus();
+  $('#photo-strip').toggle('hidden');
   console.log("expand");
+  $(this).toggleClass('expand');
+  $(this).toggleClass('compress');
 });
+
+
 
 function assert(condition, message) {
     if (!condition) {
