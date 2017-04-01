@@ -196,3 +196,19 @@ html, body {
   background: #555;
   height: 3px;
 }
+
+.expand.icon{
+  cursor:pointer;
+  font-size: 1.3em;
+  position:absolute;
+  margin:0em;
+  top:0.785757em;
+  right:1em;
+  opacity:0.7;
+  -webkit-transition: opacity 0.1s ease;
+  transition: opacity 0.1s ease;
+}
+
+.expand.icon:hover{
+  opacity: 1;
+}

@@ -91,7 +91,7 @@
         </div>
       </div> -->
       <!-- <button class="ui inverted teal button" id="settings-btn"><i class="setting icon"></i></button> -->
-      <div class="ui right dropdown item" style="padding: 10px 16px;">
+      <div class="ui right dropdown item custom-menu" style="padding: 10px 16px;">
         <i class="inverted setting icon" id="settings-btn"></i>
         <i class="dropdown icon" style="color: white;"></i>
         <div class="menu">
@@ -131,7 +131,7 @@
 
               <div class="ui link three stackable cards" id="image-cards">
                 <div class="card hidden animated">
-                  <div class="ui centered image center-crop-image" >
+                  <div class="ui centered image center-crop-image" onclick="showImageModal(this);">
                     <!-- <img src="#"> -->
                     <!-- <div class="image" style=""> -->
                   </div>
@@ -243,7 +243,7 @@
                 <div class="field">
                   <label>Tags (atmost 5)</label>
                   <select name="skills" multiple="" id="tags-selector-upload" class="ui search fluid dropdown" required>
-                    <option value="" selected disabled>Skills</option>
+                    <option value="" selected disabled>Tags</option>
                   </select>
                 </div>
                 <div class="ui error message"></div>
@@ -366,13 +366,29 @@
 
 <!-- Individual Image Modal -->
 <div class="ui modal" id="single-image-modal">
+  <i class="expand icon"></i>
   <i class="close icon"></i>
-  <div class="content" align="center">
+  <div class="content" align="center"  tabindex="1">
     <i class="chevron circle left icon" id="prev-image" style="position: absolute; font-size:2em; top: 50%; left:0; margin-top: -16px; cursor:pointer"></i>
     <img src="#" id="photo-modal-image" style="max-width: 100%;max-height: 500px;">
     <i class="chevron circle right icon" id="next-image" style="position: absolute; font-size:2em; right:0; top: 50%; margin-top: -16px; cursor:pointer"></i>
+    <div class="actions left" style="text-align: left !important">
+
+      <!--<div class="ui labeled button" tabindex="0">-->
+        <!--<div class="ui red button">-->
+          <!--<i class="heart icon"></i> Like-->
+        <!--</div>-->
+        <!--<a class="ui basic red left pointing label">-->
+          <!--1,048-->
+        <!--</a>-->
+      <!--</div>-->
+    </div>
   </div>
+
 </div>
+
+
+<!-- Full Screen Modal -->
 
 <!-- Delete Image  -->
 <div class="ui modal" id="delete-image-modal">

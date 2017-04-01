@@ -457,7 +457,6 @@ $("#image-upload").on('change', function(evt){
 $('#search-tags').dropdown({
   maxSelections: 3,
   minCharacters: 2
-  // onChange: searchTagsChanged
 });
 
 $('#search-tags').on('change', searchTagsChanged);
@@ -465,7 +464,8 @@ $('#search-tags').on('change', searchTagsChanged);
 
 // Completely new scripts
 $('#tags-selector-upload').dropdown({
-  maxSelections: 5
+  maxSelections: 5,
+  minCharacters: 2
 });
 
 
@@ -489,12 +489,8 @@ function searchTagsChanged(){
   }, function(err){
     alertErr("Cannot connect to Ethereum Network!");
   });
+  // $('#search-tags').dropdown('hide');
 }
-
-$('#tags-selector-upload').dropdown({
-  maxSelections: 5,
-  minCharacters: 2
-});
 
 semantic = {};
 // ready event
@@ -563,7 +559,7 @@ function switchToLocationView(){
 $(document).ready(semantic.ready);
 $(document)
   .ready(function() {
-    $('.ui.menu .ui.dropdown').dropdown({
+    $('.ui.menu .ui.dropdown.custom-menu').dropdown({
       on: 'hover'
     });
     $('.ui.menu a.item')
@@ -1182,46 +1178,62 @@ function reportImage(index){
   })
 }
 
-//Individual image modal
-$("#image-cards").on('click', ".center-crop-image", function(){
-  var index = parseInt($(this).parent().attr('value'));
+
+function showImageModal(el){
+  var index = parseInt($(el).parent().attr('value'));
+  compileImageModal(index);
+  $('#single-image-modal').modal('show');
+  $('#single-image-modal .content').focus();
+}
+
+function compileImageModal(index){
   var img_src = images[index][0];
   $("#photo-modal-image").attr('src', img_src);
-  $('#single-image-modal').modal('show');
+  $("#photo-modal-image").attr('index', index);
+}
+
+$("#next-image").on('click',function() {
+  nextImage($("#photo-modal-image").attr('index'));
+});
+
+$("#prev-image").on('click',function() {
+  prevImage($("#photo-modal-image").attr('index'));
 });
 
 //Next image on main page
 function nextImage(index){
-  var img_src = images[index][0].next();
-  $("#photo-modal-image").attr('src', img_src);
-  $('#single-image-modal').modal('show');
+  var nextIndex;
+  var el = $('#image-cards > div[value=' + index + ']');
+  do {
+    var el = el.next();
+    nextIndex = parseInt(el.attr("value"));
+    assert(el.length==1);
+  } while (el.hasClass('hidden'));
+
+  compileImageModal(nextIndex);
+  $('#single-image-modal .content').focus();
 }
-$("#next-image").on('click',function() {
-console.log('Next');
-});
 
 //Prev Image on main page
 function prevImage(index){
-  if(index>=1){
-  var img_src = images[index][0].prev();
-  $("#photo-modal-image").attr('src', img_src);
-  $('#single-image-modal').modal('show');
+  var prevIndex;
+  var el = $('#image-cards > div[value=' + index + ']');
+  do {
+    var el = el.prev();
+    prevIndex = parseInt(el.attr("value"));
+    assert(el.length==1);
+  } while (el.hasClass('hidden'));
+
+  compileImageModal(prevIndex);
+  $('#single-image-modal .content').focus();
 }
-else {
-  //no change
-}
-}
-$("#prev-image").on('click',function() {
-console.log('Previous');
-});
 
 // Left & Right Key Binding
-$("#single-image-modal").keydown(function(e) {
-  console.log('Here');
-  if(e.which == 37) { // left
+$("#single-image-modal .content").bind('keydown', function(e) {
+  if(e.keyCode == 37) { // left
     $("#prev-image").trigger("click");
   }
-  else if(e.which == 39) { // right
+  else if(e.keyCode == 39) { // right
     $("#next-image").trigger("click");
   }
 });
@@ -1237,3 +1249,34 @@ $("#set-ipfs").on('click', function(){
 $("#set-rpc").on('click', function(){
     var current_rpc = $("#rpc-data").val().trim();
 });
+
+function expandImage(index){
+  $('#single-image-modal')
+            .modal('setting', {
+                onShow : function () {
+                    $(this).css({
+                        'top' : '0',
+                        'bottom' : '0',
+                        'left' : '0',
+                        'right' : '0',
+                        'width' : '100%',
+                        'height' : '100%',
+                        'background-color' : 'rgba(255, 255, 255, 0.90)',
+                        'margin' : '0 !important'
+                    });
+                }
+            })
+            .modal('hide dimmer')
+            .modal('show', 'closable');
+}
+
+$(".expand.icon").on('click',function(){
+// expandImage(index);
+  console.log("expand");
+});
+
+function assert(condition, message) {
+    if (!condition) {
+        throw message || "Assertion failed";
+    }
+}
