@@ -237,7 +237,7 @@ alert = function(message, body){
     time: 5
   });
 };
-alertErr = function(message, body){
+alertErr = function(message, body = "Please try again after some time,.."){
   $.uiAlert({
     textHead: message,
     text: body,
@@ -248,7 +248,7 @@ alertErr = function(message, body){
     time: 5
   });
 };
-alertInfo = function(message, body){
+alertInfo = function(message, body = ""){
   $.uiAlert({
     textHead: message,
     text: body,
@@ -423,18 +423,24 @@ $("#image-upload").on('change', function(evt){
 
 // Completely new scripts
 $('#search-tags').dropdown({
-  maxSelections: 2
+  maxSelections: 3,
+  minCharacters: 2
+  // onChange: searchTagsChanged
 });
+
+$('#search-tags').on('change', searchTagsChanged);
+
 
 // Completely new scripts
 $('#tags-selector-upload').dropdown({
   maxSelections: 5
 });
 
-$('#search-tags').on('change', function(e){
-  e.preventDefault();
-  var tags = []
-  $.each($('#search-tags').val(), function(i, val){
+
+function searchTagsChanged(){
+  var raw_tags = $('#search-tags').val();
+  var tags = [];
+  $.each(raw_tags, function(i, val){
     tags.push(parseInt(val));
   });
   console.log(tags);
@@ -449,9 +455,12 @@ $('#search-tags').on('change', function(e){
   }, function(err){
     alertErr("Cannot connect to Ethereum Network!");
   });
+}
 
+$('#tags-selector-upload').dropdown({
+  maxSelections: 5,
+  minCharacters: 2
 });
-
 
 semantic = {};
 // ready event
@@ -496,8 +505,9 @@ function switchToTagView(){
   //   // center: latlng,
   // });
   setTimeout(function(){
-    $('#search-tags').trigger('change');
-  }, 0);
+    // $('#search-tags').trigger('change');
+    searchTagsChanged();
+  }, 10);
 }
 function switchToLocationView(){
   disable_map_event = false;
@@ -551,6 +561,7 @@ $("#my-photos-btn").on('click', function(){
     $('#my-photos-modal').modal('show');
     if (first_open) {
       slider = $('.fotorama').fotorama();
+      fotorama = slider.data('fotorama');
       first_open=false;
     }
     $('#my-photos-modal').modal('refresh');
@@ -620,8 +631,9 @@ $("#upload-next-btn").on('click', function(){
 });
 
 function updateUI(){
-  $('#search-tags').trigger('change');
+  searchTagsChanged();
   google.maps.event.trigger(center_map.map, 'bounds_changed');
+
 }
 
 function handleUploadImage() {
@@ -636,7 +648,7 @@ function handleUploadImage() {
       $("#upload-cancel-btn").trigger("click");
       updateUI();
 
-      slider.push({img: getUrl(data.hash)});
+      fotorama.push({img: getUrl(data.hash), caption: image_caption});
 
   }, function (err){
       $("#upload-next-btn").removeClass('disabled loading');
@@ -1116,6 +1128,7 @@ function deleteImage(index){
     alert("Image Deleted Successfully", 'The image has been successfully removed from Ethereum network');
     markers[index].setMap(null);
     cluster.removeMarker_(markers[index]);
+    cluster.repaint();
     delete markers[index];
     google.maps.event.trigger(center_map.map, 'bounds_changed');
   }, function(err){
@@ -1175,7 +1188,7 @@ $("#single-image-modal").keydown(function(e) {
 });
 // Progress Bar
 // Anywhere :: NProgress.start() and NProgress.done() and NProgress.inc()
-// NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
+NProgress.configure({ minimum: 0.2, showSpinner: false, trickleSpeed: 50, speed: 800 });
 
 
 $("#set-ipfs").on('click', function(){

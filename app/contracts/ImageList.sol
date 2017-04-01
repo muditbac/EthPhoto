@@ -139,11 +139,12 @@ contract ImageList is owned {
 			Image will be deleted only if the current user is the owner of the image.
 			A counter deleted maintains the total number of deleted images.
 	**/
-	function deleteImage(address sender, uint index) onlyOwner onlyImageOwner(sender, index) {
+	function deleteImage(address sender, uint index) onlyOwner onlyImageOwner(sender, index) returns (bool) {
 		// When deleted entry is tried to delete again onlyImageOwner blocks the execution
 		// TODO you can also just copy the last element into the empty spot, then delete the last element.
 		deleted++;
 		delete imageList[index];
+    return true;
 	}
 
   /**

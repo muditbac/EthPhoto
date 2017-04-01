@@ -51,7 +51,6 @@ contract UserList is owned {
 		if(usernameToUser[_uname] == address(0x0)){
 			usernameToUser[_uname] = msg.sender;
 			addressToUserData[msg.sender].username = _uname;
-			addressToUserData[msg.sender].reward = 100;
 			setUserNameEvent(true);
 		}
 		else{

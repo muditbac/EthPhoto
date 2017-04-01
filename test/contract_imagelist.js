@@ -7,8 +7,8 @@ var web3 = EmbarkSpec.web3;
 imageTestData = ['0xabcdeabcdeabcdeabcdeabcde', 'Image Caption Goes here', -100, 100, [1,2,3,4,5]];
 imageTestData2 = ['0xabcdeabcdeabcdeabcdeabcde', 'Image Caption Goes here', 200, 300, [1,2,3,4,5]];
 
-user1 = 'mudit123';
-user2 = 'mudit123';
+user1 = 'ethphoto123';
+user2 = 'ethphoto123';
 
 toAscii = function(s){
     return web3.toAscii(s).replace(/\0/g,'');

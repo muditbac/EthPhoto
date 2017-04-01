@@ -31,7 +31,8 @@ contract Controller is owned {
 			A function to delete an image by calling ImageList class
 	**/
 	function deleteImage(uint index){
-		imageList.deleteImage(msg.sender, index);
+		if (imageList.deleteImage(msg.sender, index))
+          userList.addReward(msg.sender, -10);
 	}
 
   /**
