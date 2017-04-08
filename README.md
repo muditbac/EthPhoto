@@ -1,6 +1,11 @@
 EthPhoto
 ===========================
-Ethereum and IPFS based image sharing platform
+
+
+### Screenshots and [Demo](https://www.youtube.com/watch?v=MbUxiqZQinQ)
+![Screenshot 1](doc/screenshot1.png "Home Page")
+![Screenshot 1](doc/screenshot2.png "Adding New Image")
+
 
 ### Dependencies 
 + Required packages to run the software - 
@@ -33,7 +38,3 @@ For running the software in development, run these commands
 * Run `ipfs daemon` to start new IPFS node
 * Run `grunt` in another terminal window and navigate to `http://localhost:8000` using web browser.
 * To run Unit tests: Run `npm test`
-
-### Screenshots
-![Screenshot 1](doc/screenshot1.png "Home Page")
-![Screenshot 1](doc/screenshot2.png "Adding New Image")
