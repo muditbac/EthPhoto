@@ -9,11 +9,11 @@ contract ImageList is owned {
 		address owner;
 		string image_hash;
 		string caption;
-    int64 lat;
-    int64 long;
+		int64 lat;
+		int64 long;
 		uint16[5] topic;
-    uint8 reportCount;
-    int upvotes;
+		uint8 reportCount;
+		int upvotes;
 	}
 
 	// UserList public ;
@@ -24,14 +24,14 @@ contract ImageList is owned {
 	// TODO Make Events
 	// TODO appopriately change to private or public settings
 
-  /**
+	/**
 			A utility modifier to replace the specified condition.
 	**/
 	modifier onlyImageOwner (address sender, uint index){
 		if (index<imageList.length && (imageList[index].owner == sender)) _;
 	}
 
-  /**
+	/**
 			A function to check if an image exists at the index passed.
 	**/
 	function ifImageExists(uint index) returns (bool){
@@ -39,7 +39,7 @@ contract ImageList is owned {
 		return false;
 	}
 
-  /**
+	/**
 			A function to add image information to the Image struct.
 			A temp Image struct is created and pushed in the dynamic array imagelist.
 			It returns one less than the length of the imagelist array.
@@ -52,7 +52,7 @@ contract ImageList is owned {
 		return k;
 	}
 
-  /**
+	/**
 			A function to get the images in a range about some x and y coordinates passed.
 			A linear search is done on all the images.
 	**/
@@ -70,7 +70,7 @@ contract ImageList is owned {
 		return (ids, count);
 	}
 
-  /**
+	/**
 			A function to get the array of images containing the tags passed.
 			A linear search is done on the images.
 	**/
@@ -81,30 +81,30 @@ contract ImageList is owned {
 
 		for (var i=0;i<imageList.length;i++){
 			if (imageList[i].init){
-        bool found=false;
-        for(var j=0;j<5;j++){
-          if (imageList[i].topic[j]==0) break;
-          for(var k=0;k<3;k++){
-            if (tags[k]==0) break;
-            if (tags[k]==imageList[i].topic[j]){
-              found=true;
-              break;
-            }
-          }
-          if (found) break;
-        }
+				bool found=false;
+				for(var j=0;j<5;j++){
+					if (imageList[i].topic[j]==0) break;
+					for(var k=0;k<3;k++){
+						if (tags[k]==0) break;
+						if (tags[k]==imageList[i].topic[j]){
+							found=true;
+							break;
+						}
+					}
+					if (found) break;
+				}
 
-        if (found){
-          if (_count!=0) ids[count] =  i;
-          count++;
-        }
+				if (found){
+					if (_count!=0) ids[count] =  i;
+					count++;
+				}
 
 			}
 		}
 		return (ids, count);
 	}
 
-  /**
+	/**
 			A function to add an upvote to the image.
 	**/
 	function upvoteImage(uint index) onlyOwner {
@@ -115,7 +115,7 @@ contract ImageList is owned {
 		imageList[index].reportCount ++;
 	}
 
-  /**
+	/**
 			A function to get the total upvotes of the image passed.
 	**/
 	function getUpvotes(uint index) constant returns (int){
@@ -126,7 +126,7 @@ contract ImageList is owned {
 		return imageList[index].upvotes;
 	}
 
-  /**
+	/**
 			A function to get the Image parameters(struct Image) of the image index passed.
 	**/
 	function getImage(uint index)  constant returns (string, string, int64, int64, uint16[5], int, address){
@@ -134,7 +134,7 @@ contract ImageList is owned {
 			return (imageList[index].image_hash, imageList[index].caption, imageList[index].lat, imageList[index].long, imageList[index].topic, imageList[index].upvotes, imageList[index].owner);
 	}
 
-  /**
+	/**
 			A function to delete the image passed.
 			Image will be deleted only if the current user is the owner of the image.
 			A counter deleted maintains the total number of deleted images.
@@ -144,17 +144,17 @@ contract ImageList is owned {
 		// TODO you can also just copy the last element into the empty spot, then delete the last element.
 		deleted++;
 		delete imageList[index];
-    return true;
+			return true;
 	}
 
-  /**
+	/**
 			A function to get the total number of images.
 	**/
 	function getImageCount() constant returns (uint){
 		return imageList.length-deleted;
 	}
 
-  /**
+	/**
 			A function to get the address of the owner of the image index passed.
 	**/
 	function getImageOwner(uint image_index) constant returns(address){

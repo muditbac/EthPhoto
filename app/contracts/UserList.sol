@@ -20,7 +20,7 @@ contract UserList is owned {
 			 bytes32 username;
 	}
 
-  /**
+	/**
 			A mapping from user address to userdata(User struct) and
 			another mapping from username to user address.
 			username is stored as a bytes32 type.
@@ -33,14 +33,14 @@ contract UserList is owned {
 		addressToUserData[_user].reward += _reward;
 	}
 
-  /**
+	/**
 			A function to add the new image to the owner of the image.
 	**/
 	function addImageToUser(address _user, uint _image) onlyOwner{
 		addressToUserData[_user].userImages.push(_image);
 	}
 
-  /**
+	/**
 			A function to add the user name to the current user ,
 			the address of the current user is added in the usernametoUser
 			mapping and _uname is added to addressToUserData if the uname is
@@ -58,7 +58,7 @@ contract UserList is owned {
 		}
 	}
 
-  /**
+	/**
 			A function to check if the username is set to the current user.
 			function returns true if the mapping addressToUserData for the current user
 			contains a non empty string ,otherwise it returns false.
@@ -77,50 +77,50 @@ contract UserList is owned {
 		return true;
 	}
 
-  /**
+	/**
 			A function to get the user information.
 			It returns the data from the User struct for the user address passed.
 	**/
-  function getUserInfo(address _user) constant returns (bytes32 username, uint[] images, int32 reward){
-      return (addressToUserData[_user].username, addressToUserData[_user].userImages, addressToUserData[_user].reward);
-  }
+	function getUserInfo(address _user) constant returns (bytes32 username, uint[] images, int32 reward){
+			return (addressToUserData[_user].username, addressToUserData[_user].userImages, addressToUserData[_user].reward);
+	}
 
-  /**
+	/**
 			A function to get the rewards for the user address passed.
 	**/
 	function getReward(address _user) constant returns (int32){
 		return addressToUserData[_user].reward;
 	}
 
-  /**
+	/**
 			A function to get the rewards for the current user.
 	**/
 	function getReward() constant returns (int32){
 		return addressToUserData[msg.sender].reward;
 	}
 
-  /**
+	/**
 			A function to get the userImages for the current user.
 	**/
 	function getImages() constant returns (uint[]){
 		return addressToUserData[msg.sender].userImages;
 	}
 
-  /**
+	/**
 			A function to get the userImages for the user address passed.
 	**/
-  function getImages(address _user) constant returns (uint[]){
+	function getImages(address _user) constant returns (uint[]){
 		return addressToUserData[_user].userImages;
 	}
 
-  /**
+	/**
 			A function to get the username for the current user.
 	**/
-  function getUserName() constant returns (bytes32){
+	function getUserName() constant returns (bytes32){
 		return addressToUserData[msg.sender].username;
 	}
 
-  /**
+	/**
 			A function to get the username for the user address passed.
 	**/
 	function getUserName(address _user) constant returns (bytes32){
